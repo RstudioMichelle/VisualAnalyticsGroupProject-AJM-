@@ -21,5 +21,4 @@ This group project is completed by three MITB students:
 - Javier
 - Michelle
 
-Guided by **Professor Kam Tin Seong**.
-```
+Guided by **Professor Kam Tin Seong**

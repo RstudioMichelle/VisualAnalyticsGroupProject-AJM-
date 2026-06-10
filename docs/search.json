@@ -60,6 +60,20 @@
     "href": "index.html",
     "title": "Visual Analytics Group Project",
     "section": "",
-    "text": "This group project belongs to three Masters student from MITB - Alvin, Javier, and Michelle. They are guided by the legendary Professor Kam Tin Seong."
+    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
+  },
+  {
+    "objectID": "index.html#tenantthread-embargo-breach-investigation",
+    "href": "index.html#tenantthread-embargo-breach-investigation",
+    "title": "Visual Analytics Group Project",
+    "section": "",
+    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
+  },
+  {
+    "objectID": "index.html#project-team",
+    "href": "index.html#project-team",
+    "title": "Visual Analytics Group Project",
+    "section": "Project Team",
+    "text": "Project Team\nThis group project is completed by three MITB students:\n\nAlvin\nJavier\nMichelle\n\nGuided by Professor Kam Tin Seong. ```"
   }
 ]
