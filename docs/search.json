@@ -53,13 +53,13 @@
     "href": "Proposal.html",
     "title": "Project Proposal",
     "section": "",
-    "text": "As organizations increasingly rely on AI agents for corporate communications and public relations, understanding the failure modes of these systems becomes a critical operational imperative. In the case of TenantThread, the compliance agent (“The Judge”) and others bots participated in a scenario that is not foreseeable in its initial design.\nHence we hope to pioneer a forensic system audit framework to trace the cascading logic, sentiment anomalies, and cross-system friction that led to the premature embargo breach. this project also serves as a demonstration of how anomaly detection for AI system be potentially be performed with visual analytics."
+    "text": "As organizations increasingly rely on AI agents for corporate communications and public relations, understanding the failure modes of these systems becomes a critical operational imperative. In the case of TenantThread, the compliance agent (“The Judge”) and other agents participated in a scenario that is not foreseeable in its initial design.\nHence we hope to pioneer a forensic system audit framework to trace the cascading logic, sentiment anomalies, and cross-system friction that led to the premature embargo breach. this project also serves as a demonstration of how anomaly detection for AI system be potentially be performed with visual analytics."
   },
   {
     "objectID": "Proposal.html#motivation",
     "href": "Proposal.html#motivation",
     "title": "Project Proposal",
     "section": "",
-    "text": "As organizations increasingly rely on AI agents for corporate communications and public relations, understanding the failure modes of these systems becomes a critical operational imperative. In the case of TenantThread, the compliance agent (“The Judge”) and others bots participated in a scenario that is not foreseeable in its initial design.\nHence we hope to pioneer a forensic system audit framework to trace the cascading logic, sentiment anomalies, and cross-system friction that led to the premature embargo breach. this project also serves as a demonstration of how anomaly detection for AI system be potentially be performed with visual analytics."
+    "text": "As organizations increasingly rely on AI agents for corporate communications and public relations, understanding the failure modes of these systems becomes a critical operational imperative. In the case of TenantThread, the compliance agent (“The Judge”) and other agents participated in a scenario that is not foreseeable in its initial design.\nHence we hope to pioneer a forensic system audit framework to trace the cascading logic, sentiment anomalies, and cross-system friction that led to the premature embargo breach. this project also serves as a demonstration of how anomaly detection for AI system be potentially be performed with visual analytics."
   }
 ]
