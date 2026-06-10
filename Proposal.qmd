@@ -11,6 +11,8 @@ execute:
 ---
 
 ## Motivation
+As organizations become more reliant on AI for corporate communication, failures like TenantThread's embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes.
+
 
 ## Objectives
 
@@ -96,3 +98,67 @@ The analysis was conducted using a collection of R packages for data wrangling, 
 :::
 
 ## Project Schedule
+```{r}
+#| fig-width: 16
+#| fig-height: 7
+#| out-width: "100%"
+#| echo: false
+
+library(tidyverse)
+library(lubridate)
+
+# 1. Defined exactly 11 project tasks and matched dates
+project_tasks <- tibble(
+  task = c(
+    "Explore Each Persons' Take Home Exercise 2",
+    "Create new Git repo, editing & publishing project proposal",
+    "Set up Global layout",
+    "Q1 content and design",
+    "Q2 content and design",
+    "Q3 content and design",
+    "Mid sprint catch up after class",
+    "Adjustment and UI tweaks",
+    "Final Check-in and adjustments",
+    "Poster Preparation (Due 4th July)",
+    "Estimated Final Submission: App, Website & Peer Evaluation (Due 5 July)"
+  ),
+  start_date = ymd(c("2026-06-09", "2026-06-10", "2026-06-12", 
+    "2026-06-14", "2026-06-14", "2026-06-14", "2026-06-19", 
+    "2026-06-20", "2026-06-28", "2026-06-30", "2026-07-03"
+  )),
+  end_date   = ymd(c("2026-06-10", "2026-06-12", "2026-06-14", 
+    "2026-06-19", "2026-06-19", "2026-06-19", "2026-06-20", 
+    "2026-06-30", "2026-07-01", "2026-07-04", "2026-07-04"
+  ))
+)
+
+# 2. Set dynamic factor levels
+project_tasks <- project_tasks %>%
+  mutate(task = factor(task, levels = rev(task)))
+
+# 3. Plot the Gantt Chart with Chronological Gradient Mapping
+ggplot(project_tasks, aes(ymin = start_date, ymax = end_date, x = task, color = as.numeric(end_date))) +
+  geom_linerange(linewidth = 10) + 
+  coord_flip() + 
+  scale_y_date(
+    date_breaks = "1 day",    
+    date_labels = "%d %b",    
+    limits = c(ymd("2026-06-09"), ymd("2026-07-06")) # FIXED: Shifted back to June 9 to capture the 1st row
+  ) +
+  scale_color_gradient(low = "#4393c3", high = "#b2182b") + 
+  labs(
+    title = "Visual Analytics Project Timeline & Milestones",
+    subtitle = "Color gradient shifting toward the final delivery rush in July",
+    x = NULL,
+    y = "Timeline (June - July 2026)"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(color = "gray30", size = 10),
+    panel.grid.minor = element_blank(),
+    legend.position = "none", 
+    axis.text.y = element_text(face = "bold", color = "black", size = 9),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 8, face = "bold")
+  )
+```

@@ -1,5 +1,19 @@
 [
   {
+    "objectID": "Proposal.html",
+    "href": "Proposal.html",
+    "title": "Project Proposal",
+    "section": "",
+    "text": "As organizations become more reliant on AI for corporate communication, failures like TenantThread’s embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes."
+  },
+  {
+    "objectID": "Proposal.html#motivation",
+    "href": "Proposal.html#motivation",
+    "title": "Project Proposal",
+    "section": "",
+    "text": "As organizations become more reliant on AI for corporate communication, failures like TenantThread’s embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes."
+  },
+  {
     "objectID": "Proposal.html#objectives",
     "href": "Proposal.html#objectives",
     "title": "Project Proposal",
