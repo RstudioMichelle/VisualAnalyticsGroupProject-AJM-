@@ -1,5 +1,47 @@
 [
   {
+    "objectID": "Proposal.html#objectives",
+    "href": "Proposal.html#objectives",
+    "title": "Project Proposal",
+    "section": "Objectives",
+    "text": "Objectives\nThis analysis examines the internal communications surrounding TenantThread’s embargo breach involving Project HarborCrest. By integrating communication network analysis, behavioural analysis, and text analytics, the study aims to:\n\nReconstruct the sequence of events, communication pathways, and key relationships that contributed to the inappropriate release of embargo-sensitive information.\nIdentify behavioural changes, communication roles, and warning signals that emerged prior to the breach by comparing critical-period activities with earlier communication patterns.\nEvaluate whether the release was the result of deliberate actions, abnormal agent behaviour, or a breakdown of communication and compliance controls under escalating operational pressure.\n\n\nAnalytical Questions\n• What were the key events and relationships that led to the inappropriate release?\n• How did breach-period behaviours differ from normal communication patterns?\n• Were there leading indicators that such a release was possible?\n• Were there previous occasions where agents behaved differently from expected behaviour?\n• Why did earlier warning signals not result in noticeable intervention?\n• Did the breach arise from deliberate actions or a breakdown of the communication and compliance system?"
+  },
+  {
+    "objectID": "Proposal.html#data",
+    "href": "Proposal.html#data",
+    "title": "Project Proposal",
+    "section": "Data",
+    "text": "Data\nThe study uses the communication dataset derived from the VAST Challenge 2026 Mini-Challenge 1 JSON files. After data extraction and transformation, the final dataset contains 912 communication records and 9 variables. Each record represents a communication event involving one or more participants within TenantThread’s communication ecosystem.\nThe key variables include communication timestamps, participant identifiers, communication channels, message types, agent roles, recipients, and message contents. These records capture interactions across Legal, PR, Social Media, and Platform Trust functions during the two-week period preceding the inappropriate release of embargo-sensitive merger information.\nThe communication dataset was subsequently transformed into network, temporal, behavioural, and text-analytic datasets to support the investigation of communication pathways, warning signals, behavioural deviations, and the sequence of events leading to the embargo breach."
+  },
+  {
+    "objectID": "Proposal.html#methodology",
+    "href": "Proposal.html#methodology",
+    "title": "Project Proposal",
+    "section": "Methodology",
+    "text": "Methodology"
+  },
+  {
+    "objectID": "Proposal.html#prototype-sketch",
+    "href": "Proposal.html#prototype-sketch",
+    "title": "Project Proposal",
+    "section": "Prototype Sketch",
+    "text": "Prototype Sketch"
+  },
+  {
+    "objectID": "Proposal.html#r-packages",
+    "href": "Proposal.html#r-packages",
+    "title": "Project Proposal",
+    "section": "R Packages",
+    "text": "R Packages\nThe analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.\n\nUtilityText AnalyticsNetwork AnalyticsVisualisationReportingShiny App\n\n\n\njsonlite – Parse and extract communication data from JSON files.\ntidyverse – Data cleaning, transformation, and preparation.\nlubridate – Date and time processing.\nknitr – Dynamic report generation.\n\n\n\n\ntidytext – Tokenisation, TF-IDF, and text mining.\nstringr – Text cleaning and pattern matching.\nwidyr – Word co-occurrence and relationship analysis.\n\n\n\n\ntidygraph – Graph data manipulation and network construction.\nigraph – Network metrics and centrality analysis.\nggraph – Network visualisation.\nvisNetwork – Interactive network exploration.\n\n\n\n\nggplot2 – Statistical graphics and exploratory visualisation.\nggalluvial – Flow and pathway visualisation.\nggiraph – Interactive visualisations with tooltips.\nplotly – Interactive dashboards and charts.\nggrepel – Improved label placement.\npatchwork – Combining multiple plots into a single layout.\n\n\n\n\ngt – Publication-quality summary tables.\nDT – Interactive data tables.\nkableExtra – Enhanced table formatting.\n\n\n\n\nshiny – Build the interactive visual analytics application.\nshinydashboard – Create dashboard layout and navigation.\nshinyWidgets – Add enhanced input controls and filters."
+  },
+  {
+    "objectID": "Proposal.html#project-schedule",
+    "href": "Proposal.html#project-schedule",
+    "title": "Project Proposal",
+    "section": "Project Schedule",
+    "text": "Project Schedule"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Visual Analytics Group Project",

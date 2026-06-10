@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Alvin, Javier, Michelle">
+<meta name="dcterms.date" content="2026-06-10">
 
-<title>Visual Analytics Group Project – Visual Analytics Project</title>
+<title>Project Proposal – Visual Analytics Project</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -93,11 +95,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./Proposal.html"> 
+    <a class="nav-link active" href="./Proposal.html" aria-current="page"> 
 <span class="menu-text">Proposal</span></a>
   </li>  
 </ul>
@@ -111,23 +113,56 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#objectives" id="toc-objectives" class="nav-link" data-scroll-target="#objectives">Objectives</a>
+  <ul class="collapse">
+  <li><a href="#analytical-questions" id="toc-analytical-questions" class="nav-link" data-scroll-target="#analytical-questions">Analytical Questions</a></li>
+  </ul></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
+  <li><a href="#prototype-sketch" id="toc-prototype-sketch" class="nav-link" data-scroll-target="#prototype-sketch">Prototype Sketch</a></li>
+  <li><a href="#r-packages" id="toc-r-packages" class="nav-link" data-scroll-target="#r-packages">R Packages</a></li>
+  <li><a href="#project-schedule" id="toc-project-schedule" class="nav-link" data-scroll-target="#project-schedule">Project Schedule</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Visual Analytics Group Project</h1>
+<h1 class="title">Project Proposal</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Alvin, Javier, Michelle </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 10, 2026</p>
+    </div>
+  </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">June 10, 2026</p>
+    </div>
+  </div>
     
   </div>
   
@@ -136,9 +171,100 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This group project belongs to three Masters student from MITB - Alvin, Javier, and Michelle. They are guided by the legendary Professor Kam Tin Seong.</p>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+</section>
+<section id="objectives" class="level2">
+<h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+<p>This analysis examines the internal communications surrounding TenantThread’s embargo breach involving Project HarborCrest. By integrating communication network analysis, behavioural analysis, and text analytics, the study aims to:</p>
+<ol type="1">
+<li><p>Reconstruct the sequence of events, communication pathways, and key relationships that contributed to the inappropriate release of embargo-sensitive information.</p></li>
+<li><p>Identify behavioural changes, communication roles, and warning signals that emerged prior to the breach by comparing critical-period activities with earlier communication patterns.</p></li>
+<li><p>Evaluate whether the release was the result of deliberate actions, abnormal agent behaviour, or a breakdown of communication and compliance controls under escalating operational pressure.</p></li>
+</ol>
+<section id="analytical-questions" class="level3">
+<h3 class="anchored" data-anchor-id="analytical-questions">Analytical Questions</h3>
+<p>• What were the key events and relationships that led to the inappropriate release?</p>
+<p>• How did breach-period behaviours differ from normal communication patterns?</p>
+<p>• Were there leading indicators that such a release was possible?</p>
+<p>• Were there previous occasions where agents behaved differently from expected behaviour?</p>
+<p>• Why did earlier warning signals not result in noticeable intervention?</p>
+<p>• Did the breach arise from deliberate actions or a breakdown of the communication and compliance system?</p>
+</section>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>The study uses the communication dataset derived from the VAST Challenge 2026 Mini-Challenge 1 JSON files. After data extraction and transformation, the final dataset contains <strong>912 communication records</strong> and <strong>9 variables.</strong> Each record represents a communication event involving one or more participants within TenantThread’s communication ecosystem.</p>
+<p>The key variables include communication timestamps, participant identifiers, communication channels, message types, agent roles, recipients, and message contents. These records capture interactions across Legal, PR, Social Media, and Platform Trust functions during the two-week period preceding the inappropriate release of embargo-sensitive merger information.</p>
+<p>The communication dataset was subsequently transformed into network, temporal, behavioural, and text-analytic datasets to support the investigation of communication pathways, warning signals, behavioural deviations, and the sequence of events leading to the embargo breach.</p>
+</section>
+<section id="methodology" class="level2">
+<h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
+</section>
+<section id="prototype-sketch" class="level2">
+<h2 class="anchored" data-anchor-id="prototype-sketch">Prototype Sketch</h2>
+</section>
+<section id="r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="r-packages">R Packages</h2>
+<p>The analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Utility</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Text Analytics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Network Analytics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Visualisation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false" href="">Reporting</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" role="tab" aria-controls="tabset-1-6" aria-selected="false" href="">Shiny App</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<ul>
+<li><strong>jsonlite</strong> – Parse and extract communication data from JSON files.</li>
+<li><strong>tidyverse</strong> – Data cleaning, transformation, and preparation.</li>
+<li><strong>lubridate</strong> – Date and time processing.</li>
+<li><strong>knitr</strong> – Dynamic report generation.</li>
+</ul>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<ul>
+<li><strong>tidytext</strong> – Tokenisation, TF-IDF, and text mining.</li>
+<li><strong>stringr</strong> – Text cleaning and pattern matching.</li>
+<li><strong>widyr</strong> – Word co-occurrence and relationship analysis.</li>
+</ul>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<ul>
+<li><strong>tidygraph</strong> – Graph data manipulation and network construction.</li>
+<li><strong>igraph</strong> – Network metrics and centrality analysis.</li>
+<li><strong>ggraph</strong> – Network visualisation.</li>
+<li><strong>visNetwork</strong> – Interactive network exploration.</li>
+</ul>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<ul>
+<li><strong>ggplot2</strong> – Statistical graphics and exploratory visualisation.</li>
+<li><strong>ggalluvial</strong> – Flow and pathway visualisation.</li>
+<li><strong>ggiraph</strong> – Interactive visualisations with tooltips.</li>
+<li><strong>plotly</strong> – Interactive dashboards and charts.</li>
+<li><strong>ggrepel</strong> – Improved label placement.</li>
+<li><strong>patchwork</strong> – Combining multiple plots into a single layout.</li>
+</ul>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<ul>
+<li><strong>gt</strong> – Publication-quality summary tables.</li>
+<li><strong>DT</strong> – Interactive data tables.</li>
+<li><strong>kableExtra</strong> – Enhanced table formatting.</li>
+</ul>
+</div>
+<div id="tabset-1-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-6-tab">
+<ul>
+<li><strong>shiny</strong> – Build the interactive visual analytics application.</li>
+<li><strong>shinydashboard</strong> – Create dashboard layout and navigation.</li>
+<li><strong>shinyWidgets</strong> – Add enhanced input controls and filters.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="project-schedule" class="level2">
+<h2 class="anchored" data-anchor-id="project-schedule">Project Schedule</h2>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
