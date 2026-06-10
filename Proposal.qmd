@@ -38,11 +38,9 @@ This analysis examines the internal communications surrounding TenantThread's em
 
 ## Data
 
-The study uses the communication dataset derived from the VAST Challenge 2026 Mini-Challenge 1 JSON files. After data extraction and transformation, the final dataset contains **912 communication records** and **9 variables.** Each record represents a communication event involving one or more participants within TenantThread's communication ecosystem.
+The study uses the communication dataset derived from the VAST Challenge 2026 Mini-Challenge 1 JSON file. After data extraction and transformation, the final dataset contains **912 communication records** and **9 variables.** Each record represents a communication event involving one or more participants within TenantThread's communication ecosystem.
 
 The key variables include communication timestamps, participant identifiers, communication channels, message types, agent roles, recipients, and message contents. These records capture interactions across Legal, PR, Social Media, and Platform Trust functions during the two-week period preceding the inappropriate release of embargo-sensitive merger information.
-
-The communication dataset was subsequently transformed into network, temporal, behavioural, and text-analytic datasets to support the investigation of communication pathways, warning signals, behavioural deviations, and the sequence of events leading to the embargo breach.
 
 ## Methodology
 
