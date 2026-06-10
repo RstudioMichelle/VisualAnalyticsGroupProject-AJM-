@@ -1,6 +1,25 @@
 ---
 title: "Visual Analytics Group Project"
+toc: false
 ---
 
-This group project belongs to three Masters student from MITB - Alvin, Javier, and Michelle. 
-They are guided by the legendary Professor Kam Tin Seong.
+## TenantThread: Embargo Breach Investigation
+
+This project is based on **Mini-Challenge 1 of VAST Challenge 2026**.
+
+TenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on **Project HarborCrest**, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.
+
+Through this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.
+
+For the detailed project objectives and proposed approach, please refer to the **Proposal** section.
+
+## Project Team
+
+This group project is completed by three MITB students:
+
+- Alvin
+- Javier
+- Michelle
+
+Guided by **Professor Kam Tin Seong**.
+```
