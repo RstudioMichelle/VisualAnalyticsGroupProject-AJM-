@@ -1,0 +1,6 @@
+---
+title: "Visual Analytics Group Project"
+---
+
+This group project belongs to three Masters student from MITB - Alvin, Javier, and Michelle. 
+They are guided by the legendary Professor Kam Tin Seong.
