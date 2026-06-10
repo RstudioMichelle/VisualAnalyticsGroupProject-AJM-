@@ -5,11 +5,49 @@ project:
 website:
   title: "Visual Analytics Project"
   navbar:
+    background: "#3155E7"
+    foreground: "#ffffff"
+    search: true
+
     left:
-      - href: index.qmd
-        text: "Home"
-      - href: Proposal.qmd
+      - icon: file-earmark-text
+        href: Proposal.qmd
         text: "Proposal"
+
+      - icon: diagram-3
+        text: "Methodology"
+        menu:
+          - text: "Methodology"
+            href: Methodology.qmd
+
+      - icon: card-list
+        href: Findings.qmd
+        text: "Findings"
+
+      - icon: file-earmark-ppt
+        href: Poster.qmd
+        text: "Poster"
+
+      - icon: journal-text
+        href: Meeting_Minutes.qmd
+        text: "Meeting Minutes"
+
+    right:
+      - icon: people-fill
+        href: The_Team.qmd
+        text: "The Team"
+
+      - icon: laptop
+        text: "Shiny App"
+        menu:
+          - text: "Launch Shiny App"
+            href: "https://your-shiny-app-link-here"
+
+      - icon: github
+        text: "Github"
+        menu:
+          - text: "GitHub Repository"
+            href: "https://github.com/RstudioMichelle/VisualAnalyticsGroupProject-AJM-"
 
 format:
   html:
