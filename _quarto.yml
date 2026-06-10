@@ -7,7 +7,9 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
+        text: "Home"
+      - href: Proposal.qmd
+        text: "Proposal"
 
 format:
   html:
