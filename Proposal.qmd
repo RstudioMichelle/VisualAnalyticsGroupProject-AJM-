@@ -1,18 +1,100 @@
 ---
 title: "Project Proposal"
-format: html
+author: "Alvin, Javier, Michelle"
+date: "10 June, 2026"
+date-modified: "last-modified"
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: false
 ---
 
 ## Motivation
 
 ## Objectives
 
+This analysis examines the internal communications surrounding TenantThread's embargo breach involving Project HarborCrest. By integrating communication network analysis, behavioural analysis, and text analytics, the study aims to:
+
+1.  Reconstruct the sequence of events, communication pathways, and key relationships that contributed to the inappropriate release of embargo-sensitive information.
+	
+2.  Identify behavioural changes, communication roles, and warning signals that emerged prior to the breach by comparing critical-period activities with earlier communication patterns.
+	
+3.  Evaluate whether the release was the result of deliberate actions, abnormal agent behaviour, or a breakdown of communication and compliance controls under escalating operational pressure.
+	
+### Analytical Questions
+•   What were the key events and relationships that led to the inappropriate release? 
+
+•   How did breach-period behaviours differ from normal communication patterns? 
+
+•   Were there leading indicators that such a release was possible? 
+
+•   Were there previous occasions where agents behaved differently from expected behaviour? 
+
+•   Why did earlier warning signals not result in noticeable intervention? 
+
+•   Did the breach arise from deliberate actions or a breakdown of the communication and compliance system?
+
+
 ## Data
+
+The study uses the communication dataset derived from the VAST Challenge 2026 Mini-Challenge 1 JSON files. After data extraction and transformation, the final dataset contains **912 communication records** and **9 variables.** Each record represents a communication event involving one or more participants within TenantThread's communication ecosystem.
+
+The key variables include communication timestamps, participant identifiers, communication channels, message types, agent roles, recipients, and message contents. These records capture interactions across Legal, PR, Social Media, and Platform Trust functions during the two-week period preceding the inappropriate release of embargo-sensitive merger information.
+
+The communication dataset was subsequently transformed into network, temporal, behavioural, and text-analytic datasets to support the investigation of communication pathways, warning signals, behavioural deviations, and the sequence of events leading to the embargo breach.
 
 ## Methodology
 
 ## Prototype Sketch
 
 ## R Packages
+
+The analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.
+
+::: {.panel-tabset}
+
+### Utility
+
+- **jsonlite** – Parse and extract communication data from JSON files.
+- **tidyverse** – Data cleaning, transformation, and preparation.
+- **lubridate** – Date and time processing.
+- **knitr** – Dynamic report generation.
+
+### Text Analytics
+
+- **tidytext** – Tokenisation, TF-IDF, and text mining.
+- **stringr** – Text cleaning and pattern matching.
+- **widyr** – Word co-occurrence and relationship analysis.
+
+### Network Analytics
+
+- **tidygraph** – Graph data manipulation and network construction.
+- **igraph** – Network metrics and centrality analysis.
+- **ggraph** – Network visualisation.
+- **visNetwork** – Interactive network exploration.
+
+### Visualisation
+
+- **ggplot2** – Statistical graphics and exploratory visualisation.
+- **ggalluvial** – Flow and pathway visualisation.
+- **ggiraph** – Interactive visualisations with tooltips.
+- **plotly** – Interactive dashboards and charts.
+- **ggrepel** – Improved label placement.
+- **patchwork** – Combining multiple plots into a single layout.
+
+### Reporting
+
+- **gt** – Publication-quality summary tables.
+- **DT** – Interactive data tables.
+- **kableExtra** – Enhanced table formatting.
+
+### Shiny App
+
+- **shiny** – Build the interactive visual analytics application.
+- **shinydashboard** – Create dashboard layout and navigation.
+- **shinyWidgets** – Add enhanced input controls and filters.
+
+:::
 
 ## Project Schedule
