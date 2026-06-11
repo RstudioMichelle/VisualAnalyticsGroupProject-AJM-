@@ -92,9 +92,15 @@ The analysis was conducted using a collection of R packages for data wrangling, 
 
 ### Shiny App
 
+<<<<<<< HEAD
 -   **shiny** – Build the interactive visual analytics application.
 -   **shinydashboard** – Create dashboard layout and navigation.
 -   **shinyWidgets** – Add enhanced input controls and filters.
+=======
+- **shiny** – Build the interactive visual analytics application.
+- **shinydashboard** – Create dashboard layout and navigation.
+- **shinyWidgets** – Add enhanced input controls and filters.
+>>>>>>> 36f8aabb672446799332cd3e4c340392465f8e06
 :::
 
 ## Project Schedule

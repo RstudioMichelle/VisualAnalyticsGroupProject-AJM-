@@ -1,0 +1,66 @@
+---
+title: "Meeting Minutes"
+date: "10 June, 2026"
+date-modified: "last-modified"
+format: html
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: false
+---
+
+## Time: 8:30pm
+
+## In Attendance
+
+- Alvin Ong
+
+- Javier Phang
+
+- Michelle Chen
+
+## **Agenda**
+
+1.  Discussion on proposal
+2.  Discussion on project next steps
+3.  Questions to ask Prof Kam during consultation
+4.  Action items
+
+## **Discussion on proposal**
+
+1.  Javier kicked start the meeting to discuss the skeleton of the proposal.
+2.  Michelle suggested coming up with the header sections before assigning it to each team member to populate the content for the proposal.
+3.  Alvin highlighted that the team should include methodology and project schedule – in the form of a Gantt chart, as the bare minimum.
+4.  All three team members reviewed the project requirements and collectively agreed on the milestones and their respective completion dateline. These items will be shown in the Gantt chart for tracking and alignment.
+5.  Javier shared that a motivation and objectives section would be good to provide the background and context of the project.
+6.  Michelle also pointed out that she can do a prototype sketch to show the wireframe of the team’s Shiny app.
+7.  The team came into a quick agreement of the different sections and content of the proposal, and to complete it before 13th June for submission.
+
+## Discussion on project next steps
+
+8.  Javier suggested that each team member should relook at our individual take home exercise 2 and select the parts that we feel will be useful for the final project.
+9.  Javier then proceeded to pull out a draft document for the team members to work asynchronously over the next few days to share and justify their selections.
+10. Michelle and Alvin agreed unanimously as it is not possible to include the full content from everyone’s exercise to be part of the project.
+11. Michelle has helped to create the common vercel page and Github repository to facilitate collaborative work on the project.
+12. The team has come to a consensus to complete the proposal as top priority for now, then work on the deep dive for the individual’s take home exercise 2, before reconvening again to discuss the project.
+
+## Questions to ask Prof Kam during consultation
+
+- Can our final project be an expansion of our proposal and not entirely the same as the proposal?
+
+## Action items
+
+1.  For the proposal:
+    - Alvin to work on motivation and project schedule
+    - Javier to work on objectives, data, and R packages
+    - Michelle to work on prototype sketch
+    - All three team members to contribute to methodology and explanation
+
+## Meeting Minutes Sign off
+
+| No. | Name          | Sign off |
+|-----|---------------|----------|
+| 1   | Alvin Ong     | Yes      |
+| 2   | Javier Phang  | Yes      |
+| 3   | Michelle Chen | Yes      |

@@ -75,5 +75,57 @@
     "title": "Visual Analytics Group Project",
     "section": "Project Team",
     "text": "Project Team\nThis group project is completed by three MITB students:\n\nAlvin\nJavier\nMichelle\n\nGuided by Professor Kam Tin Seong"
+<<<<<<< HEAD
+=======
+  },
+  {
+    "objectID": "Meeting_Minutes_Day1.html#in-attendance",
+    "href": "Meeting_Minutes_Day1.html#in-attendance",
+    "title": "Meeting Minutes",
+    "section": "In Attendance:",
+    "text": "In Attendance:\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day1.html#agenda",
+    "href": "Meeting_Minutes_Day1.html#agenda",
+    "title": "Meeting Minutes",
+    "section": "Agenda:",
+    "text": "Agenda:\n\nDiscussion on proposal\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day1.html#discussion-on-proposal",
+    "href": "Meeting_Minutes_Day1.html#discussion-on-proposal",
+    "title": "Meeting Minutes",
+    "section": "Discussion on proposal",
+    "text": "Discussion on proposal\n\nJavier kicked start the meeting to discuss the skeleton of the proposal.\nMichelle suggested coming up with the header sections before assigning it to each team member to populate the content for the proposal.\nAlvin highlighted that the team should include methodology and project schedule – in the form of a Gantt chart, as the bare minimum.\nAll three team members reviewed the project requirements and collectively agreed on the milestones and their respective completion dateline. These items will be shown in the Gantt chart for tracking and alignment.\nJavier shared that a motivation and objectives section would be good to provide the background and context of the project.\nMichelle also pointed out that she can do a prototype sketch to show the wireframe of the team’s Shiny app.\nThe team came into a quick agreement of the different sections and content of the proposal, and to complete it before 13th June for submission."
+  },
+  {
+    "objectID": "Meeting_Minutes_Day1.html#discussion-on-project-next-steps",
+    "href": "Meeting_Minutes_Day1.html#discussion-on-project-next-steps",
+    "title": "Meeting Minutes",
+    "section": "Discussion on project next steps",
+    "text": "Discussion on project next steps\n\nJavier suggested that each team member should relook at our individual take home exercise 2 and select the parts that we feel will be useful for the final project.\nJavier then proceeded to pull out a draft document for the team members to work asynchronously over the next few days to share and justify their selections.\nMichelle and Alvin agreed unanimously as it is not possible to include the full content from everyone’s exercise to be part of the project.\nMichelle has helped to create the common vercel page and Github repository to facilitate collaborative work on the project.\nThe team has come to a consensus to complete the proposal as top priority for now, then work on the deep dive for the individual’s take home exercise 2, before reconvening again to discuss the project."
+  },
+  {
+    "objectID": "Meeting_Minutes_Day1.html#questions-to-ask-prof-kam-during-consultation",
+    "href": "Meeting_Minutes_Day1.html#questions-to-ask-prof-kam-during-consultation",
+    "title": "Meeting Minutes",
+    "section": "Questions to ask Prof Kam during consultation",
+    "text": "Questions to ask Prof Kam during consultation\n\nCan our final project be an expansion of our proposal and not entirely the same as the proposal?"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day1.html#action-items",
+    "href": "Meeting_Minutes_Day1.html#action-items",
+    "title": "Meeting Minutes",
+    "section": "Action items",
+    "text": "Action items\n\nFor the proposal:\n\nAlvin to work on motivation and project schedule\nJavier to work on objectives, data, and R packages\nMichelle to work on prototype sketch\nAll three team members to contribute to methodology and explanation"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
+    "href": "Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
+    "title": "Meeting Minutes",
+    "section": "Meeting Minutes Sign off:",
+    "text": "Meeting Minutes Sign off:\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
+>>>>>>> 36f8aabb672446799332cd3e4c340392465f8e06
   }
 ]

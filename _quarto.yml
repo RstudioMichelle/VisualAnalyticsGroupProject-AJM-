@@ -29,8 +29,10 @@ website:
         text: "Poster"
 
       - icon: journal-text
-        href: Meeting_Minutes.qmd
         text: "Meeting Minutes"
+        menu:
+          - text: "10 June 2026"
+            href: Meeting_Minutes_Day1.qmd
 
     right:
       - icon: people-fill
