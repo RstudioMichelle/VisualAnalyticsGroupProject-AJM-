@@ -48,6 +48,8 @@ The key variables include communication timestamps, participant identifiers, com
 
 ## Prototype Sketch
 
+![](images/IMG_0080.jpg)
+
 ## R Packages
 
 The analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.
