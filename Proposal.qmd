@@ -11,32 +11,32 @@ execute:
 ---
 
 ## Motivation
-As organizations become more reliant on AI for corporate communication, failures like TenantThread's embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes.
 
+As organizations become more reliant on AI for corporate communication, failures like TenantThread's embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes.
 
 ## Objectives
 
 This analysis examines the internal communications surrounding TenantThread's embargo breach involving Project HarborCrest. By integrating communication network analysis, behavioural analysis, and text analytics, the study aims to:
 
 1.  Reconstruct the sequence of events, communication pathways, and key relationships that contributed to the inappropriate release of embargo-sensitive information.
-	
+
 2.  Identify behavioural changes, communication roles, and warning signals that emerged prior to the breach by comparing critical-period activities with earlier communication patterns.
-	
+
 3.  Evaluate whether the release was the result of deliberate actions, abnormal agent behaviour, or a breakdown of communication and compliance controls under escalating operational pressure.
-	
+
 ### Analytical Questions
-•   What were the key events and relationships that led to the inappropriate release? 
 
-•   How did breach-period behaviours differ from normal communication patterns? 
+• What were the key events and relationships that led to the inappropriate release?
 
-•   Were there leading indicators that such a release was possible? 
+• How did breach-period behaviours differ from normal communication patterns?
 
-•   Were there previous occasions where agents behaved differently from expected behaviour? 
+• Were there leading indicators that such a release was possible?
 
-•   Why did earlier warning signals not result in noticeable intervention? 
+• Were there previous occasions where agents behaved differently from expected behaviour?
 
-•   Did the breach arise from deliberate actions or a breakdown of the communication and compliance system?
+• Why did earlier warning signals not result in noticeable intervention?
 
+• Did the breach arise from deliberate actions or a breakdown of the communication and compliance system?
 
 ## Data
 
@@ -48,56 +48,57 @@ The key variables include communication timestamps, participant identifiers, com
 
 ## Prototype Sketch
 
+![](images/IMG_0080.jpg)
+
 ## R Packages
 
 The analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Utility
 
-- **jsonlite** – Parse and extract communication data from JSON files.
-- **tidyverse** – Data cleaning, transformation, and preparation.
-- **lubridate** – Date and time processing.
-- **knitr** – Dynamic report generation.
+-   **jsonlite** – Parse and extract communication data from JSON files.
+-   **tidyverse** – Data cleaning, transformation, and preparation.
+-   **lubridate** – Date and time processing.
+-   **knitr** – Dynamic report generation.
 
 ### Text Analytics
 
-- **tidytext** – Tokenisation, TF-IDF, and text mining.
-- **stringr** – Text cleaning and pattern matching.
-- **widyr** – Word co-occurrence and relationship analysis.
+-   **tidytext** – Tokenisation, TF-IDF, and text mining.
+-   **stringr** – Text cleaning and pattern matching.
+-   **widyr** – Word co-occurrence and relationship analysis.
 
 ### Network Analytics
 
-- **tidygraph** – Graph data manipulation and network construction.
-- **igraph** – Network metrics and centrality analysis.
-- **ggraph** – Network visualisation.
-- **visNetwork** – Interactive network exploration.
+-   **tidygraph** – Graph data manipulation and network construction.
+-   **igraph** – Network metrics and centrality analysis.
+-   **ggraph** – Network visualisation.
+-   **visNetwork** – Interactive network exploration.
 
 ### Visualisation
 
-- **ggplot2** – Statistical graphics and exploratory visualisation.
-- **ggalluvial** – Flow and pathway visualisation.
-- **ggiraph** – Interactive visualisations with tooltips.
-- **plotly** – Interactive dashboards and charts.
-- **ggrepel** – Improved label placement.
-- **patchwork** – Combining multiple plots into a single layout.
+-   **ggplot2** – Statistical graphics and exploratory visualisation.
+-   **ggalluvial** – Flow and pathway visualisation.
+-   **ggiraph** – Interactive visualisations with tooltips.
+-   **plotly** – Interactive dashboards and charts.
+-   **ggrepel** – Improved label placement.
+-   **patchwork** – Combining multiple plots into a single layout.
 
 ### Reporting
 
-- **gt** – Publication-quality summary tables.
-- **DT** – Interactive data tables.
-- **kableExtra** – Enhanced table formatting.
+-   **gt** – Publication-quality summary tables.
+-   **DT** – Interactive data tables.
+-   **kableExtra** – Enhanced table formatting.
 
 ### Shiny App
 
-- **shiny** – Build the interactive visual analytics application.
-- **shinydashboard** – Create dashboard layout and navigation.
-- **shinyWidgets** – Add enhanced input controls and filters.
-
+-   **shiny** – Build the interactive visual analytics application.
+-   **shinydashboard** – Create dashboard layout and navigation.
+-   **shinyWidgets** – Add enhanced input controls and filters.
 :::
 
 ## Project Schedule
+
 ```{r}
 #| fig-width: 16
 #| fig-height: 7
