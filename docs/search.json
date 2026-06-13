@@ -32,7 +32,7 @@
     "href": "Proposal.html#methodology",
     "title": "Project Proposal",
     "section": "Methodology",
-    "text": "Methodology"
+    "text": "Methodology\n\nMethodology ImageMethodology Description\n\n\n\n\n\n1. Data Preparation - Extract and flatten communication records from the VAST Challenge 2026 Mini-Challenge 1 JSON dataset. - Clean and standardize participant identifiers, communication channels, timestamps, and message attributes. - Organise the data into structured communication, network, and text-analysis datasets for subsequent analysis.\n2. Transforming Data / Feature Engineering - Construct communication networks consisting of participants, communication pathways, and interaction frequencies. - Derive temporal features such as communication dates, hours, weekdays, and critical breach periods. - Generate behavioural indicators, risk signals, keyword flags, and text-based features to support the investigation.\n3. Statistical Analysis - Analyse communication volume, participant activity, channel usage, and message distributions across different time periods. - Apply network measures such as degree, betweenness, and PageRank centrality to identify influential participants and information pathways. - Compare communication behaviours before and during the breach period to detect abnormal patterns, behavioural deviations, and potential warning signals.\n4. Data Exploration & Visualisation - Reconstruct the sequence of events leading to the embargo breach using temporal, network, and text-based visualisations. - Examine communication relationships, participant roles, and information flow through interactive network analysis. - Identify emerging topics, behavioural changes, and potential evidence associated with the inappropriate release of embargo-sensitive information."
   },
   {
     "objectID": "Proposal.html#prototype-sketch",
@@ -46,7 +46,7 @@
     "href": "Proposal.html#r-packages",
     "title": "Project Proposal",
     "section": "R Packages",
-    "text": "R Packages\nThe analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.\n\nUtilityText AnalyticsNetwork AnalyticsVisualisationReportingShiny App\n\n\n\njsonlite – Parse and extract communication data from JSON files.\ntidyverse – Data cleaning, transformation, and preparation.\nlubridate – Date and time processing.\nknitr – Dynamic report generation.\n\n\n\n\ntidytext – Tokenisation, TF-IDF, and text mining.\nstringr – Text cleaning and pattern matching.\nwidyr – Word co-occurrence and relationship analysis.\n\n\n\n\ntidygraph – Graph data manipulation and network construction.\nigraph – Network metrics and centrality analysis.\nggraph – Network visualisation.\nvisNetwork – Interactive network exploration.\n\n\n\n\nggplot2 – Statistical graphics and exploratory visualisation.\nggalluvial – Flow and pathway visualisation.\nggiraph – Interactive visualisations with tooltips.\nplotly – Interactive dashboards and charts.\nggrepel – Improved label placement.\npatchwork – Combining multiple plots into a single layout.\n\n\n\n\ngt – Publication-quality summary tables.\nDT – Interactive data tables.\nkableExtra – Enhanced table formatting.\n\n\n\n\nshiny – Build the interactive visual analytics application.\nshinydashboard – Create dashboard layout and navigation.\nshinyWidgets – Add enhanced input controls and filters."
+    "text": "R Packages\nThe analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.\n\nUtilityText AnalyticsNetwork AnalyticsVisualisationReportingShiny App\n\n\n\njsonlite – Parse and extract communication data from JSON files.\ntidyverse – Data cleaning, transformation, and preparation.\nlubridate – Date and time processing.\nknitr – Dynamic report generation.\n\n\n\n\ntidytext – Tokenisation, TF-IDF, and text mining.\nstringr – Text cleaning and pattern matching.\nwidyr – Word co-occurrence and relationship analysis.\n\n\n\n\ntidygraph – Graph data manipulation and network construction.\nigraph – Network metrics and centrality analysis.\nggraph – Network visualisation.\nvisNetwork – Interactive network exploration.\n\n\n\n\nggplot2 – Statistical graphics and exploratory visualisation.\nggalluvial – Flow and pathway visualisation.\nggiraph – Interactive visualisations with tooltips.\nplotly – Interactive dashboards and charts.\nggrepel – Improved label placement.\npatchwork – Combining multiple plots into a single layout.\n\n\n\n\ngt – Publication-quality summary tables.\nDT – Interactive data tables.\nkableExtra – Enhanced table formatting.\n\n\n\n&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. ======= - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 36f8aabb672446799332cd3e4c340392465f8e06"
   },
   {
     "objectID": "Proposal.html#project-schedule",
@@ -75,22 +75,20 @@
     "title": "Visual Analytics Group Project",
     "section": "Project Team",
     "text": "Project Team\nThis group project is completed by three MITB students:\n\nAlvin\nJavier\nMichelle\n\nGuided by Professor Kam Tin Seong"
-<<<<<<< HEAD
-=======
   },
   {
     "objectID": "Meeting_Minutes_Day1.html#in-attendance",
     "href": "Meeting_Minutes_Day1.html#in-attendance",
     "title": "Meeting Minutes",
-    "section": "In Attendance:",
-    "text": "In Attendance:\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+    "section": "In Attendance",
+    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
   },
   {
     "objectID": "Meeting_Minutes_Day1.html#agenda",
     "href": "Meeting_Minutes_Day1.html#agenda",
     "title": "Meeting Minutes",
-    "section": "Agenda:",
-    "text": "Agenda:\n\nDiscussion on proposal\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
+    "section": "Agenda",
+    "text": "Agenda\n\nDiscussion on proposal\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
   },
   {
     "objectID": "Meeting_Minutes_Day1.html#discussion-on-proposal",
@@ -124,8 +122,7 @@
     "objectID": "Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
     "href": "Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
     "title": "Meeting Minutes",
-    "section": "Meeting Minutes Sign off:",
-    "text": "Meeting Minutes Sign off:\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
->>>>>>> 36f8aabb672446799332cd3e4c340392465f8e06
+    "section": "Meeting Minutes Sign off",
+    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
   }
 ]

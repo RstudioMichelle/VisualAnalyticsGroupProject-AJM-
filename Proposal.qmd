@@ -44,7 +44,36 @@ The study uses the communication dataset derived from the VAST Challenge 2026 Mi
 
 The key variables include communication timestamps, participant identifiers, communication channels, message types, agent roles, recipients, and message contents. These records capture interactions across Legal, PR, Social Media, and Platform Trust functions during the two-week period preceding the inappropriate release of embargo-sensitive merger information.
 
-## Methodology
+## Methodology 
+
+::: {.panel-tabset}
+
+### Methodology Image
+
+![](images/vast_mc1_methodology_ppt_static.png)
+
+### Methodology Description
+
+**1.	Data Preparation**
+-	Extract and flatten communication records from the VAST Challenge 2026 Mini-Challenge 1 JSON dataset.
+-	Clean and standardize participant identifiers, communication channels, timestamps, and message attributes.
+-	Organise the data into structured communication, network, and text-analysis datasets for subsequent analysis.
+
+**2.	Transforming Data / Feature Engineering**
+-	Construct communication networks consisting of participants, communication pathways, and interaction frequencies.
+-	Derive temporal features such as communication dates, hours, weekdays, and critical breach periods.
+-	Generate behavioural indicators, risk signals, keyword flags, and text-based features to support the investigation.
+
+**3.	 Statistical Analysis**
+-	Analyse communication volume, participant activity, channel usage, and message distributions across different time periods.
+-	Apply network measures such as degree, betweenness, and PageRank centrality to identify influential participants and information pathways.
+-	Compare communication behaviours before and during the breach period to detect abnormal patterns, behavioural deviations, and potential warning signals.
+
+**4.	Data Exploration & Visualisation**
+-	Reconstruct the sequence of events leading to the embargo breach using temporal, network, and text-based visualisations.
+-	Examine communication relationships, participant roles, and information flow through interactive network analysis.
+-	Identify emerging topics, behavioural changes, and potential evidence associated with the inappropriate release of embargo-sensitive information.
+:::
 
 ## Prototype Sketch
 
