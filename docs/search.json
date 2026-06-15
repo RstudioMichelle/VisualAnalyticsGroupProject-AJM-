@@ -46,7 +46,7 @@
     "href": "Proposal.html#r-packages",
     "title": "Project Proposal",
     "section": "R Packages",
-    "text": "R Packages\nThe analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.\n\nUtilityText AnalyticsNetwork AnalyticsVisualisationReportingShiny App\n\n\n\njsonlite – Parse and extract communication data from JSON files.\ntidyverse – Data cleaning, transformation, and preparation.\nlubridate – Date and time processing.\nknitr – Dynamic report generation.\n\n\n\n\ntidytext – Tokenisation, TF-IDF, and text mining.\nstringr – Text cleaning and pattern matching.\nwidyr – Word co-occurrence and relationship analysis.\n\n\n\n\ntidygraph – Graph data manipulation and network construction.\nigraph – Network metrics and centrality analysis.\nggraph – Network visualisation.\nvisNetwork – Interactive network exploration.\n\n\n\n\nggplot2 – Statistical graphics and exploratory visualisation.\nggalluvial – Flow and pathway visualisation.\nggiraph – Interactive visualisations with tooltips.\nplotly – Interactive dashboards and charts.\nggrepel – Improved label placement.\npatchwork – Combining multiple plots into a single layout.\n\n\n\n\ngt – Publication-quality summary tables.\nDT – Interactive data tables.\nkableExtra – Enhanced table formatting.\n\n\n\n\nshiny – Build the interactive visual analytics application.\nshinydashboard – Create dashboard layout and navigation.\nshinyWidgets – Add enhanced input controls and filters."
+    "text": "R Packages\nThe analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.\n\nUtilityText AnalyticsNetwork AnalyticsVisualisationReportingShiny App\n\n\n\njsonlite – Parse and extract communication data from JSON files.\ntidyverse – Data cleaning, transformation, and preparation.\nlubridate – Date and time processing.\nknitr – Dynamic report generation.\n\n\n\n\ntidytext – Tokenisation, TF-IDF, and text mining.\nstringr – Text cleaning and pattern matching.\nwidyr – Word co-occurrence and relationship analysis.\n\n\n\n\ntidygraph – Graph data manipulation and network construction.\nigraph – Network metrics and centrality analysis.\nggraph – Network visualisation.\nvisNetwork – Interactive network exploration.\n\n\n\n\nggplot2 – Statistical graphics and exploratory visualisation.\nggalluvial – Flow and pathway visualisation.\nggiraph – Interactive visualisations with tooltips.\nplotly – Interactive dashboards and charts.\nggrepel – Improved label placement.\npatchwork – Combining multiple plots into a single layout.\n\n\n\n\ngt – Publication-quality summary tables.\nDT – Interactive data tables.\nkableExtra – Enhanced table formatting.\n\n\n\n&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. ======= - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 36f8aabb672446799332cd3e4c340392465f8e06"
   },
   {
     "objectID": "Proposal.html#project-schedule",
@@ -56,41 +56,18 @@
     "text": "Project Schedule"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Visual Analytics Group Project",
-    "section": "",
-    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
-  },
-  {
-    "objectID": "index.html#tenantthread-embargo-breach-investigation",
-    "href": "index.html#tenantthread-embargo-breach-investigation",
-    "title": "Visual Analytics Group Project",
-    "section": "",
-    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
-  },
-  {
-    "objectID": "index.html#project-team",
-    "href": "index.html#project-team",
-    "title": "Visual Analytics Group Project",
-    "section": "Project Team",
-    "text": "Project Team\nThis group project is completed by three MITB students:\n\nAlvin\nJavier\nMichelle\n\nGuided by Professor Kam Tin Seong"
-<<<<<<< HEAD
-=======
-  },
-  {
     "objectID": "Meeting_Minutes_Day1.html#in-attendance",
     "href": "Meeting_Minutes_Day1.html#in-attendance",
     "title": "Meeting Minutes",
-    "section": "In Attendance:",
-    "text": "In Attendance:\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+    "section": "In Attendance",
+    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
   },
   {
     "objectID": "Meeting_Minutes_Day1.html#agenda",
     "href": "Meeting_Minutes_Day1.html#agenda",
     "title": "Meeting Minutes",
-    "section": "Agenda:",
-    "text": "Agenda:\n\nDiscussion on proposal\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
+    "section": "Agenda",
+    "text": "Agenda\n\nDiscussion on proposal\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
   },
   {
     "objectID": "Meeting_Minutes_Day1.html#discussion-on-proposal",
@@ -124,8 +101,70 @@
     "objectID": "Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
     "href": "Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
     "title": "Meeting Minutes",
-    "section": "Meeting Minutes Sign off:",
-    "text": "Meeting Minutes Sign off:\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
->>>>>>> 36f8aabb672446799332cd3e4c340392465f8e06
+    "section": "Meeting Minutes Sign off",
+    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Visual Analytics Group Project",
+    "section": "",
+    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
+  },
+  {
+    "objectID": "index.html#tenantthread-embargo-breach-investigation",
+    "href": "index.html#tenantthread-embargo-breach-investigation",
+    "title": "Visual Analytics Group Project",
+    "section": "",
+    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
+  },
+  {
+    "objectID": "index.html#project-team",
+    "href": "index.html#project-team",
+    "title": "Visual Analytics Group Project",
+    "section": "Project Team",
+    "text": "Project Team\nThis group project is completed by three MITB students:\n\nAlvin\nJavier\nMichelle\n\nGuided by Professor Kam Tin Seong"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day2.html#in-attendance",
+    "href": "Meeting_Minutes_Day2.html#in-attendance",
+    "title": "Meeting Minutes",
+    "section": "In Attendance",
+    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day2.html#agenda",
+    "href": "Meeting_Minutes_Day2.html#agenda",
+    "title": "Meeting Minutes",
+    "section": "Agenda",
+    "text": "Agenda\n\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day2.html#discussion-on-proposal",
+    "href": "Meeting_Minutes_Day2.html#discussion-on-proposal",
+    "title": "Meeting Minutes",
+    "section": "Discussion on proposal",
+    "text": "Discussion on proposal\n\nMichelle started the meeting by discussing the skeleton and next steps for the project.\nJavier suggested that the team could refer to the seniors’ previous work and the DAL poster as references for the poster wireframe.\nAll three team members agreed and noted useful pointers for the poster structure and design.\nNext, the team started reviewing each other’s work and sharing findings on which charts could be used for the poster.\nAlvin started the discussion by going through the VAST Challenge Mini-Challenge 1 questions. He suggested breaking down the questions into smaller components to make it easier for the team to structure the project poster.\nMichelle and Javier clarified several points from Alvin’s work, especially regarding the network graph. Alvin addressed their questions and explained his approach.\nMichelle then shared her findings with the team. Alvin and Javier listened and provided their inputs where necessary.\nJavier also shared his findings and discussed the possible charts that could support the poster.\nMichelle suggested placing the selected charts into the draft document so that the team could begin wireframing the poster.\nThe team discussed the possibility of including one or two additional network graphs to strengthen the findings for Question 3.\nAlvin volunteered to explore the additional network graphs and investigate how the findings could be made more conclusive and comprehensive.\nThe team then finalised the individual tasks for each member. Michelle will focus on the poster by filling up the objective, motivation, and methodology sections. Javier will start working on the Shiny app, while Alvin will enhance the network graphs.\nThe team also agreed on the roles for the project. Michelle will take on the role of Project Manager, Javier will be the Business Analyst, and Alvin will be the Data Analyst.\nThe team reached a consensus that the main priority is to wireframe the poster and Shiny app first. After that, the team will revisit the individual components and finalise the visualisations to be used.\nThe team aimed to complete the agreed tasks before the next meeting on 25 June."
+  },
+  {
+    "objectID": "Meeting_Minutes_Day2.html#questions-to-ask-prof-kam-during-consultation",
+    "href": "Meeting_Minutes_Day2.html#questions-to-ask-prof-kam-during-consultation",
+    "title": "Meeting Minutes",
+    "section": "Questions to ask Prof Kam during consultation",
+    "text": "Questions to ask Prof Kam during consultation\nNo question asked at this point"
+  },
+  {
+    "objectID": "Meeting_Minutes_Day2.html#action-items",
+    "href": "Meeting_Minutes_Day2.html#action-items",
+    "title": "Meeting Minutes",
+    "section": "Action items",
+    "text": "Action items\n1.In preparation for the next meeting:: - Alvin to work on enhancing the network graphs. - Javier to start working on the Shiny app. - Michelle to work on the poster structure, including the objective, motivation, and methodology sections. - All three team members to share and justify their selected charts and findings in the draft document."
+  },
+  {
+    "objectID": "Meeting_Minutes_Day2.html#meeting-minutes-sign-off",
+    "href": "Meeting_Minutes_Day2.html#meeting-minutes-sign-off",
+    "title": "Meeting Minutes",
+    "section": "Meeting Minutes Sign off",
+    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
   }
 ]

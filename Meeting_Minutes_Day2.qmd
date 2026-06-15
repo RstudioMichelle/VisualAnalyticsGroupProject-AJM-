@@ -51,7 +51,7 @@ No question asked at this point
 
 ## Action items
 
-1.In preparation for the next meeting::
+1.  In preparation for the next meeting::
     - Alvin to work on enhancing the network graphs.
     - Javier to start working on the Shiny app.
     - Michelle to work on the poster structure, including the objective, motivation, and          methodology sections.
