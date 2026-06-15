@@ -7,7 +7,7 @@ execute:
   eval: true
   echo: true
   warning: false
-  freeze: false
+  freeze: true
 ---
 
 ## Time: 8:30pm
