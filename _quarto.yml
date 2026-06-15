@@ -31,9 +31,9 @@ website:
       - icon: journal-text
         text: "Meeting Minutes"
         menu:
-          - text: "Meeting Minutes 1"
+          - text: "10 June"
             href: Meeting_Minutes_Day1.qmd
-          - text: "Meeting Minutes 2"
+          - text: "15 June"
             href: Meeting_Minutes_Day2.qmd
 
     right:

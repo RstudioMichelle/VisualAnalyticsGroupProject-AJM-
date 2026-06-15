@@ -230,7 +230,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">June 11, 2026</p>
+      <p class="date-modified">June 13, 2026</p>
     </div>
   </div>
     
@@ -270,6 +270,20 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="methodology" class="level2">
 <h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Methodology Image</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Methodology Description</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><img src="images/vast_mc1_methodology_ppt_static.png" class="img-fluid"></p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p><strong>1. Data Preparation</strong> - Extract and flatten communication records from the VAST Challenge 2026 Mini-Challenge 1 JSON dataset. - Clean and standardize participant identifiers, communication channels, timestamps, and message attributes. - Organise the data into structured communication, network, and text-analysis datasets for subsequent analysis.</p>
+<p><strong>2. Transforming Data / Feature Engineering</strong> - Construct communication networks consisting of participants, communication pathways, and interaction frequencies. - Derive temporal features such as communication dates, hours, weekdays, and critical breach periods. - Generate behavioural indicators, risk signals, keyword flags, and text-based features to support the investigation.</p>
+<p><strong>3. Statistical Analysis</strong> - Analyse communication volume, participant activity, channel usage, and message distributions across different time periods. - Apply network measures such as degree, betweenness, and PageRank centrality to identify influential participants and information pathways. - Compare communication behaviours before and during the breach period to detect abnormal patterns, behavioural deviations, and potential warning signals.</p>
+<p><strong>4. Data Exploration &amp; Visualisation</strong> - Reconstruct the sequence of events leading to the embargo breach using temporal, network, and text-based visualisations. - Examine communication relationships, participant roles, and information flow through interactive network analysis. - Identify emerging topics, behavioural changes, and potential evidence associated with the inappropriate release of embargo-sensitive information.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="prototype-sketch" class="level2">
 <h2 class="anchored" data-anchor-id="prototype-sketch">Prototype Sketch</h2>
@@ -279,9 +293,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="r-packages">R Packages</h2>
 <p>The analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Utility</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Text Analytics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Network Analytics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Visualisation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false" href="">Reporting</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-6" role="tab" aria-controls="tabset-1-6" aria-selected="false" href="">Shiny App</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Utility</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Text Analytics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Network Analytics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Visualisation</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-5" role="tab" aria-controls="tabset-2-5" aria-selected="false" href="">Reporting</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-6" role="tab" aria-controls="tabset-2-6" aria-selected="false" href="">Shiny App</a></li></ul>
 <div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <ul>
 <li><strong>jsonlite</strong> – Parse and extract communication data from JSON files.</li>
 <li><strong>tidyverse</strong> – Data cleaning, transformation, and preparation.</li>
@@ -289,14 +303,14 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>knitr</strong> – Dynamic report generation.</li>
 </ul>
 </div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <ul>
 <li><strong>tidytext</strong> – Tokenisation, TF-IDF, and text mining.</li>
 <li><strong>stringr</strong> – Text cleaning and pattern matching.</li>
 <li><strong>widyr</strong> – Word co-occurrence and relationship analysis.</li>
 </ul>
 </div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <ul>
 <li><strong>tidygraph</strong> – Graph data manipulation and network construction.</li>
 <li><strong>igraph</strong> – Network metrics and centrality analysis.</li>
@@ -304,7 +318,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>visNetwork</strong> – Interactive network exploration.</li>
 </ul>
 </div>
-<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
 <ul>
 <li><strong>ggplot2</strong> – Statistical graphics and exploratory visualisation.</li>
 <li><strong>ggalluvial</strong> – Flow and pathway visualisation.</li>
@@ -314,14 +328,14 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>patchwork</strong> – Combining multiple plots into a single layout.</li>
 </ul>
 </div>
-<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<div id="tabset-2-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-5-tab">
 <ul>
 <li><strong>gt</strong> – Publication-quality summary tables.</li>
 <li><strong>DT</strong> – Interactive data tables.</li>
 <li><strong>kableExtra</strong> – Enhanced table formatting.</li>
 </ul>
 </div>
-<div id="tabset-1-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-6-tab">
+<div id="tabset-2-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-6-tab">
 <p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD - <strong>shiny</strong> – Build the interactive visual analytics application. - <strong>shinydashboard</strong> – Create dashboard layout and navigation. - <strong>shinyWidgets</strong> – Add enhanced input controls and filters. ======= - <strong>shiny</strong> – Build the interactive visual analytics application. - <strong>shinydashboard</strong> – Create dashboard layout and navigation. - <strong>shinyWidgets</strong> – Add enhanced input controls and filters. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 36f8aabb672446799332cd3e4c340392465f8e06</p>
 </div>
 </div>
