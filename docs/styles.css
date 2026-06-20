@@ -79,3 +79,13 @@
     width: min(100%, 330px);
   }
 }
+
+.mentor-section {
+  border-top: none !important;
+  padding-top: 0 !important;
+}
+
+.mentor-section h2 {
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+}

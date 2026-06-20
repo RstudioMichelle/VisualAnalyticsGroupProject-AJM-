@@ -211,44 +211,176 @@ ul.task-list li input[type="checkbox"] {
 <p>Through this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.</p>
 <p>For the detailed project objectives and proposed approach, please refer to the <strong>Proposal</strong> section.</p>
 </section>
-<section id="project-team" class="level2">
-<h2 class="anchored" data-anchor-id="project-team">Project Team</h2>
-<div class="team-grid">
-<div class="team-member">
-<p><img src="images/Alvin.jpg" class="team-photo" alt="Alvin"></p>
-<div class="team-name">
-Alvin
+<section id="about-us" class="level2">
+<h2 class="anchored" data-anchor-id="about-us">About Us</h2>
+<style>
+.about-team {
+  max-width: 900px;
+  margin: 30px auto 65px auto;
+}
+
+.about-team-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  text-align: center;
+  align-items: start;
+}
+
+.about-team-photo {
+  width: 210px;
+  height: 210px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  border: 8px solid #c9003b;
+  display: block;
+  margin: 0 auto;
+}
+
+.about-team-names {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  background-color: #f7f7f7;
+  margin-top: 18px;
+  padding: 8px;
+  text-align: center;
+}
+
+.about-team-name {
+  color: #24364b;
+  font-family: Georgia, serif;
+  font-size: 1.25rem;
+}
+
+.about-team-emails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.about-team-icon {
+  color: #24364b;
+  font-size: 1.35rem;
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+
+.about-team-email {
+  color: #24364b;
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.about-team-email a {
+  color: #24364b;
+  text-decoration: underline;
+}
+
+/* Mentor */
+.mentor-section {
+  max-width: 900px;
+  margin: 55px auto 40px auto;
+  padding-top: 0;
+  text-align: center;
+}
+
+.mentor-section h2 {
+  margin-bottom: 20px;
+}
+
+.mentor-photo {
+  width: 360px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 18px auto;
+}
+
+.mentor-role {
+  color: #667085;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.mentor-button {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 10px 18px;
+  background-color: #3155E7;
+  color: white !important;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Phone layout */
+@media (max-width: 700px) {
+  .about-team-row,
+  .about-team-names,
+  .about-team-emails {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .about-team-names {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .about-team-name {
+    background-color: #f7f7f7;
+    padding: 8px;
+  }
+}
+</style>
+<div class="about-team">
+<div class="about-team-row">
+<p><img src="images/Alvin.jpg" class="about-team-photo" alt="Alvin Ong"></p>
+<p><img src="images/Javier.jpg" class="about-team-photo" alt="Javier Phang"></p>
+<p><img src="images/Michelle.jpg" class="about-team-photo" alt="Michelle Chen"></p>
 </div>
-<div class="team-email-icon">
-✉
+<div class="about-team-names">
+<div class="about-team-name">
+Alvin Ong
 </div>
-<p><a href="mailto:ALVIN_EMAIL_HERE" class="team-email">ALVIN_EMAIL_HERE</a></p>
-</div>
-<div class="team-member">
-<p><img src="images/Javier.jpg" class="team-photo" alt="Javier Phang"></p>
-<div class="team-name">
+<div class="about-team-name">
 Javier Phang
 </div>
-<div class="team-email-icon">
-✉
-</div>
-<p><a href="mailto:JAVIER_EMAIL_HERE" class="team-email">JAVIER_EMAIL_HERE</a></p>
-</div>
-<div class="team-member">
-<p><img src="images/Michelle.jpg" class="team-photo" alt="Michelle"></p>
-<div class="team-name">
+<div class="about-team-name">
 Michelle
 </div>
-<div class="team-email-icon">
+</div>
+<div class="about-team-emails">
+<div class="about-team-email">
+<div class="about-team-icon">
 ✉
 </div>
-<p><a href="mailto:MICHELLE_EMAIL_HERE" class="team-email">MICHELLE_EMAIL_HERE</a></p>
+<p><a href="mailto:alvin.ong.2024@mitb.smu.edu.sg">alvin.ong.2024@mitb.smu.edu.sg</a></p>
+</div>
+<div class="about-team-email">
+<div class="about-team-icon">
+✉
+</div>
+<p><a href="mailto:javierphang.2024@mitb.smu.edu.sg">javierphang.2024@mitb.smu.edu.sg</a></p>
+</div>
+<div class="about-team-email">
+<div class="about-team-icon">
+✉
+</div>
+<p><a href="mailto:michelle.c.2024@mitb.smu.edu.sg">michelle.c.2024@mitb.smu.edu.sg</a></p>
+</div>
 </div>
 </div>
 </section>
 <section id="our-mentor" class="level2 mentor-section">
 <h2 class="anchored" data-anchor-id="our-mentor">Our Mentor</h2>
-<p><img src="images/Prof Kam.jpg" class="mentor-photo img-fluid"></p>
+<p><a href="https://faculty.smu.edu.sg/profile/kam-tin-seong-486"><img src="images/Prof Kam.jpg" class="mentor-photo img-fluid"></a></p>
 <section id="professor-kam-tin-seong" class="level3">
 <h3 class="anchored" data-anchor-id="professor-kam-tin-seong"><a href="https://faculty.smu.edu.sg/profile/kam-tin-seong-486">Professor Kam Tin Seong</a></h3>
 <div class="mentor-role">

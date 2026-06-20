@@ -14,69 +14,194 @@ Through this project, we develop a visual analytics application to explore the c
 
 For the detailed project objectives and proposed approach, please refer to the **Proposal** section.
 
-## Project Team
+## About Us
 
-<div class="team-grid">
+<style>
+.about-team {
+  max-width: 900px;
+  margin: 30px auto 65px auto;
+}
 
-<div class="team-member">
+.about-team-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  text-align: center;
+  align-items: start;
+}
 
-<img src="images/Alvin.jpg" class="team-photo" alt="Alvin Ong">
+.about-team-photo {
+  width: 210px;
+  height: 210px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  border: 8px solid #c9003b;
+  display: block;
+  margin: 0 auto;
+}
 
-<div class="team-name">Alvin Ong</div>
+.about-team-names {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  background-color: #f7f7f7;
+  margin-top: 18px;
+  padding: 8px;
+  text-align: center;
+}
 
-<div class="team-email-icon">✉</div>
+.about-team-name {
+  color: #24364b;
+  font-family: Georgia, serif;
+  font-size: 1.25rem;
+}
 
-<a href="mailto:alvin.ong.2024@mitb.smu.edu.sg" class="team-email">
-alvin.ong.2024@mitb.smu.edu.sg
-</a>
+.about-team-emails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.about-team-icon {
+  color: #24364b;
+  font-size: 1.35rem;
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+
+.about-team-email {
+  color: #24364b;
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.about-team-email a {
+  color: #24364b;
+  text-decoration: underline;
+}
+
+/* Mentor */
+.mentor-section {
+  max-width: 900px;
+  margin: 55px auto 40px auto;
+  padding-top: 0;
+  text-align: center;
+}
+
+.mentor-section h2 {
+  margin-bottom: 20px;
+}
+
+.mentor-photo {
+  width: 360px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 18px auto;
+}
+
+.mentor-role {
+  color: #667085;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.mentor-button {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 10px 18px;
+  background-color: #3155E7;
+  color: white !important;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Phone layout */
+@media (max-width: 700px) {
+  .about-team-row,
+  .about-team-names,
+  .about-team-emails {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .about-team-names {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .about-team-name {
+    background-color: #f7f7f7;
+    padding: 8px;
+  }
+}
+</style>
+
+<div class="about-team">
+
+<div class="about-team-row">
+
+<img src="images/Alvin.jpg" class="about-team-photo" alt="Alvin Ong">
+
+<img src="images/Javier.jpg" class="about-team-photo" alt="Javier Phang">
+
+<img src="images/Michelle.jpg" class="about-team-photo" alt="Michelle Chen">
 
 </div>
 
-<div class="team-member">
+<div class="about-team-names">
 
-<img src="images/Javier.jpg" class="team-photo" alt="Javier Phang">
+<div class="about-team-name">Alvin Ong</div>
 
-<div class="team-name">Javier Phang</div>
+<div class="about-team-name">Javier Phang</div>
 
-<div class="team-email-icon">✉</div>
-
-<a href="mailto:javierphang.2024@mitb.smu.edu.sg" class="team-email">
-javierphang.2024@mitb.smu.edu.sg
-</a>
+<div class="about-team-name">Michelle Chen</div>
 
 </div>
 
-<div class="team-member">
+<div class="about-team-emails">
 
-<img src="images/Michelle.jpg" class="team-photo" alt="Michelle">
+<div class="about-team-email">
+<div class="about-team-icon">✉</div>
+<a href="mailto:alvin.ong.2024@mitb.smu.edu.sg">alvin.ong.2024@mitb.smu.edu.sg</a>
+</div>
 
-<div class="team-name">Michelle</div>
+<div class="about-team-email">
+<div class="about-team-icon">✉</div>
+<a href="mailto:javierphang.2024@mitb.smu.edu.sg">javierphang.2024@mitb.smu.edu.sg</a>
+</div>
 
-<div class="team-email-icon">✉</div>
-
-<a href="mailto:michelle.c.2024@mitb.smu.edu.sg" class="team-email">
-michelle.c.2024@mitb.smu.edu.sg
-</a>
-
+<div class="about-team-email">
+<div class="about-team-icon">✉</div>
+<a href="mailto:michelle.c.2024@mitb.smu.edu.sg">michelle.c.2024@mitb.smu.edu.sg</a>
 </div>
 
 </div>
-::::: {.mentor-section}
+
+</div>
+
+<div class="mentor-section">
 
 ## Our Mentor
 
-![](images/Prof%20Kam.jpg){.mentor-photo}
+[![](images/Prof%20Kam.jpg){.mentor-photo}](https://faculty.smu.edu.sg/profile/kam-tin-seong-486)
 
 ### [Professor Kam Tin Seong](https://faculty.smu.edu.sg/profile/kam-tin-seong-486)
 
-::: {.mentor-role}
+<div class="mentor-role">
 Associate Professor of Information Systems (Practice)
-:::
+</div>
 
-::: {.mentor-role}
+<div class="mentor-role">
 School of Computing and Information Systems, Singapore Management University
-:::
+</div>
 
 <a class="mentor-button" href="https://faculty.smu.edu.sg/profile/kam-tin-seong-486" target="_blank">View Faculty Profile</a>
 
-:::::
+</div>
