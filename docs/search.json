@@ -32,7 +32,7 @@
     "href": "Proposal.html#methodology",
     "title": "Project Proposal",
     "section": "Methodology",
-    "text": "Methodology"
+    "text": "Methodology\n\nMethodology ImageMethodology Description\n\n\n\n\n\n1. Data Preparation - Extract and flatten communication records from the VAST Challenge 2026 Mini-Challenge 1 JSON dataset. - Clean and standardize participant identifiers, communication channels, timestamps, and message attributes. - Organise the data into structured communication, network, and text-analysis datasets for subsequent analysis.\n2. Transforming Data / Feature Engineering - Construct communication networks consisting of participants, communication pathways, and interaction frequencies. - Derive temporal features such as communication dates, hours, weekdays, and critical breach periods. - Generate behavioural indicators, risk signals, keyword flags, and text-based features to support the investigation.\n3. Statistical Analysis - Analyse communication volume, participant activity, channel usage, and message distributions across different time periods. - Apply network measures such as degree, betweenness, and PageRank centrality to identify influential participants and information pathways. - Compare communication behaviours before and during the breach period to detect abnormal patterns, behavioural deviations, and potential warning signals.\n4. Data Exploration & Visualisation - Reconstruct the sequence of events leading to the embargo breach using temporal, network, and text-based visualisations. - Examine communication relationships, participant roles, and information flow through interactive network analysis. - Identify emerging topics, behavioural changes, and potential evidence associated with the inappropriate release of embargo-sensitive information."
   },
   {
     "objectID": "Proposal.html#prototype-sketch",
@@ -123,7 +123,14 @@
     "href": "index.html#project-team",
     "title": "Visual Analytics Group Project",
     "section": "Project Team",
-    "text": "Project Team\nThis group project is completed by three MITB students:\n\nAlvin\nJavier\nMichelle\n\nGuided by Professor Kam Tin Seong"
+    "text": "Project Team\nThis group project is completed by three MITB students:\n\n\n\nAlvin\n\nMITB Student · Data Science & Analytics\n\nInterested in data science and analytics, with a focus on applying data-driven methods to support problem-solving, insight generation, and decision-making.\n\n\n\nJavier Phang\n\nMITB Student · Data Science & Analytics\n\nInterested in data science and analytics, with experience in data analysis, dashboard development, and translating findings into clear visual insights.\n\n\n\nMichelle\n\nMITB Student · Data Science & Analytics\n\nInterested in data science and analytics, with a focus on analytical thinking, data interpretation, and developing meaningful visualisations for insights."
+  },
+  {
+    "objectID": "index.html#our-mentor",
+    "href": "index.html#our-mentor",
+    "title": "Visual Analytics Group Project",
+    "section": "Our Mentor",
+    "text": "Our Mentor\n\n\nProfessor Kam Tin Seong\n\nAssociate Professor of Information Systems (Practice)\n\n\nSchool of Computing and Information Systems, Singapore Management University\n\n View Faculty Profile"
   },
   {
     "objectID": "Meeting_Minutes_Day2.html#in-attendance",
