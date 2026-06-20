@@ -17,8 +17,56 @@ For the detailed project objectives and proposed approach, please refer to the *
 
 This group project is completed by three MITB students:
 
-- Alvin
-- Javier
-- Michelle
+-   :::: team-card
+    ![](images/Alvin.jpg)
 
-Guided by **Professor Kam Tin Seong**
+    ### Alvin
+
+    ::: team-role
+    MITB Student · Data Science & Analytics
+    :::
+
+    Interested in data science and analytics, with a focus on applying data-driven methods to support problem-solving, insight generation, and decision-making.
+    ::::
+
+    :::: team-card
+    ![](images/Javier.jpg)
+
+    ### Javier Phang
+
+    ::: team-role
+    MITB Student · Data Science & Analytics
+    :::
+
+    Interested in data science and analytics, with experience in data analysis, dashboard development, and translating findings into clear visual insights.
+    ::::
+
+    :::: team-card
+    ![](images/Michelle.jpg)
+
+    ### Michelle
+
+    ::: team-role
+    MITB Student · Data Science & Analytics
+    :::
+
+    Interested in data science and analytics, with a focus on analytical thinking, data interpretation, and developing meaningful visualisations for insights.
+    ::::
+
+::::: mentor-section
+## Our Mentor
+
+![](images/Prof Kam.jpg)
+
+### [Professor Kam Tin Seong](https://faculty.smu.edu.sg/profile/kam-tin-seong-486)
+
+::: mentor-role
+Associate Professor of Information Systems (Practice)
+:::
+
+::: mentor-role
+School of Computing and Information Systems, Singapore Management University
+:::
+
+<a class="mentor-button" href="https://faculty.smu.edu.sg/profile/kam-tin-seong-486" target="_blank"> View Faculty Profile </a>
+:::::
