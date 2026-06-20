@@ -20,13 +20,15 @@ For the detailed project objectives and proposed approach, please refer to the *
 
 <div class="team-member">
 
-<img src="images/Alvin.jpg" class="team-photo" alt="Alvin">
+<img src="images/Alvin.jpg" class="team-photo" alt="Alvin Ong">
 
-<div class="team-name">Alvin</div>
+<div class="team-name">Alvin Ong</div>
 
 <div class="team-email-icon">✉</div>
 
-<a href="mailto:ALVIN_EMAIL_HERE" class="team-email">ALVIN_EMAIL_HERE</a>
+<a href="mailto:alvin.ong.2024@mitb.smu.edu.sg" class="team-email">
+alvin.ong.2024@mitb.smu.edu.sg
+</a>
 
 </div>
 
@@ -38,7 +40,9 @@ For the detailed project objectives and proposed approach, please refer to the *
 
 <div class="team-email-icon">✉</div>
 
-<a href="mailto:JAVIER_EMAIL_HERE" class="team-email">JAVIER_EMAIL_HERE</a>
+<a href="mailto:javierphang.2024@mitb.smu.edu.sg" class="team-email">
+javierphang.2024@mitb.smu.edu.sg
+</a>
 
 </div>
 
@@ -50,7 +54,9 @@ For the detailed project objectives and proposed approach, please refer to the *
 
 <div class="team-email-icon">✉</div>
 
-<a href="mailto:MICHELLE_EMAIL_HERE" class="team-email">MICHELLE_EMAIL_HERE</a>
+<a href="mailto:michelle.c.2024@mitb.smu.edu.sg" class="team-email">
+michelle.c.2024@mitb.smu.edu.sg
+</a>
 
 </div>
 
