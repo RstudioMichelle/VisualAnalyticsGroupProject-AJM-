@@ -1,6 +1,7 @@
 ---
 title: "Visual Analytics Group Project"
-toc: true
+toc: false
+page-layout: full
 ---
 
 ## TenantThread: Embargo Breach Investigation
@@ -15,58 +16,61 @@ For the detailed project objectives and proposed approach, please refer to the *
 
 ## Project Team
 
-This group project is completed by three MITB students:
+<div class="team-grid">
 
--   :::: team-card
-    ![](images/Alvin.jpg)
+<div class="team-member">
 
-    ### Alvin
+<img src="images/Alvin.jpg" class="team-photo" alt="Alvin">
 
-    ::: team-role
-    MITB Student · Data Science & Analytics
-    :::
+<div class="team-name">Alvin</div>
 
-    Interested in data science and analytics, with a focus on applying data-driven methods to support problem-solving, insight generation, and decision-making.
-    ::::
+<div class="team-email-icon">✉</div>
 
-    :::: team-card
-    ![](images/Javier.jpg)
+<a href="mailto:ALVIN_EMAIL_HERE" class="team-email">ALVIN_EMAIL_HERE</a>
 
-    ### Javier Phang
+</div>
 
-    ::: team-role
-    MITB Student · Data Science & Analytics
-    :::
+<div class="team-member">
 
-    Interested in data science and analytics, with experience in data analysis, dashboard development, and translating findings into clear visual insights.
-    ::::
+<img src="images/Javier.jpg" class="team-photo" alt="Javier Phang">
 
-    :::: team-card
-    ![](images/Michelle.jpg)
+<div class="team-name">Javier Phang</div>
 
-    ### Michelle
+<div class="team-email-icon">✉</div>
 
-    ::: team-role
-    MITB Student · Data Science & Analytics
-    :::
+<a href="mailto:JAVIER_EMAIL_HERE" class="team-email">JAVIER_EMAIL_HERE</a>
 
-    Interested in data science and analytics, with a focus on analytical thinking, data interpretation, and developing meaningful visualisations for insights.
-    ::::
+</div>
 
-::::: mentor-section
+<div class="team-member">
+
+<img src="images/Michelle.jpg" class="team-photo" alt="Michelle">
+
+<div class="team-name">Michelle</div>
+
+<div class="team-email-icon">✉</div>
+
+<a href="mailto:MICHELLE_EMAIL_HERE" class="team-email">MICHELLE_EMAIL_HERE</a>
+
+</div>
+
+</div>
+::::: {.mentor-section}
+
 ## Our Mentor
 
-![](images/Prof Kam.jpg)
+![](images/Prof%20Kam.jpg){.mentor-photo}
 
 ### [Professor Kam Tin Seong](https://faculty.smu.edu.sg/profile/kam-tin-seong-486)
 
-::: mentor-role
+::: {.mentor-role}
 Associate Professor of Information Systems (Practice)
 :::
 
-::: mentor-role
+::: {.mentor-role}
 School of Computing and Information Systems, Singapore Management University
 :::
 
-<a class="mentor-button" href="https://faculty.smu.edu.sg/profile/kam-tin-seong-486" target="_blank"> View Faculty Profile </a>
+<a class="mentor-button" href="https://faculty.smu.edu.sg/profile/kam-tin-seong-486" target="_blank">View Faculty Profile</a>
+
 :::::
