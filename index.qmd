@@ -1,6 +1,6 @@
 ---
 title: "Visual Analytics Group Project"
-toc: false
+toc: true
 ---
 
 ## TenantThread: Embargo Breach Investigation
