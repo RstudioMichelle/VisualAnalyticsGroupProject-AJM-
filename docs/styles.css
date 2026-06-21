@@ -1,10 +1,7 @@
-/* Keep introductory text readable */
+/* Let Quarto control the content width when a right-side table of contents is used.
+   A fixed width on main.content causes the article to extend underneath the TOC. */
 #quarto-content main.content {
-  max-width: 1180px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 35px;
-  padding-right: 35px;
+  min-width: 0;
 }
 
 /* Team section */

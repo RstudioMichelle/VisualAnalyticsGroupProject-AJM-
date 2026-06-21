@@ -144,8 +144,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Data Prepartion</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../Methodology/Data Preparation_Test.html">
- <span class="dropdown-text">Data Prepartion_Test</span></a>
+    <a class="dropdown-item" href="../Methodology/Statistical Analysis.html">
+ <span class="dropdown-text">Statistical Analysis</span></a>
   </li>  
     </ul>
   </li>
@@ -225,38 +225,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">1</span> Setup</a>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a>
   <ul class="collapse">
-  <li><a href="#loading-packages" id="toc-loading-packages" class="nav-link" data-scroll-target="#loading-packages"><span class="header-section-number">1.1</span> Loading packages</a></li>
-  <li><a href="#loading-the-raw-mc1-data" id="toc-loading-the-raw-mc1-data" class="nav-link" data-scroll-target="#loading-the-raw-mc1-data"><span class="header-section-number">1.2</span> Loading the raw MC1 data</a></li>
+  <li><a href="#loading-packages" id="toc-loading-packages" class="nav-link" data-scroll-target="#loading-packages">Loading packages</a></li>
+  <li><a href="#loading-the-raw-mc1-data" id="toc-loading-the-raw-mc1-data" class="nav-link" data-scroll-target="#loading-the-raw-mc1-data">Loading the raw MC1 data</a></li>
   </ul></li>
-  <li><a href="#extracting-the-nested-tables" id="toc-extracting-the-nested-tables" class="nav-link" data-scroll-target="#extracting-the-nested-tables"><span class="header-section-number">2</span> Extracting the nested tables</a>
+  <li><a href="#extracting-the-nested-tables" id="toc-extracting-the-nested-tables" class="nav-link" data-scroll-target="#extracting-the-nested-tables">Extracting the nested tables</a>
   <ul class="collapse">
-  <li><a href="#participants" id="toc-participants" class="nav-link" data-scroll-target="#participants"><span class="header-section-number">2.1</span> Participants</a></li>
-  <li><a href="#communications" id="toc-communications" class="nav-link" data-scroll-target="#communications"><span class="header-section-number">2.2</span> Communications</a></li>
-  <li><a href="#environmental-context" id="toc-environmental-context" class="nav-link" data-scroll-target="#environmental-context"><span class="header-section-number">2.3</span> Environmental context</a></li>
-  <li><a href="#environmental-event-tables" id="toc-environmental-event-tables" class="nav-link" data-scroll-target="#environmental-event-tables"><span class="header-section-number">2.4</span> Environmental event tables</a></li>
-  <li><a href="#dataset-inventory" id="toc-dataset-inventory" class="nav-link" data-scroll-target="#dataset-inventory"><span class="header-section-number">2.5</span> Dataset inventory</a></li>
+  <li><a href="#participants" id="toc-participants" class="nav-link" data-scroll-target="#participants">Participants</a></li>
+  <li><a href="#communications" id="toc-communications" class="nav-link" data-scroll-target="#communications">Communications</a></li>
+  <li><a href="#environmental-context" id="toc-environmental-context" class="nav-link" data-scroll-target="#environmental-context">Environmental context</a></li>
+  <li><a href="#environmental-event-tables" id="toc-environmental-event-tables" class="nav-link" data-scroll-target="#environmental-event-tables">Environmental event tables</a></li>
+  <li><a href="#dataset-inventory" id="toc-dataset-inventory" class="nav-link" data-scroll-target="#dataset-inventory">Dataset inventory</a></li>
   </ul></li>
-  <li><a href="#data-quality-checks" id="toc-data-quality-checks" class="nav-link" data-scroll-target="#data-quality-checks"><span class="header-section-number">3</span> Data quality checks</a>
+  <li><a href="#data-quality-checks" id="toc-data-quality-checks" class="nav-link" data-scroll-target="#data-quality-checks">Data quality checks</a>
   <ul class="collapse">
-  <li><a href="#communication-data-completeness" id="toc-communication-data-completeness" class="nav-link" data-scroll-target="#communication-data-completeness"><span class="header-section-number">3.1</span> Communication data completeness</a></li>
-  <li><a href="#message-identifier-and-timestamp-checks" id="toc-message-identifier-and-timestamp-checks" class="nav-link" data-scroll-target="#message-identifier-and-timestamp-checks"><span class="header-section-number">3.2</span> Message identifier and timestamp checks</a></li>
+  <li><a href="#communication-data-completeness" id="toc-communication-data-completeness" class="nav-link" data-scroll-target="#communication-data-completeness">Communication data completeness</a></li>
+  <li><a href="#message-identifier-and-timestamp-checks" id="toc-message-identifier-and-timestamp-checks" class="nav-link" data-scroll-target="#message-identifier-and-timestamp-checks">Message identifier and timestamp checks</a></li>
   </ul></li>
-  <li><a href="#communication-feature-engineering" id="toc-communication-feature-engineering" class="nav-link" data-scroll-target="#communication-feature-engineering"><span class="header-section-number">4</span> Communication feature engineering</a>
+  <li><a href="#communication-feature-engineering" id="toc-communication-feature-engineering" class="nav-link" data-scroll-target="#communication-feature-engineering">Communication feature engineering</a>
   <ul class="collapse">
-  <li><a href="#temporal-features" id="toc-temporal-features" class="nav-link" data-scroll-target="#temporal-features"><span class="header-section-number">4.1</span> Temporal features</a></li>
-  <li><a href="#communication-scope-and-exposure-risk" id="toc-communication-scope-and-exposure-risk" class="nav-link" data-scroll-target="#communication-scope-and-exposure-risk"><span class="header-section-number">4.2</span> Communication scope and exposure risk</a></li>
-  <li><a href="#text-and-behavioural-indicators" id="toc-text-and-behavioural-indicators" class="nav-link" data-scroll-target="#text-and-behavioural-indicators"><span class="header-section-number">4.3</span> Text and behavioural indicators</a></li>
-  <li><a href="#agent-level-preparation-table" id="toc-agent-level-preparation-table" class="nav-link" data-scroll-target="#agent-level-preparation-table"><span class="header-section-number">4.4</span> Agent-level preparation table</a></li>
+  <li><a href="#temporal-features" id="toc-temporal-features" class="nav-link" data-scroll-target="#temporal-features">Temporal features</a></li>
+  <li><a href="#communication-scope-and-exposure-risk" id="toc-communication-scope-and-exposure-risk" class="nav-link" data-scroll-target="#communication-scope-and-exposure-risk">Communication scope and exposure risk</a></li>
+  <li><a href="#text-and-behavioural-indicators" id="toc-text-and-behavioural-indicators" class="nav-link" data-scroll-target="#text-and-behavioural-indicators">Text and behavioural indicators</a></li>
+  <li><a href="#agent-level-preparation-table" id="toc-agent-level-preparation-table" class="nav-link" data-scroll-target="#agent-level-preparation-table">Agent-level preparation table</a></li>
   </ul></li>
-  <li><a href="#preparing-network-ready-communication-tables" id="toc-preparing-network-ready-communication-tables" class="nav-link" data-scroll-target="#preparing-network-ready-communication-tables"><span class="header-section-number">5</span> Preparing network-ready communication tables</a>
+  <li><a href="#preparing-network-ready-communication-tables" id="toc-preparing-network-ready-communication-tables" class="nav-link" data-scroll-target="#preparing-network-ready-communication-tables">Preparing network-ready communication tables</a>
   <ul class="collapse">
-  <li><a href="#directed-communication-edges" id="toc-directed-communication-edges" class="nav-link" data-scroll-target="#directed-communication-edges"><span class="header-section-number">5.1</span> Directed communication edges</a></li>
-  <li><a href="#nodes-and-weighted-edges" id="toc-nodes-and-weighted-edges" class="nav-link" data-scroll-target="#nodes-and-weighted-edges"><span class="header-section-number">5.2</span> Nodes and weighted edges</a></li>
-  <li><a href="#creating-the-communication-network-object" id="toc-creating-the-communication-network-object" class="nav-link" data-scroll-target="#creating-the-communication-network-object"><span class="header-section-number">5.3</span> Creating the communication network object</a></li>
+  <li><a href="#directed-communication-edges" id="toc-directed-communication-edges" class="nav-link" data-scroll-target="#directed-communication-edges">Directed communication edges</a></li>
+  <li><a href="#nodes-and-weighted-edges" id="toc-nodes-and-weighted-edges" class="nav-link" data-scroll-target="#nodes-and-weighted-edges">Nodes and weighted edges</a></li>
+  <li><a href="#creating-the-communication-network-object" id="toc-creating-the-communication-network-object" class="nav-link" data-scroll-target="#creating-the-communication-network-object">Creating the communication network object</a></li>
   </ul></li>
-  <li><a href="#saving-prepared-data" id="toc-saving-prepared-data" class="nav-link" data-scroll-target="#saving-prepared-data"><span class="header-section-number">6</span> Saving prepared data</a></li>
+  <li><a href="#saving-prepared-data" id="toc-saving-prepared-data" class="nav-link" data-scroll-target="#saving-prepared-data">Saving prepared data</a></li>
   </ul>
 </nav>
     </div>
@@ -265,7 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Data Preparation</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<h1 class="title">Data Preparation</h1>
 </div>
 
 
@@ -283,10 +283,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>This page documents how the VAST Challenge 2026 Mini-Challenge 1 data, stored as a nested RDS object, is converted into clean, reusable tables for the investigation and the Shiny application. The RDS object was previously created from the supplied JSON data. This page focuses only on data loading, validation and feature engineering; no charts are produced here.</p>
-<section id="setup" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Setup</h1>
-<section id="loading-packages" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="loading-packages"><span class="header-section-number">1.1</span> Loading packages</h2>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<section id="loading-packages" class="level2">
+<h2 class="anchored" data-anchor-id="loading-packages">Loading packages</h2>
 <p>The following packages are used to load and standardise the nested RDS source, prepare tabular data, derive time-based and case-specific features, and create network-ready data tables.</p>
 <div class="cell">
 <details class="code-fold">
@@ -359,8 +359,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="loading-the-raw-mc1-data" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="loading-the-raw-mc1-data"><span class="header-section-number">1.2</span> Loading the raw MC1 data</h2>
+<section id="loading-the-raw-mc1-data" class="level2">
+<h2 class="anchored" data-anchor-id="loading-the-raw-mc1-data">Loading the raw MC1 data</h2>
 <p>The supplied Mini-Challenge 1 dataset has already been converted from JSON into an RDS object named <code>mc1_data.rds</code>. It contains a sequence of simulation rounds, each with participants, communication records and environmental context. The RDS object is loaded using a relative path so that the project can be rendered on another group member’s computer without changing the code.</p>
 <div class="cell">
 <details class="code-fold">
@@ -425,11 +425,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="extracting-the-nested-tables" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Extracting the nested tables</h1>
+<section id="extracting-the-nested-tables" class="level1">
+<h1>Extracting the nested tables</h1>
 <p>The data is stored in nested structures. It is unpacked into separate tables so that participant activity, communications and contextual events can be analysed without duplicating records.</p>
-<section id="participants" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="participants"><span class="header-section-number">2.1</span> Participants</h2>
+<section id="participants" class="level2">
+<h2 class="anchored" data-anchor-id="participants">Participants</h2>
 <p>Each participant record is retained with the simulation round in which it appeared. Any available agent metadata is unpacked into separate columns.</p>
 <div class="cell">
 <details class="code-fold">
@@ -559,8 +559,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="communications" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="communications"><span class="header-section-number">2.2</span> Communications</h2>
+<section id="communications" class="level2">
+<h2 class="anchored" data-anchor-id="communications">Communications</h2>
 <p>Communication records are unpacked at message level. Internal state and agent-round metadata are retained because they may later support behavioural and governance analysis.</p>
 <div class="cell">
 <details class="code-fold">
@@ -735,8 +735,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="environmental-context" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="environmental-context"><span class="header-section-number">2.3</span> Environmental context</h2>
+<section id="environmental-context" class="level2">
+<h2 class="anchored" data-anchor-id="environmental-context">Environmental context</h2>
 <p>The scalar fields in the environmental context, including the market snapshot, are retained in one table. Nested event arrays are extracted separately because a single simulation round can contain several events.</p>
 <div class="cell">
 <details class="code-fold">
@@ -925,8 +925,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="environmental-event-tables" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="environmental-event-tables"><span class="header-section-number">2.4</span> Environmental event tables</h2>
+<section id="environmental-event-tables" class="level2">
+<h2 class="anchored" data-anchor-id="environmental-event-tables">Environmental event tables</h2>
 <p>The helper function below extracts each nested environment array and keeps the <code>hour</code> field as the key for joining events back to a simulation round.</p>
 <div class="cell">
 <details class="code-fold">
@@ -978,8 +978,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 </section>
-<section id="dataset-inventory" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="dataset-inventory"><span class="header-section-number">2.5</span> Dataset inventory</h2>
+<section id="dataset-inventory" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-inventory">Dataset inventory</h2>
 <p>The following table confirms the main analytical tables created from the raw dataset.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1064,10 +1064,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="data-quality-checks" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Data quality checks</h1>
-<section id="communication-data-completeness" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="communication-data-completeness"><span class="header-section-number">3.1</span> Communication data completeness</h2>
+<section id="data-quality-checks" class="level1">
+<h1>Data quality checks</h1>
+<section id="communication-data-completeness" class="level2">
+<h2 class="anchored" data-anchor-id="communication-data-completeness">Communication data completeness</h2>
 <p>The communication table is the main source for the subsequent temporal, behavioural, text and network analysis. Missing values are summarised before features are engineered.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1153,8 +1153,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="message-identifier-and-timestamp-checks" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="message-identifier-and-timestamp-checks"><span class="header-section-number">3.2</span> Message identifier and timestamp checks</h2>
+<section id="message-identifier-and-timestamp-checks" class="level2">
+<h2 class="anchored" data-anchor-id="message-identifier-and-timestamp-checks">Message identifier and timestamp checks</h2>
 <p>Message IDs are checked for potential duplicates. Timestamps are also checked after conversion so that any non-parsed values can be reviewed before downstream analysis.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1208,11 +1208,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="communication-feature-engineering" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Communication feature engineering</h1>
+<section id="communication-feature-engineering" class="level1">
+<h1>Communication feature engineering</h1>
 <p>The following features prepare the message-level data for later investigation of event sequence, communication exposure, behavioural signals and possible dissemination pathways. These are screening features only; they do not by themselves establish intent or wrongdoing.</p>
-<section id="temporal-features" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="temporal-features"><span class="header-section-number">4.1</span> Temporal features</h2>
+<section id="temporal-features" class="level2">
+<h2 class="anchored" data-anchor-id="temporal-features">Temporal features</h2>
 <p>The inappropriate release occurred on 5 June 2046. The features below distinguish normal activity from the escalation and critical windows immediately before the breach.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1377,8 +1377,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="communication-scope-and-exposure-risk" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="communication-scope-and-exposure-risk"><span class="header-section-number">4.2</span> Communication scope and exposure risk</h2>
+<section id="communication-scope-and-exposure-risk" class="level2">
+<h2 class="anchored" data-anchor-id="communication-scope-and-exposure-risk">Communication scope and exposure risk</h2>
 <p>Channels are grouped into broader communication scopes. This allows later analyses to distinguish public communication from private, internal and side-channel exchanges.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1461,8 +1461,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="text-and-behavioural-indicators" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="text-and-behavioural-indicators"><span class="header-section-number">4.3</span> Text and behavioural indicators</h2>
+<section id="text-and-behavioural-indicators" class="level2">
+<h2 class="anchored" data-anchor-id="text-and-behavioural-indicators">Text and behavioural indicators</h2>
 <p>Message content and any available internal-state text are combined into one analysis field. Keyword indicators then identify potential references to the merger, embargo controls, public disclosure and operational pressure.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1612,8 +1612,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="agent-level-preparation-table" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="agent-level-preparation-table"><span class="header-section-number">4.4</span> Agent-level preparation table</h2>
+<section id="agent-level-preparation-table" class="level2">
+<h2 class="anchored" data-anchor-id="agent-level-preparation-table">Agent-level preparation table</h2>
 <p>The message-level features are summarised by agent to provide a reusable table for later comparison of activity, exposure and risk signals.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1724,10 +1724,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="preparing-network-ready-communication-tables" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Preparing network-ready communication tables</h1>
-<section id="directed-communication-edges" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="directed-communication-edges"><span class="header-section-number">5.1</span> Directed communication edges</h2>
+<section id="preparing-network-ready-communication-tables" class="level1">
+<h1>Preparing network-ready communication tables</h1>
+<section id="directed-communication-edges" class="level2">
+<h2 class="anchored" data-anchor-id="directed-communication-edges">Directed communication edges</h2>
 <p>The recipient field may contain several recipients. It is expanded so that each sender-recipient pair becomes one directed communication edge. Broadcast messages to <code>ALL</code> are excluded because they do not identify an individual receiver.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1869,8 +1869,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="nodes-and-weighted-edges" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="nodes-and-weighted-edges"><span class="header-section-number">5.2</span> Nodes and weighted edges</h2>
+<section id="nodes-and-weighted-edges" class="level2">
+<h2 class="anchored" data-anchor-id="nodes-and-weighted-edges">Nodes and weighted edges</h2>
 <p>Nodes represent all unique senders and recipients. Weighted edges aggregate repeated sender-recipient interactions and retain communication scope and risk classification.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2064,8 +2064,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="creating-the-communication-network-object" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="creating-the-communication-network-object"><span class="header-section-number">5.3</span> Creating the communication network object</h2>
+<section id="creating-the-communication-network-object" class="level2">
+<h2 class="anchored" data-anchor-id="creating-the-communication-network-object">Creating the communication network object</h2>
 <p>The node and edge tables are combined into a directed network object. It is saved for later analysis or visualisation but is not plotted on this data-preparation page.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2079,8 +2079,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="saving-prepared-data" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Saving prepared data</h1>
+<section id="saving-prepared-data" class="level1">
+<h1>Saving prepared data</h1>
 <p>All cleaned tables and engineered features are saved as one RDS object. The other Quarto pages and the Shiny application can load this prepared file directly rather than repeatedly unpacking the nested source RDS object.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2138,8 +2138,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 
-
-<!-- -->
 
 </section>
 
@@ -2214,57 +2212,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
-    }
-    const viewSource = window.document.getElementById('quarto-view-source') ||
-                       window.document.getElementById('quarto-code-tools-source');
-    if (viewSource) {
-      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-      viewSource.addEventListener("click", function(e) {
-        if (sourceUrl) {
-          // rstudio viewer pane
-          if (/\bcapabilities=\b/.test(window.location)) {
-            window.open(sourceUrl);
-          } else {
-            window.location.href = sourceUrl;
-          }
-        } else {
-          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-          modal.show();
-        }
-        return false;
-      });
-    }
-    function toggleCodeHandler(show) {
-      return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
-          if (show) {
-            details.open = true;
-          } else {
-            details.removeAttribute("open");
-          }
-        }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-        const fromCls = show ? "hidden" : "unhidden";
-        const toCls = show ? "unhidden" : "hidden";
-        for (let i=0; i<cellCodeDivs.length; i++) {
-          const codeDiv = cellCodeDivs[i];
-          if (codeDiv.classList.contains(fromCls)) {
-            codeDiv.classList.remove(fromCls);
-            codeDiv.classList.add(toCls);
-          } 
-        }
-        return false;
-      }
-    }
-    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-    if (hideAllCode) {
-      hideAllCode.addEventListener("click", toggleCodeHandler(false));
-    }
-    const showAllCode = window.document.getElementById("quarto-show-all-code");
-    if (showAllCode) {
-      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -2594,613 +2541,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       }
     }
   });
-  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Preparation"</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 3</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="an">number-sections:</span><span class="co"> true</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co">  freeze: false</span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>This page documents how the VAST Challenge 2026 Mini-Challenge 1 data, stored as a nested RDS object, is converted into clean, reusable tables for the investigation and the Shiny application. The RDS object was previously created from the supplied JSON data. This page focuses only on data loading, validation and feature engineering; no charts are produced here.</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># Setup</span></span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Loading packages</span></span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>The following packages are used to load and standardise the nested RDS source, prepare tabular data, derive time-based and case-specific features, and create network-ready data tables.</span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>  jsonlite,</span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>  tidyverse,</span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>  lubridate,</span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>  knitr,</span>
-<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>  tidygraph,</span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>  igraph,</span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>  readr</span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>package_summary <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>Package, <span class="sc">~</span>Purpose,</span>
-<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>  <span class="st">"jsonlite"</span>, <span class="st">"Standardises the nested RDS structure into table-ready data."</span>,</span>
-<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tidyverse"</span>, <span class="st">"Supports data transformation, reshaping and text preparation."</span>,</span>
-<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>  <span class="st">"lubridate"</span>, <span class="st">"Converts timestamps and derives temporal features."</span>,</span>
-<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>  <span class="st">"knitr"</span>, <span class="st">"Formats reproducible data tables in Quarto."</span>,</span>
-<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tidygraph / igraph"</span>, <span class="st">"Creates network-ready node and edge structures."</span>,</span>
-<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>  <span class="st">"readr"</span>, <span class="st">"Loads the source RDS file and saves the prepared data object for later reuse."</span></span>
-<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(package_summary)</span>
-<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## Loading the raw MC1 data</span></span>
-<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>The supplied Mini-Challenge 1 dataset has already been converted from JSON into an RDS object named <span class="in">`mc1_data.rds`</span>. It contains a sequence of simulation rounds, each with participants, communication records and environmental context. The RDS object is loaded using a relative path so that the project can be rendered on another group member's computer without changing the code.</span>
-<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a><span class="co"># This QMD file is stored in the Methodology folder.</span></span>
-<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a><span class="co"># Therefore, the source data is referenced relative to this folder.</span></span>
-<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a>data_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"MC1"</span>, <span class="st">"mc1_data.rds"</span>)</span>
-<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(data_path)) {</span>
-<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(</span>
-<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Dataset not found. Please save mc1_data.rds in: "</span>,</span>
-<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">normalizePath</span>(<span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"MC1"</span>), <span class="at">winslash =</span> <span class="st">"/"</span>, <span class="at">mustWork =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the nested RDS object that was previously created from the MC1 JSON file.</span></span>
-<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a>mc1_rds <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_rds</span>(data_path)</span>
-<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.list</span>(mc1_rds) <span class="sc">||</span> <span class="fu">is.null</span>(mc1_rds<span class="sc">$</span>rounds)) {</span>
-<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(</span>
-<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mc1_data.rds was loaded, but it does not contain the expected $rounds element. "</span>,</span>
-<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Please ensure that this is the MC1 RDS file created from MC1_final_00.json."</span></span>
-<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a><span class="co"># The source RDS stores deeply nested lists. This standardisation step keeps the</span></span>
-<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a><span class="co"># existing unnesting code below compatible with the RDS version of the data.</span></span>
-<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a>mc1_data <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(</span>
-<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a>  jsonlite<span class="sc">::</span><span class="fu">toJSON</span>(mc1_rds, <span class="at">auto_unbox =</span> <span class="cn">TRUE</span>, <span class="at">null =</span> <span class="st">"null"</span>),</span>
-<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a>  <span class="at">simplifyVector =</span> <span class="cn">TRUE</span></span>
-<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a>df_rounds_raw <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">as_tibble</span>(mc1_data<span class="sc">$</span>rounds)</span>
-<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a>round_summary <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a>  <span class="at">Measure =</span> <span class="fu">c</span>(<span class="st">"Number of simulation rounds"</span>, <span class="st">"Fields in each round"</span>),</span>
-<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(df_rounds_raw), <span class="fu">ncol</span>(df_rounds_raw))</span>
-<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(round_summary)</span>
-<span id="cb22-98"><a href="#cb22-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a><span class="fu"># Extracting the nested tables</span></span>
-<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a>The data is stored in nested structures. It is unpacked into separate tables so that participant activity, communications and contextual events can be analysed without duplicating records.</span>
-<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a><span class="fu">## Participants</span></span>
-<span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a>Each participant record is retained with the simulation round in which it appeared. Any available agent metadata is unpacked into separate columns.</span>
-<span id="cb22-107"><a href="#cb22-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-110"><a href="#cb22-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-111"><a href="#cb22-111" aria-hidden="true" tabindex="-1"></a>df_participants <span class="ot">&lt;-</span> df_rounds_raw <span class="sc">%&gt;%</span></span>
-<span id="cb22-112"><a href="#cb22-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hour, participants) <span class="sc">%&gt;%</span></span>
-<span id="cb22-113"><a href="#cb22-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(participants) <span class="sc">%&gt;%</span></span>
-<span id="cb22-114"><a href="#cb22-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unpack</span>(<span class="fu">any_of</span>(<span class="st">"agent_round_metadata"</span>), <span class="at">names_sep =</span> <span class="st">"_"</span>)</span>
-<span id="cb22-115"><a href="#cb22-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-116"><a href="#cb22-116" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(df_participants, <span class="dv">10</span>))</span>
-<span id="cb22-117"><a href="#cb22-117" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-118"><a href="#cb22-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-119"><a href="#cb22-119" aria-hidden="true" tabindex="-1"></a><span class="fu">## Communications</span></span>
-<span id="cb22-120"><a href="#cb22-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-121"><a href="#cb22-121" aria-hidden="true" tabindex="-1"></a>Communication records are unpacked at message level. Internal state and agent-round metadata are retained because they may later support behavioural and governance analysis.</span>
-<span id="cb22-122"><a href="#cb22-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-125"><a href="#cb22-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-126"><a href="#cb22-126" aria-hidden="true" tabindex="-1"></a>df_communications <span class="ot">&lt;-</span> df_rounds_raw <span class="sc">%&gt;%</span></span>
-<span id="cb22-127"><a href="#cb22-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hour, communications) <span class="sc">%&gt;%</span></span>
-<span id="cb22-128"><a href="#cb22-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(communications) <span class="sc">%&gt;%</span></span>
-<span id="cb22-129"><a href="#cb22-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unpack</span>(<span class="fu">any_of</span>(<span class="fu">c</span>(<span class="st">"internal_state"</span>, <span class="st">"agent_round_metadata"</span>)), <span class="at">names_sep =</span> <span class="st">"_"</span>)</span>
-<span id="cb22-130"><a href="#cb22-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-131"><a href="#cb22-131" aria-hidden="true" tabindex="-1"></a>normalise_recipients <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb22-132"><a href="#cb22-132" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(x) <span class="sc">||</span> <span class="fu">length</span>(x) <span class="sc">==</span> <span class="dv">0</span> <span class="sc">||</span> <span class="fu">all</span>(<span class="fu">is.na</span>(x))) {</span>
-<span id="cb22-133"><a href="#cb22-133" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NA_character_</span>)</span>
-<span id="cb22-134"><a href="#cb22-134" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb22-135"><a href="#cb22-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-136"><a href="#cb22-136" aria-hidden="true" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_c</span>(<span class="fu">as.character</span>(<span class="fu">unlist</span>(x, <span class="at">use.names =</span> <span class="cn">FALSE</span>)), <span class="at">collapse =</span> <span class="st">", "</span>)</span>
-<span id="cb22-137"><a href="#cb22-137" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-138"><a href="#cb22-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-139"><a href="#cb22-139" aria-hidden="true" tabindex="-1"></a>communications <span class="ot">&lt;-</span> df_communications <span class="sc">%&gt;%</span></span>
-<span id="cb22-140"><a href="#cb22-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-141"><a href="#cb22-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipients =</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(recipients, normalise_recipients)</span>
-<span id="cb22-142"><a href="#cb22-142" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-143"><a href="#cb22-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">round_hour =</span> hour)</span>
-<span id="cb22-144"><a href="#cb22-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-145"><a href="#cb22-145" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb22-146"><a href="#cb22-146" aria-hidden="true" tabindex="-1"></a>  communications <span class="sc">%&gt;%</span></span>
-<span id="cb22-147"><a href="#cb22-147" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">any_of</span>(<span class="fu">c</span>(</span>
-<span id="cb22-148"><a href="#cb22-148" aria-hidden="true" tabindex="-1"></a>      <span class="st">"round_hour"</span>, <span class="st">"message_id"</span>, <span class="st">"agent_id"</span>, <span class="st">"agent_role"</span>, <span class="st">"channel"</span>,</span>
-<span id="cb22-149"><a href="#cb22-149" aria-hidden="true" tabindex="-1"></a>      <span class="st">"message_type"</span>, <span class="st">"recipients"</span>, <span class="st">"content"</span>, <span class="st">"timestamp"</span></span>
-<span id="cb22-150"><a href="#cb22-150" aria-hidden="true" tabindex="-1"></a>    ))) <span class="sc">%&gt;%</span></span>
-<span id="cb22-151"><a href="#cb22-151" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>)</span>
-<span id="cb22-152"><a href="#cb22-152" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-153"><a href="#cb22-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-154"><a href="#cb22-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-155"><a href="#cb22-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## Environmental context</span></span>
-<span id="cb22-156"><a href="#cb22-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-157"><a href="#cb22-157" aria-hidden="true" tabindex="-1"></a>The scalar fields in the environmental context, including the market snapshot, are retained in one table. Nested event arrays are extracted separately because a single simulation round can contain several events.</span>
-<span id="cb22-158"><a href="#cb22-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-161"><a href="#cb22-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-162"><a href="#cb22-162" aria-hidden="true" tabindex="-1"></a>df_environment <span class="ot">&lt;-</span> df_rounds_raw <span class="sc">%&gt;%</span></span>
-<span id="cb22-163"><a href="#cb22-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hour, environment_context) <span class="sc">%&gt;%</span></span>
-<span id="cb22-164"><a href="#cb22-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unpack</span>(environment_context, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-165"><a href="#cb22-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unpack</span>(<span class="fu">any_of</span>(<span class="st">"environment_context_market_snapshot"</span>), <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-166"><a href="#cb22-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">is.list</span>(.)))</span>
-<span id="cb22-167"><a href="#cb22-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-168"><a href="#cb22-168" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive clean fields where the corresponding source columns are available.</span></span>
-<span id="cb22-169"><a href="#cb22-169" aria-hidden="true" tabindex="-1"></a>df_environment_clean <span class="ot">&lt;-</span> df_environment <span class="sc">%&gt;%</span></span>
-<span id="cb22-170"><a href="#cb22-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hour_datetime =</span> lubridate<span class="sc">::</span><span class="fu">ymd_hms</span>(hour, <span class="at">quiet =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb22-171"><a href="#cb22-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-172"><a href="#cb22-172" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="st">"environment_context_market_snapshot_stock_price"</span> <span class="sc">%in%</span> <span class="fu">names</span>(df_environment_clean)) {</span>
-<span id="cb22-173"><a href="#cb22-173" aria-hidden="true" tabindex="-1"></a>  df_environment_clean <span class="ot">&lt;-</span> df_environment_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-174"><a href="#cb22-174" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb22-175"><a href="#cb22-175" aria-hidden="true" tabindex="-1"></a>      <span class="at">stock_price_numeric =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(</span>
-<span id="cb22-176"><a href="#cb22-176" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.character</span>(environment_context_market_snapshot_stock_price)</span>
-<span id="cb22-177"><a href="#cb22-177" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb22-178"><a href="#cb22-178" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-179"><a href="#cb22-179" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-180"><a href="#cb22-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-181"><a href="#cb22-181" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="st">"environment_context_market_snapshot_percent_change"</span> <span class="sc">%in%</span> <span class="fu">names</span>(df_environment_clean)) {</span>
-<span id="cb22-182"><a href="#cb22-182" aria-hidden="true" tabindex="-1"></a>  df_environment_clean <span class="ot">&lt;-</span> df_environment_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-183"><a href="#cb22-183" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb22-184"><a href="#cb22-184" aria-hidden="true" tabindex="-1"></a>      <span class="at">stock_percent_numeric =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(</span>
-<span id="cb22-185"><a href="#cb22-185" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.character</span>(environment_context_market_snapshot_percent_change)</span>
-<span id="cb22-186"><a href="#cb22-186" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb22-187"><a href="#cb22-187" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-188"><a href="#cb22-188" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-189"><a href="#cb22-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-190"><a href="#cb22-190" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(df_environment_clean, <span class="dv">10</span>))</span>
-<span id="cb22-191"><a href="#cb22-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-192"><a href="#cb22-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-193"><a href="#cb22-193" aria-hidden="true" tabindex="-1"></a><span class="fu">## Environmental event tables</span></span>
-<span id="cb22-194"><a href="#cb22-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-195"><a href="#cb22-195" aria-hidden="true" tabindex="-1"></a>The helper function below extracts each nested environment array and keeps the <span class="in">`hour`</span> field as the key for joining events back to a simulation round.</span>
-<span id="cb22-196"><a href="#cb22-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-199"><a href="#cb22-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-200"><a href="#cb22-200" aria-hidden="true" tabindex="-1"></a>extract_environment_array <span class="ot">&lt;-</span> <span class="cf">function</span>(rounds, array_column) {</span>
-<span id="cb22-201"><a href="#cb22-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-202"><a href="#cb22-202" aria-hidden="true" tabindex="-1"></a>  environment_data <span class="ot">&lt;-</span> rounds <span class="sc">%&gt;%</span></span>
-<span id="cb22-203"><a href="#cb22-203" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(hour, environment_context) <span class="sc">%&gt;%</span></span>
-<span id="cb22-204"><a href="#cb22-204" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unpack</span>(environment_context, <span class="at">names_sep =</span> <span class="st">"_"</span>)</span>
-<span id="cb22-205"><a href="#cb22-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-206"><a href="#cb22-206" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>array_column <span class="sc">%in%</span> <span class="fu">names</span>(environment_data)) {</span>
-<span id="cb22-207"><a href="#cb22-207" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">tibble</span>(<span class="at">hour =</span> <span class="fu">character</span>()))</span>
-<span id="cb22-208"><a href="#cb22-208" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb22-209"><a href="#cb22-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-210"><a href="#cb22-210" aria-hidden="true" tabindex="-1"></a>  environment_data <span class="sc">%&gt;%</span></span>
-<span id="cb22-211"><a href="#cb22-211" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(hour, <span class="fu">all_of</span>(array_column)) <span class="sc">%&gt;%</span></span>
-<span id="cb22-212"><a href="#cb22-212" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="fu">all_of</span>(array_column), <span class="at">keep_empty =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb22-213"><a href="#cb22-213" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-214"><a href="#cb22-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-215"><a href="#cb22-215" aria-hidden="true" tabindex="-1"></a>df_media_events <span class="ot">&lt;-</span> <span class="fu">extract_environment_array</span>(</span>
-<span id="cb22-216"><a href="#cb22-216" aria-hidden="true" tabindex="-1"></a>  df_rounds_raw,</span>
-<span id="cb22-217"><a href="#cb22-217" aria-hidden="true" tabindex="-1"></a>  <span class="st">"environment_context_media_events"</span></span>
-<span id="cb22-218"><a href="#cb22-218" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-219"><a href="#cb22-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-220"><a href="#cb22-220" aria-hidden="true" tabindex="-1"></a>df_external_actions <span class="ot">&lt;-</span> <span class="fu">extract_environment_array</span>(</span>
-<span id="cb22-221"><a href="#cb22-221" aria-hidden="true" tabindex="-1"></a>  df_rounds_raw,</span>
-<span id="cb22-222"><a href="#cb22-222" aria-hidden="true" tabindex="-1"></a>  <span class="st">"environment_context_external_actor_actions"</span></span>
-<span id="cb22-223"><a href="#cb22-223" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-224"><a href="#cb22-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-225"><a href="#cb22-225" aria-hidden="true" tabindex="-1"></a>df_social_alerts <span class="ot">&lt;-</span> <span class="fu">extract_environment_array</span>(</span>
-<span id="cb22-226"><a href="#cb22-226" aria-hidden="true" tabindex="-1"></a>  df_rounds_raw,</span>
-<span id="cb22-227"><a href="#cb22-227" aria-hidden="true" tabindex="-1"></a>  <span class="st">"environment_context_social_manager_alerts"</span></span>
-<span id="cb22-228"><a href="#cb22-228" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-229"><a href="#cb22-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-230"><a href="#cb22-230" aria-hidden="true" tabindex="-1"></a>df_agents_unavailable <span class="ot">&lt;-</span> <span class="fu">extract_environment_array</span>(</span>
-<span id="cb22-231"><a href="#cb22-231" aria-hidden="true" tabindex="-1"></a>  df_rounds_raw,</span>
-<span id="cb22-232"><a href="#cb22-232" aria-hidden="true" tabindex="-1"></a>  <span class="st">"environment_context_agents_unavailable"</span></span>
-<span id="cb22-233"><a href="#cb22-233" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-234"><a href="#cb22-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-235"><a href="#cb22-235" aria-hidden="true" tabindex="-1"></a>df_critical_deadlines <span class="ot">&lt;-</span> <span class="fu">extract_environment_array</span>(</span>
-<span id="cb22-236"><a href="#cb22-236" aria-hidden="true" tabindex="-1"></a>  df_rounds_raw,</span>
-<span id="cb22-237"><a href="#cb22-237" aria-hidden="true" tabindex="-1"></a>  <span class="st">"environment_context_critical_deadlines"</span></span>
-<span id="cb22-238"><a href="#cb22-238" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-239"><a href="#cb22-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-240"><a href="#cb22-240" aria-hidden="true" tabindex="-1"></a>df_news <span class="ot">&lt;-</span> <span class="fu">extract_environment_array</span>(</span>
-<span id="cb22-241"><a href="#cb22-241" aria-hidden="true" tabindex="-1"></a>  df_rounds_raw,</span>
-<span id="cb22-242"><a href="#cb22-242" aria-hidden="true" tabindex="-1"></a>  <span class="st">"environment_context_news"</span></span>
-<span id="cb22-243"><a href="#cb22-243" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-244"><a href="#cb22-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-245"><a href="#cb22-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-246"><a href="#cb22-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dataset inventory</span></span>
-<span id="cb22-247"><a href="#cb22-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-248"><a href="#cb22-248" aria-hidden="true" tabindex="-1"></a>The following table confirms the main analytical tables created from the raw dataset.</span>
-<span id="cb22-249"><a href="#cb22-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-252"><a href="#cb22-252" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-253"><a href="#cb22-253" aria-hidden="true" tabindex="-1"></a>dataset_inventory <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb22-254"><a href="#cb22-254" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Participants"</span> <span class="ot">=</span> df_participants,</span>
-<span id="cb22-255"><a href="#cb22-255" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Communications"</span> <span class="ot">=</span> communications,</span>
-<span id="cb22-256"><a href="#cb22-256" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Environment and market context"</span> <span class="ot">=</span> df_environment_clean,</span>
-<span id="cb22-257"><a href="#cb22-257" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Media events"</span> <span class="ot">=</span> df_media_events,</span>
-<span id="cb22-258"><a href="#cb22-258" aria-hidden="true" tabindex="-1"></a>  <span class="st">"External actor actions"</span> <span class="ot">=</span> df_external_actions,</span>
-<span id="cb22-259"><a href="#cb22-259" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Social manager alerts"</span> <span class="ot">=</span> df_social_alerts,</span>
-<span id="cb22-260"><a href="#cb22-260" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Unavailable agents"</span> <span class="ot">=</span> df_agents_unavailable,</span>
-<span id="cb22-261"><a href="#cb22-261" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Critical deadlines"</span> <span class="ot">=</span> df_critical_deadlines,</span>
-<span id="cb22-262"><a href="#cb22-262" aria-hidden="true" tabindex="-1"></a>  <span class="st">"News"</span> <span class="ot">=</span> df_news</span>
-<span id="cb22-263"><a href="#cb22-263" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-264"><a href="#cb22-264" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">imap_dfr</span>(<span class="sc">~</span> <span class="fu">tibble</span>(</span>
-<span id="cb22-265"><a href="#cb22-265" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dataset =</span> .y,</span>
-<span id="cb22-266"><a href="#cb22-266" aria-hidden="true" tabindex="-1"></a>    <span class="at">Rows =</span> <span class="fu">nrow</span>(.x),</span>
-<span id="cb22-267"><a href="#cb22-267" aria-hidden="true" tabindex="-1"></a>    <span class="at">Columns =</span> <span class="fu">ncol</span>(.x)</span>
-<span id="cb22-268"><a href="#cb22-268" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb22-269"><a href="#cb22-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-270"><a href="#cb22-270" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(dataset_inventory)</span>
-<span id="cb22-271"><a href="#cb22-271" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-272"><a href="#cb22-272" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-273"><a href="#cb22-273" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data quality checks</span></span>
-<span id="cb22-274"><a href="#cb22-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-275"><a href="#cb22-275" aria-hidden="true" tabindex="-1"></a><span class="fu">## Communication data completeness</span></span>
-<span id="cb22-276"><a href="#cb22-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-277"><a href="#cb22-277" aria-hidden="true" tabindex="-1"></a>The communication table is the main source for the subsequent temporal, behavioural, text and network analysis. Missing values are summarised before features are engineered.</span>
-<span id="cb22-278"><a href="#cb22-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-281"><a href="#cb22-281" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-282"><a href="#cb22-282" aria-hidden="true" tabindex="-1"></a>missing_summary <span class="ot">&lt;-</span> communications <span class="sc">%&gt;%</span></span>
-<span id="cb22-283"><a href="#cb22-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.)))) <span class="sc">%&gt;%</span></span>
-<span id="cb22-284"><a href="#cb22-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb22-285"><a href="#cb22-285" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">everything</span>(),</span>
-<span id="cb22-286"><a href="#cb22-286" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"Variable"</span>,</span>
-<span id="cb22-287"><a href="#cb22-287" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"Missing_Count"</span></span>
-<span id="cb22-288"><a href="#cb22-288" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-289"><a href="#cb22-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Missing_Count))</span>
-<span id="cb22-290"><a href="#cb22-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-291"><a href="#cb22-291" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(missing_summary)</span>
-<span id="cb22-292"><a href="#cb22-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-293"><a href="#cb22-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-294"><a href="#cb22-294" aria-hidden="true" tabindex="-1"></a><span class="fu">## Message identifier and timestamp checks</span></span>
-<span id="cb22-295"><a href="#cb22-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-296"><a href="#cb22-296" aria-hidden="true" tabindex="-1"></a>Message IDs are checked for potential duplicates. Timestamps are also checked after conversion so that any non-parsed values can be reviewed before downstream analysis.</span>
-<span id="cb22-297"><a href="#cb22-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-300"><a href="#cb22-300" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-301"><a href="#cb22-301" aria-hidden="true" tabindex="-1"></a>duplicate_message_ids <span class="ot">&lt;-</span> communications <span class="sc">%&gt;%</span></span>
-<span id="cb22-302"><a href="#cb22-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(message_id)) <span class="sc">%&gt;%</span></span>
-<span id="cb22-303"><a href="#cb22-303" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(message_id, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-304"><a href="#cb22-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
-<span id="cb22-305"><a href="#cb22-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-306"><a href="#cb22-306" aria-hidden="true" tabindex="-1"></a>communication_timestamp_check <span class="ot">&lt;-</span> communications <span class="sc">%&gt;%</span></span>
-<span id="cb22-307"><a href="#cb22-307" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">timestamp_parsed =</span> lubridate<span class="sc">::</span><span class="fu">ymd_hms</span>(timestamp, <span class="at">quiet =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb22-308"><a href="#cb22-308" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb22-309"><a href="#cb22-309" aria-hidden="true" tabindex="-1"></a>    <span class="at">Total_Records =</span> <span class="fu">n</span>(),</span>
-<span id="cb22-310"><a href="#cb22-310" aria-hidden="true" tabindex="-1"></a>    <span class="at">Missing_or_Unparsed_Timestamps =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(timestamp_parsed))</span>
-<span id="cb22-311"><a href="#cb22-311" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-312"><a href="#cb22-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-313"><a href="#cb22-313" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(communication_timestamp_check)</span>
-<span id="cb22-314"><a href="#cb22-314" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(duplicate_message_ids)</span>
-<span id="cb22-315"><a href="#cb22-315" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-316"><a href="#cb22-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-317"><a href="#cb22-317" aria-hidden="true" tabindex="-1"></a><span class="fu"># Communication feature engineering</span></span>
-<span id="cb22-318"><a href="#cb22-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-319"><a href="#cb22-319" aria-hidden="true" tabindex="-1"></a>The following features prepare the message-level data for later investigation of event sequence, communication exposure, behavioural signals and possible dissemination pathways. These are screening features only; they do not by themselves establish intent or wrongdoing.</span>
-<span id="cb22-320"><a href="#cb22-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-321"><a href="#cb22-321" aria-hidden="true" tabindex="-1"></a><span class="fu">## Temporal features</span></span>
-<span id="cb22-322"><a href="#cb22-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-323"><a href="#cb22-323" aria-hidden="true" tabindex="-1"></a>The inappropriate release occurred on 5 June 2046. The features below distinguish normal activity from the escalation and critical windows immediately before the breach.</span>
-<span id="cb22-324"><a href="#cb22-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-327"><a href="#cb22-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-328"><a href="#cb22-328" aria-hidden="true" tabindex="-1"></a>breach_date <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="st">"2046-06-05"</span>)</span>
-<span id="cb22-329"><a href="#cb22-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-330"><a href="#cb22-330" aria-hidden="true" tabindex="-1"></a>communications_clean <span class="ot">&lt;-</span> communications <span class="sc">%&gt;%</span></span>
-<span id="cb22-331"><a href="#cb22-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-332"><a href="#cb22-332" aria-hidden="true" tabindex="-1"></a>    <span class="at">timestamp =</span> lubridate<span class="sc">::</span><span class="fu">ymd_hms</span>(timestamp, <span class="at">quiet =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-333"><a href="#cb22-333" aria-hidden="true" tabindex="-1"></a>    <span class="at">round_hour =</span> lubridate<span class="sc">::</span><span class="fu">ymd_hms</span>(round_hour, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-334"><a href="#cb22-334" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-335"><a href="#cb22-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(timestamp) <span class="sc">%&gt;%</span></span>
-<span id="cb22-336"><a href="#cb22-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-337"><a href="#cb22-337" aria-hidden="true" tabindex="-1"></a>    <span class="at">communication_date =</span> <span class="fu">as_date</span>(timestamp),</span>
-<span id="cb22-338"><a href="#cb22-338" aria-hidden="true" tabindex="-1"></a>    <span class="at">communication_hour =</span> <span class="fu">hour</span>(timestamp),</span>
-<span id="cb22-339"><a href="#cb22-339" aria-hidden="true" tabindex="-1"></a>    <span class="at">communication_day =</span> <span class="fu">wday</span>(timestamp, <span class="at">label =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-340"><a href="#cb22-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-341"><a href="#cb22-341" aria-hidden="true" tabindex="-1"></a>    <span class="at">communication_period =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-342"><a href="#cb22-342" aria-hidden="true" tabindex="-1"></a>      communication_hour <span class="sc">&gt;=</span> <span class="dv">6</span> <span class="sc">&amp;</span> communication_hour <span class="sc">&lt;</span> <span class="dv">12</span> <span class="sc">~</span> <span class="st">"Morning"</span>,</span>
-<span id="cb22-343"><a href="#cb22-343" aria-hidden="true" tabindex="-1"></a>      communication_hour <span class="sc">&gt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> communication_hour <span class="sc">&lt;</span> <span class="dv">18</span> <span class="sc">~</span> <span class="st">"Afternoon"</span>,</span>
-<span id="cb22-344"><a href="#cb22-344" aria-hidden="true" tabindex="-1"></a>      communication_hour <span class="sc">&gt;=</span> <span class="dv">18</span> <span class="sc">&amp;</span> communication_hour <span class="sc">&lt;</span> <span class="dv">24</span> <span class="sc">~</span> <span class="st">"Evening"</span>,</span>
-<span id="cb22-345"><a href="#cb22-345" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Late Night"</span></span>
-<span id="cb22-346"><a href="#cb22-346" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-347"><a href="#cb22-347" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-348"><a href="#cb22-348" aria-hidden="true" tabindex="-1"></a>    <span class="at">days_before_embargo_breach =</span> <span class="fu">as.integer</span>(breach_date <span class="sc">-</span> communication_date),</span>
-<span id="cb22-349"><a href="#cb22-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-350"><a href="#cb22-350" aria-hidden="true" tabindex="-1"></a>    <span class="at">near_breach_window =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-351"><a href="#cb22-351" aria-hidden="true" tabindex="-1"></a>      days_before_embargo_breach <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Post-breach"</span>,</span>
-<span id="cb22-352"><a href="#cb22-352" aria-hidden="true" tabindex="-1"></a>      days_before_embargo_breach <span class="sc">&lt;=</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Critical Period"</span>,</span>
-<span id="cb22-353"><a href="#cb22-353" aria-hidden="true" tabindex="-1"></a>      days_before_embargo_breach <span class="sc">&lt;=</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">"Escalation Period"</span>,</span>
-<span id="cb22-354"><a href="#cb22-354" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Normal Period"</span></span>
-<span id="cb22-355"><a href="#cb22-355" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-356"><a href="#cb22-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-357"><a href="#cb22-357" aria-hidden="true" tabindex="-1"></a>    <span class="at">message_sequence =</span> <span class="fu">row_number</span>()</span>
-<span id="cb22-358"><a href="#cb22-358" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-359"><a href="#cb22-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-360"><a href="#cb22-360" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb22-361"><a href="#cb22-361" aria-hidden="true" tabindex="-1"></a>  communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-362"><a href="#cb22-362" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
-<span id="cb22-363"><a href="#cb22-363" aria-hidden="true" tabindex="-1"></a>      timestamp, communication_date, communication_hour,</span>
-<span id="cb22-364"><a href="#cb22-364" aria-hidden="true" tabindex="-1"></a>      communication_period, days_before_embargo_breach,</span>
-<span id="cb22-365"><a href="#cb22-365" aria-hidden="true" tabindex="-1"></a>      near_breach_window, message_sequence</span>
-<span id="cb22-366"><a href="#cb22-366" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-367"><a href="#cb22-367" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">10</span>)</span>
-<span id="cb22-368"><a href="#cb22-368" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-369"><a href="#cb22-369" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-370"><a href="#cb22-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-371"><a href="#cb22-371" aria-hidden="true" tabindex="-1"></a><span class="fu">## Communication scope and exposure risk</span></span>
-<span id="cb22-372"><a href="#cb22-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-373"><a href="#cb22-373" aria-hidden="true" tabindex="-1"></a>Channels are grouped into broader communication scopes. This allows later analyses to distinguish public communication from private, internal and side-channel exchanges.</span>
-<span id="cb22-374"><a href="#cb22-374" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-377"><a href="#cb22-377" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-378"><a href="#cb22-378" aria-hidden="true" tabindex="-1"></a>communications_clean <span class="ot">&lt;-</span> communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-379"><a href="#cb22-379" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-380"><a href="#cb22-380" aria-hidden="true" tabindex="-1"></a>    <span class="at">communication_scope =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-381"><a href="#cb22-381" aria-hidden="true" tabindex="-1"></a>      channel <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"official_post"</span>, <span class="st">"personal_post"</span>) <span class="sc">~</span> <span class="st">"Public"</span>,</span>
-<span id="cb22-382"><a href="#cb22-382" aria-hidden="true" tabindex="-1"></a>      channel <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"one_on_one_chat"</span>) <span class="sc">~</span> <span class="st">"Private"</span>,</span>
-<span id="cb22-383"><a href="#cb22-383" aria-hidden="true" tabindex="-1"></a>      channel <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"side_huddle"</span>) <span class="sc">~</span> <span class="st">"Side-channel"</span>,</span>
-<span id="cb22-384"><a href="#cb22-384" aria-hidden="true" tabindex="-1"></a>      channel <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"comms_huddle"</span>) <span class="sc">~</span> <span class="st">"Internal Group"</span>,</span>
-<span id="cb22-385"><a href="#cb22-385" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other"</span></span>
-<span id="cb22-386"><a href="#cb22-386" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-387"><a href="#cb22-387" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-388"><a href="#cb22-388" aria-hidden="true" tabindex="-1"></a>    <span class="at">exposure_risk_level =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-389"><a href="#cb22-389" aria-hidden="true" tabindex="-1"></a>      communication_scope <span class="sc">==</span> <span class="st">"Public"</span> <span class="sc">~</span> <span class="st">"High Exposure"</span>,</span>
-<span id="cb22-390"><a href="#cb22-390" aria-hidden="true" tabindex="-1"></a>      communication_scope <span class="sc">==</span> <span class="st">"Side-channel"</span> <span class="sc">~</span> <span class="st">"Moderate Exposure"</span>,</span>
-<span id="cb22-391"><a href="#cb22-391" aria-hidden="true" tabindex="-1"></a>      communication_scope <span class="sc">==</span> <span class="st">"Private"</span> <span class="sc">~</span> <span class="st">"Low Exposure"</span>,</span>
-<span id="cb22-392"><a href="#cb22-392" aria-hidden="true" tabindex="-1"></a>      communication_scope <span class="sc">==</span> <span class="st">"Internal Group"</span> <span class="sc">~</span> <span class="st">"Controlled Exposure"</span>,</span>
-<span id="cb22-393"><a href="#cb22-393" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Unknown"</span></span>
-<span id="cb22-394"><a href="#cb22-394" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-395"><a href="#cb22-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-396"><a href="#cb22-396" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_public_channel =</span> communication_scope <span class="sc">==</span> <span class="st">"Public"</span></span>
-<span id="cb22-397"><a href="#cb22-397" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-398"><a href="#cb22-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-399"><a href="#cb22-399" aria-hidden="true" tabindex="-1"></a>channel_summary <span class="ot">&lt;-</span> communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-400"><a href="#cb22-400" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(channel, communication_scope, exposure_risk_level, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-401"><a href="#cb22-401" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-402"><a href="#cb22-402" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(channel_summary)</span>
-<span id="cb22-403"><a href="#cb22-403" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-404"><a href="#cb22-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-405"><a href="#cb22-405" aria-hidden="true" tabindex="-1"></a><span class="fu">## Text and behavioural indicators</span></span>
-<span id="cb22-406"><a href="#cb22-406" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-407"><a href="#cb22-407" aria-hidden="true" tabindex="-1"></a>Message content and any available internal-state text are combined into one analysis field. Keyword indicators then identify potential references to the merger, embargo controls, public disclosure and operational pressure.</span>
-<span id="cb22-408"><a href="#cb22-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-411"><a href="#cb22-411" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-412"><a href="#cb22-412" aria-hidden="true" tabindex="-1"></a>combine_text_fields <span class="ot">&lt;-</span> <span class="cf">function</span>(data, columns) {</span>
-<span id="cb22-413"><a href="#cb22-413" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(columns) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb22-414"><a href="#cb22-414" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">rep</span>(<span class="st">""</span>, <span class="fu">nrow</span>(data)))</span>
-<span id="cb22-415"><a href="#cb22-415" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb22-416"><a href="#cb22-416" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-417"><a href="#cb22-417" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(data[columns], <span class="dv">1</span>, <span class="cf">function</span>(x) {</span>
-<span id="cb22-418"><a href="#cb22-418" aria-hidden="true" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_squish</span>(</span>
-<span id="cb22-419"><a href="#cb22-419" aria-hidden="true" tabindex="-1"></a>      stringr<span class="sc">::</span><span class="fu">str_c</span>(<span class="fu">replace_na</span>(<span class="fu">as.character</span>(x), <span class="st">""</span>), <span class="at">collapse =</span> <span class="st">" "</span>)</span>
-<span id="cb22-420"><a href="#cb22-420" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-421"><a href="#cb22-421" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb22-422"><a href="#cb22-422" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-423"><a href="#cb22-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-424"><a href="#cb22-424" aria-hidden="true" tabindex="-1"></a>internal_state_columns <span class="ot">&lt;-</span> <span class="fu">names</span>(communications_clean) <span class="sc">%&gt;%</span></span>
-<span id="cb22-425"><a href="#cb22-425" aria-hidden="true" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_subset</span>(<span class="st">"^internal_state_"</span>)</span>
-<span id="cb22-426"><a href="#cb22-426" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-427"><a href="#cb22-427" aria-hidden="true" tabindex="-1"></a>communications_clean<span class="sc">$</span>internal_state_text <span class="ot">&lt;-</span> <span class="fu">combine_text_fields</span>(</span>
-<span id="cb22-428"><a href="#cb22-428" aria-hidden="true" tabindex="-1"></a>  communications_clean,</span>
-<span id="cb22-429"><a href="#cb22-429" aria-hidden="true" tabindex="-1"></a>  internal_state_columns</span>
-<span id="cb22-430"><a href="#cb22-430" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-431"><a href="#cb22-431" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-432"><a href="#cb22-432" aria-hidden="true" tabindex="-1"></a>communications_clean <span class="ot">&lt;-</span> communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-433"><a href="#cb22-433" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-434"><a href="#cb22-434" aria-hidden="true" tabindex="-1"></a>    <span class="at">content_lower =</span> <span class="fu">str_to_lower</span>(<span class="fu">replace_na</span>(content, <span class="st">""</span>)),</span>
-<span id="cb22-435"><a href="#cb22-435" aria-hidden="true" tabindex="-1"></a>    <span class="at">analysis_text =</span> <span class="fu">str_squish</span>(</span>
-<span id="cb22-436"><a href="#cb22-436" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_c</span>(content_lower, <span class="fu">str_to_lower</span>(internal_state_text), <span class="at">sep =</span> <span class="st">" "</span>)</span>
-<span id="cb22-437"><a href="#cb22-437" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-438"><a href="#cb22-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-439"><a href="#cb22-439" aria-hidden="true" tabindex="-1"></a>    <span class="at">contains_project_terms =</span> <span class="fu">str_detect</span>(</span>
-<span id="cb22-440"><a href="#cb22-440" aria-hidden="true" tabindex="-1"></a>      analysis_text,</span>
-<span id="cb22-441"><a href="#cb22-441" aria-hidden="true" tabindex="-1"></a>      <span class="st">"harborcrest|civicloom|merger|rebrand|capital|deal"</span></span>
-<span id="cb22-442"><a href="#cb22-442" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-443"><a href="#cb22-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-444"><a href="#cb22-444" aria-hidden="true" tabindex="-1"></a>    <span class="at">contains_embargo_terms =</span> <span class="fu">str_detect</span>(</span>
-<span id="cb22-445"><a href="#cb22-445" aria-hidden="true" tabindex="-1"></a>      analysis_text,</span>
-<span id="cb22-446"><a href="#cb22-446" aria-hidden="true" tabindex="-1"></a>      <span class="st">"embargo|judge|compliance|approved|blocked|deadline"</span></span>
-<span id="cb22-447"><a href="#cb22-447" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-448"><a href="#cb22-448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-449"><a href="#cb22-449" aria-hidden="true" tabindex="-1"></a>    <span class="at">contains_public_exposure_terms =</span> <span class="fu">str_detect</span>(</span>
-<span id="cb22-450"><a href="#cb22-450" aria-hidden="true" tabindex="-1"></a>      analysis_text,</span>
-<span id="cb22-451"><a href="#cb22-451" aria-hidden="true" tabindex="-1"></a>      <span class="st">"public|post|fle?x|release|leak|disclose|announcement"</span></span>
-<span id="cb22-452"><a href="#cb22-452" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-453"><a href="#cb22-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-454"><a href="#cb22-454" aria-hidden="true" tabindex="-1"></a>    <span class="at">contains_pressure_terms =</span> <span class="fu">str_detect</span>(</span>
-<span id="cb22-455"><a href="#cb22-455" aria-hidden="true" tabindex="-1"></a>      analysis_text,</span>
-<span id="cb22-456"><a href="#cb22-456" aria-hidden="true" tabindex="-1"></a>      <span class="st">"pressure|urgent|concern|risk|legal|scrutiny|journal|algorithmiceviction"</span></span>
-<span id="cb22-457"><a href="#cb22-457" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb22-458"><a href="#cb22-458" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-459"><a href="#cb22-459" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_internal_reasoning =</span> <span class="fu">str_length</span>(internal_state_text) <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
-<span id="cb22-460"><a href="#cb22-460" aria-hidden="true" tabindex="-1"></a>    <span class="at">message_length =</span> <span class="fu">str_length</span>(content_lower),</span>
-<span id="cb22-461"><a href="#cb22-461" aria-hidden="true" tabindex="-1"></a>    <span class="at">word_count =</span> <span class="fu">str_count</span>(content_lower, <span class="st">"</span><span class="sc">\\</span><span class="st">S+"</span>),</span>
-<span id="cb22-462"><a href="#cb22-462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-463"><a href="#cb22-463" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_signal_score =</span></span>
-<span id="cb22-464"><a href="#cb22-464" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.integer</span>(contains_project_terms) <span class="sc">+</span></span>
-<span id="cb22-465"><a href="#cb22-465" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.integer</span>(contains_embargo_terms) <span class="sc">+</span></span>
-<span id="cb22-466"><a href="#cb22-466" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.integer</span>(contains_public_exposure_terms) <span class="sc">+</span></span>
-<span id="cb22-467"><a href="#cb22-467" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.integer</span>(contains_pressure_terms),</span>
-<span id="cb22-468"><a href="#cb22-468" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-469"><a href="#cb22-469" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_signal_group =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-470"><a href="#cb22-470" aria-hidden="true" tabindex="-1"></a>      risk_signal_score <span class="sc">&gt;=</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"High Signal"</span>,</span>
-<span id="cb22-471"><a href="#cb22-471" aria-hidden="true" tabindex="-1"></a>      risk_signal_score <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Moderate Signal"</span>,</span>
-<span id="cb22-472"><a href="#cb22-472" aria-hidden="true" tabindex="-1"></a>      risk_signal_score <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Low Signal"</span>,</span>
-<span id="cb22-473"><a href="#cb22-473" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"No Signal"</span></span>
-<span id="cb22-474"><a href="#cb22-474" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-475"><a href="#cb22-475" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-476"><a href="#cb22-476" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-477"><a href="#cb22-477" aria-hidden="true" tabindex="-1"></a>risk_signal_summary <span class="ot">&lt;-</span> communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-478"><a href="#cb22-478" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(near_breach_window, risk_signal_group, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-479"><a href="#cb22-479" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-480"><a href="#cb22-480" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(risk_signal_summary)</span>
-<span id="cb22-481"><a href="#cb22-481" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-482"><a href="#cb22-482" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-483"><a href="#cb22-483" aria-hidden="true" tabindex="-1"></a><span class="fu">## Agent-level preparation table</span></span>
-<span id="cb22-484"><a href="#cb22-484" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-485"><a href="#cb22-485" aria-hidden="true" tabindex="-1"></a>The message-level features are summarised by agent to provide a reusable table for later comparison of activity, exposure and risk signals.</span>
-<span id="cb22-486"><a href="#cb22-486" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-489"><a href="#cb22-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-490"><a href="#cb22-490" aria-hidden="true" tabindex="-1"></a>agent_feature_summary <span class="ot">&lt;-</span> communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-491"><a href="#cb22-491" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(agent_id, agent_role) <span class="sc">%&gt;%</span></span>
-<span id="cb22-492"><a href="#cb22-492" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb22-493"><a href="#cb22-493" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_messages =</span> <span class="fu">n</span>(),</span>
-<span id="cb22-494"><a href="#cb22-494" aria-hidden="true" tabindex="-1"></a>    <span class="at">public_messages =</span> <span class="fu">sum</span>(is_public_channel, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-495"><a href="#cb22-495" aria-hidden="true" tabindex="-1"></a>    <span class="at">high_signal_messages =</span> <span class="fu">sum</span>(risk_signal_group <span class="sc">==</span> <span class="st">"High Signal"</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-496"><a href="#cb22-496" aria-hidden="true" tabindex="-1"></a>    <span class="at">average_risk_signal_score =</span> <span class="fu">mean</span>(risk_signal_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-497"><a href="#cb22-497" aria-hidden="true" tabindex="-1"></a>    <span class="at">messages_with_internal_reasoning =</span> <span class="fu">sum</span>(has_internal_reasoning, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb22-498"><a href="#cb22-498" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb22-499"><a href="#cb22-499" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-500"><a href="#cb22-500" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(high_signal_messages), <span class="fu">desc</span>(total_messages))</span>
-<span id="cb22-501"><a href="#cb22-501" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-502"><a href="#cb22-502" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(agent_feature_summary, <span class="dv">15</span>))</span>
-<span id="cb22-503"><a href="#cb22-503" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-504"><a href="#cb22-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-505"><a href="#cb22-505" aria-hidden="true" tabindex="-1"></a><span class="fu"># Preparing network-ready communication tables</span></span>
-<span id="cb22-506"><a href="#cb22-506" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-507"><a href="#cb22-507" aria-hidden="true" tabindex="-1"></a><span class="fu">## Directed communication edges</span></span>
-<span id="cb22-508"><a href="#cb22-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-509"><a href="#cb22-509" aria-hidden="true" tabindex="-1"></a>The recipient field may contain several recipients. It is expanded so that each sender-recipient pair becomes one directed communication edge. Broadcast messages to <span class="in">`ALL`</span> are excluded because they do not identify an individual receiver.</span>
-<span id="cb22-510"><a href="#cb22-510" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-513"><a href="#cb22-513" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-514"><a href="#cb22-514" aria-hidden="true" tabindex="-1"></a>communication_edges <span class="ot">&lt;-</span> communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-515"><a href="#cb22-515" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(recipients, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">s*,</span><span class="sc">\\</span><span class="st">s*"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-516"><a href="#cb22-516" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb22-517"><a href="#cb22-517" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="fu">str_trim</span>(agent_id),</span>
-<span id="cb22-518"><a href="#cb22-518" aria-hidden="true" tabindex="-1"></a>    <span class="at">to =</span> <span class="fu">str_trim</span>(recipients),</span>
-<span id="cb22-519"><a href="#cb22-519" aria-hidden="true" tabindex="-1"></a>    channel,</span>
-<span id="cb22-520"><a href="#cb22-520" aria-hidden="true" tabindex="-1"></a>    communication_scope,</span>
-<span id="cb22-521"><a href="#cb22-521" aria-hidden="true" tabindex="-1"></a>    exposure_risk_level,</span>
-<span id="cb22-522"><a href="#cb22-522" aria-hidden="true" tabindex="-1"></a>    risk_signal_group,</span>
-<span id="cb22-523"><a href="#cb22-523" aria-hidden="true" tabindex="-1"></a>    timestamp</span>
-<span id="cb22-524"><a href="#cb22-524" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-525"><a href="#cb22-525" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb22-526"><a href="#cb22-526" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(from), <span class="sc">!</span><span class="fu">is.na</span>(to),</span>
-<span id="cb22-527"><a href="#cb22-527" aria-hidden="true" tabindex="-1"></a>    from <span class="sc">!=</span> <span class="st">""</span>, to <span class="sc">!=</span> <span class="st">""</span>, to <span class="sc">!=</span> <span class="st">"ALL"</span>,</span>
-<span id="cb22-528"><a href="#cb22-528" aria-hidden="true" tabindex="-1"></a>    from <span class="sc">!=</span> to</span>
-<span id="cb22-529"><a href="#cb22-529" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-530"><a href="#cb22-530" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-531"><a href="#cb22-531" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(communication_edges, <span class="dv">10</span>))</span>
-<span id="cb22-532"><a href="#cb22-532" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-533"><a href="#cb22-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-534"><a href="#cb22-534" aria-hidden="true" tabindex="-1"></a><span class="fu">## Nodes and weighted edges</span></span>
-<span id="cb22-535"><a href="#cb22-535" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-536"><a href="#cb22-536" aria-hidden="true" tabindex="-1"></a>Nodes represent all unique senders and recipients. Weighted edges aggregate repeated sender-recipient interactions and retain communication scope and risk classification.</span>
-<span id="cb22-537"><a href="#cb22-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-540"><a href="#cb22-540" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-541"><a href="#cb22-541" aria-hidden="true" tabindex="-1"></a>communication_nodes <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb22-542"><a href="#cb22-542" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">c</span>(communication_edges<span class="sc">$</span>from, communication_edges<span class="sc">$</span>to)))</span>
-<span id="cb22-543"><a href="#cb22-543" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-544"><a href="#cb22-544" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb22-545"><a href="#cb22-545" aria-hidden="true" tabindex="-1"></a>    communications_clean <span class="sc">%&gt;%</span></span>
-<span id="cb22-546"><a href="#cb22-546" aria-hidden="true" tabindex="-1"></a>      <span class="fu">distinct</span>(agent_id, agent_role) <span class="sc">%&gt;%</span></span>
-<span id="cb22-547"><a href="#cb22-547" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">name =</span> agent_id, <span class="at">role =</span> agent_role),</span>
-<span id="cb22-548"><a href="#cb22-548" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"name"</span></span>
-<span id="cb22-549"><a href="#cb22-549" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-550"><a href="#cb22-550" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">role =</span> <span class="fu">replace_na</span>(role, <span class="st">"Recipient / System"</span>))</span>
-<span id="cb22-551"><a href="#cb22-551" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-552"><a href="#cb22-552" aria-hidden="true" tabindex="-1"></a>communication_edges_weighted <span class="ot">&lt;-</span> communication_edges <span class="sc">%&gt;%</span></span>
-<span id="cb22-553"><a href="#cb22-553" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(</span>
-<span id="cb22-554"><a href="#cb22-554" aria-hidden="true" tabindex="-1"></a>    from,</span>
-<span id="cb22-555"><a href="#cb22-555" aria-hidden="true" tabindex="-1"></a>    to,</span>
-<span id="cb22-556"><a href="#cb22-556" aria-hidden="true" tabindex="-1"></a>    communication_scope,</span>
-<span id="cb22-557"><a href="#cb22-557" aria-hidden="true" tabindex="-1"></a>    exposure_risk_level,</span>
-<span id="cb22-558"><a href="#cb22-558" aria-hidden="true" tabindex="-1"></a>    risk_signal_group,</span>
-<span id="cb22-559"><a href="#cb22-559" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">"weight"</span></span>
-<span id="cb22-560"><a href="#cb22-560" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-561"><a href="#cb22-561" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-562"><a href="#cb22-562" aria-hidden="true" tabindex="-1"></a>    <span class="at">interaction_intensity =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-563"><a href="#cb22-563" aria-hidden="true" tabindex="-1"></a>      weight <span class="sc">&gt;=</span> <span class="dv">10</span> <span class="sc">~</span> <span class="st">"High Interaction"</span>,</span>
-<span id="cb22-564"><a href="#cb22-564" aria-hidden="true" tabindex="-1"></a>      weight <span class="sc">&gt;=</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">"Moderate Interaction"</span>,</span>
-<span id="cb22-565"><a href="#cb22-565" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Low Interaction"</span></span>
-<span id="cb22-566"><a href="#cb22-566" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-567"><a href="#cb22-567" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-568"><a href="#cb22-568" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-569"><a href="#cb22-569" aria-hidden="true" tabindex="-1"></a>network_inventory <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb22-570"><a href="#cb22-570" aria-hidden="true" tabindex="-1"></a>  <span class="at">Measure =</span> <span class="fu">c</span>(</span>
-<span id="cb22-571"><a href="#cb22-571" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Communication nodes"</span>,</span>
-<span id="cb22-572"><a href="#cb22-572" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Directed communication edges"</span>,</span>
-<span id="cb22-573"><a href="#cb22-573" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weighted communication edges"</span></span>
-<span id="cb22-574"><a href="#cb22-574" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb22-575"><a href="#cb22-575" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">c</span>(</span>
-<span id="cb22-576"><a href="#cb22-576" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>(communication_nodes),</span>
-<span id="cb22-577"><a href="#cb22-577" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>(communication_edges),</span>
-<span id="cb22-578"><a href="#cb22-578" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>(communication_edges_weighted)</span>
-<span id="cb22-579"><a href="#cb22-579" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-580"><a href="#cb22-580" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-581"><a href="#cb22-581" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-582"><a href="#cb22-582" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(network_inventory)</span>
-<span id="cb22-583"><a href="#cb22-583" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(communication_edges_weighted, <span class="dv">10</span>))</span>
-<span id="cb22-584"><a href="#cb22-584" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-585"><a href="#cb22-585" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-586"><a href="#cb22-586" aria-hidden="true" tabindex="-1"></a><span class="fu">## Creating the communication network object</span></span>
-<span id="cb22-587"><a href="#cb22-587" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-588"><a href="#cb22-588" aria-hidden="true" tabindex="-1"></a>The node and edge tables are combined into a directed network object. It is saved for later analysis or visualisation but is not plotted on this data-preparation page.</span>
-<span id="cb22-589"><a href="#cb22-589" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-592"><a href="#cb22-592" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-593"><a href="#cb22-593" aria-hidden="true" tabindex="-1"></a>communication_network <span class="ot">&lt;-</span> tidygraph<span class="sc">::</span><span class="fu">tbl_graph</span>(</span>
-<span id="cb22-594"><a href="#cb22-594" aria-hidden="true" tabindex="-1"></a>  <span class="at">nodes =</span> communication_nodes,</span>
-<span id="cb22-595"><a href="#cb22-595" aria-hidden="true" tabindex="-1"></a>  <span class="at">edges =</span> communication_edges_weighted,</span>
-<span id="cb22-596"><a href="#cb22-596" aria-hidden="true" tabindex="-1"></a>  <span class="at">directed =</span> <span class="cn">TRUE</span></span>
-<span id="cb22-597"><a href="#cb22-597" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-598"><a href="#cb22-598" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-599"><a href="#cb22-599" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-600"><a href="#cb22-600" aria-hidden="true" tabindex="-1"></a><span class="fu"># Saving prepared data</span></span>
-<span id="cb22-601"><a href="#cb22-601" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-602"><a href="#cb22-602" aria-hidden="true" tabindex="-1"></a>All cleaned tables and engineered features are saved as one RDS object. The other Quarto pages and the Shiny application can load this prepared file directly rather than repeatedly unpacking the nested source RDS object.</span>
-<span id="cb22-603"><a href="#cb22-603" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-606"><a href="#cb22-606" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-607"><a href="#cb22-607" aria-hidden="true" tabindex="-1"></a>prepared_mc1 <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb22-608"><a href="#cb22-608" aria-hidden="true" tabindex="-1"></a>  <span class="at">participants =</span> df_participants,</span>
-<span id="cb22-609"><a href="#cb22-609" aria-hidden="true" tabindex="-1"></a>  <span class="at">communications =</span> communications_clean,</span>
-<span id="cb22-610"><a href="#cb22-610" aria-hidden="true" tabindex="-1"></a>  <span class="at">environment =</span> df_environment_clean,</span>
-<span id="cb22-611"><a href="#cb22-611" aria-hidden="true" tabindex="-1"></a>  <span class="at">media_events =</span> df_media_events,</span>
-<span id="cb22-612"><a href="#cb22-612" aria-hidden="true" tabindex="-1"></a>  <span class="at">external_actions =</span> df_external_actions,</span>
-<span id="cb22-613"><a href="#cb22-613" aria-hidden="true" tabindex="-1"></a>  <span class="at">social_alerts =</span> df_social_alerts,</span>
-<span id="cb22-614"><a href="#cb22-614" aria-hidden="true" tabindex="-1"></a>  <span class="at">agents_unavailable =</span> df_agents_unavailable,</span>
-<span id="cb22-615"><a href="#cb22-615" aria-hidden="true" tabindex="-1"></a>  <span class="at">critical_deadlines =</span> df_critical_deadlines,</span>
-<span id="cb22-616"><a href="#cb22-616" aria-hidden="true" tabindex="-1"></a>  <span class="at">news =</span> df_news,</span>
-<span id="cb22-617"><a href="#cb22-617" aria-hidden="true" tabindex="-1"></a>  <span class="at">agent_feature_summary =</span> agent_feature_summary,</span>
-<span id="cb22-618"><a href="#cb22-618" aria-hidden="true" tabindex="-1"></a>  <span class="at">communication_edges =</span> communication_edges,</span>
-<span id="cb22-619"><a href="#cb22-619" aria-hidden="true" tabindex="-1"></a>  <span class="at">communication_nodes =</span> communication_nodes,</span>
-<span id="cb22-620"><a href="#cb22-620" aria-hidden="true" tabindex="-1"></a>  <span class="at">communication_edges_weighted =</span> communication_edges_weighted,</span>
-<span id="cb22-621"><a href="#cb22-621" aria-hidden="true" tabindex="-1"></a>  <span class="at">communication_network =</span> communication_network</span>
-<span id="cb22-622"><a href="#cb22-622" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-623"><a href="#cb22-623" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-624"><a href="#cb22-624" aria-hidden="true" tabindex="-1"></a>output_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"MC1"</span>, <span class="st">"mc1_prepared_data.rds"</span>)</span>
-<span id="cb22-625"><a href="#cb22-625" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="fu">dirname</span>(output_path), <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb22-626"><a href="#cb22-626" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_rds</span>(prepared_mc1, output_path)</span>
-<span id="cb22-627"><a href="#cb22-627" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-628"><a href="#cb22-628" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">tibble</span>(</span>
-<span id="cb22-629"><a href="#cb22-629" aria-hidden="true" tabindex="-1"></a>  <span class="at">Output =</span> output_path,</span>
-<span id="cb22-630"><a href="#cb22-630" aria-hidden="true" tabindex="-1"></a>  <span class="at">Saved_Objects =</span> <span class="fu">length</span>(prepared_mc1)</span>
-<span id="cb22-631"><a href="#cb22-631" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb22-632"><a href="#cb22-632" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb22-633"><a href="#cb22-633" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-634"><a href="#cb22-634" aria-hidden="true" tabindex="-1"></a>A later page can load the prepared object with:</span>
-<span id="cb22-635"><a href="#cb22-635" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-638"><a href="#cb22-638" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb22-639"><a href="#cb22-639" aria-hidden="true" tabindex="-1"></a>prepared_mc1 <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_rds</span>(</span>
-<span id="cb22-640"><a href="#cb22-640" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"MC1"</span>, <span class="st">"mc1_prepared_data.rds"</span>)</span>
-<span id="cb22-641"><a href="#cb22-641" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-642"><a href="#cb22-642" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
-</div></div></div></div></div>
+  </script>
 </div> <!-- /content -->
 
 

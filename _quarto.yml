@@ -19,8 +19,8 @@ website:
         menu:
           - text: "Data Prepartion"
             href: "Methodology/Data Preparation.qmd"
-          - text: "Data Prepartion_Test"
-            href: "Methodology/Data Preparation_Test.qmd"
+          - text: "Statistical Analysis"
+            href: "Methodology/Statistical Analysis.qmd"
           
       - icon: card-list
         href: Findings.qmd
@@ -60,3 +60,6 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
+    code-fold: true
+
+editor: visual

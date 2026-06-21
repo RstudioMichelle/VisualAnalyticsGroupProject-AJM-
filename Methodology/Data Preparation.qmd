@@ -1,16 +1,9 @@
 ---
 title: "Data Preparation"
-toc: true
-toc-depth: 3
-number-sections: true
-format:
-  html:
-    code-fold: true
-    code-tools: true
 execute:
+  eval: true
   echo: true
   warning: false
-  message: false
   freeze: false
 ---
 
@@ -291,7 +284,6 @@ communication_timestamp_check <- communications %>%
   )
 
 knitr::kable(communication_timestamp_check)
-knitr::kable(duplicate_message_ids)
 ```
 
 # Communication feature engineering
