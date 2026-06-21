@@ -18,7 +18,7 @@ website:
         text: "Methodology"
         menu:
           - text: "Methodology"
-            href: Methodology.qmd
+            href: "Methodology/Data Preparation.qmd"
 
       - icon: card-list
         href: Findings.qmd
@@ -32,9 +32,9 @@ website:
         text: "Meeting Minutes"
         menu:
           - text: "Meeting Minutes 1"
-            href: Meeting_Minutes_Day1.qmd
+            href: "Meeting Minutes/Meeting_Minutes_Day1.qmd"
           - text: "Meeting Minutes 2"
-            href: Meeting_Minutes_Day2.qmd
+            href: "Meeting Minutes/Meeting_Minutes_Day2.qmd"
 
     right:
       - icon: people-fill

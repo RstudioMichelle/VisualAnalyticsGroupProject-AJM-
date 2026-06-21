@@ -1,0 +1,2609 @@
+---
+title: "Take-Home Exercise 2: VAST Challenge 2026 Mini-Challenge 1"
+author: "Javier Phang"
+date: "25 May, 2026"
+date-modified: "last-modified"
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# 1 **Overview**
+
+In this exercise, we will be tackling [Mini-case 1](https://vast-challenge.github.io/2026/MC1.html) of [VAST Challenge 2026.](https://vast-challenge.github.io/2026/index.html)
+
+## 1.1 **Background**
+
+TenantThread is a property technology company that uses AI-powered systems to manage tenant engagement and communication processes. During a confidential merger project known as Project HarborCrest, strict embargo controls were implemented to prevent sensitive information from being released before the official announcement.
+
+However, confidential merger-related information was leaked through AI-assisted communication channels prior to the embargo deadline. This raised concerns about whether the release was caused by deliberate actions, abnormal agent behaviour, or failures in the automated compliance system.
+
+This mini-challenge focuses on analysing communication logs, agent interactions, and environmental events to reconstruct the sequence of events leading to the embargo breach.
+
+## 1.2 **Objectives**
+
+This analysis aims to:
+
+1.  Reconstruct the sequence of events leading to the inappropriate release of confidential merger information by identifying key actions, causal relationships, communication patterns, and decision points involved in the embargo breach.
+2.  Examine the behaviours and interactions of the systems, agents, and individuals involved to understand how the release bypassed the embargo enforcement mechanisms.
+3.  Compare the behaviours leading to the release against prior historical behaviours to identify abnormal or unusual patterns.
+4.  Detect potential leading indicators and prior instances where agents or systems behaved differently from their expected behaviours.
+5.  Identify whether similar behavioural patterns had previously occurred and investigate why earlier incidents did not result in noticeable intervention or corrective action.
+6.  Evaluate whether the inappropriate release was primarily caused by deliberate actions, abnormal agent behaviour, or weaknesses within the automated compliance and communication systems.
+
+# 2 **Data Preparation and Initial Exploration**
+
+This section examines the Mini-Challenge 1 dataset and outlines the data preparation and exploratory steps performed prior to the visual analytics process.
+
+The raw JSON files were imported and transformed into structured tabular datasets to support downstream temporal, behavioural and network-based analysis. A preliminary exploratory analysis was carried out to gain a clearer understanding of the dataset's structure and relationships before moving on to a more in-depth investigation.
+
+## 2.1 **Loading Packages**
+
+The analysis primarily uses packages from the *tidyverse ecosystem* for data preprocessing, transformation, and exploratory analysis. Additional visual analytics libraries are incorporated to support network visualisation, temporal analysis, and interactive graphical exploration.
+
+::: callout-note
+You are required to install the R packages above, if necessary, before proceeding to the next step.
+:::
+
+In the code chunk below, *p_load()* of *pacman* package is used to load the R packages into R environment
+
+```{r}
+pacman::p_load(
+  tidyverse, jsonlite, tidygraph, ggraph,
+  knitr, lubridate, patchwork, igraph, 
+  ggiraph, readr, ggalluvial, visNetwork, gt, visNetwork, tidytext, ggrepel, ggplot2, DT
+)
+```
+
+### 2.1.1 **Visual Analytics and Functions**
+
+In addition to regular data wrangling packages, various specialized visual analytics libraries are included to facilitate network analysis, temporal investigation, and interactive visualization of the Mini-Challenge 1 dataset.
+
+The `tidygraph`, `ggraph`, and `igraph` packages are mainly utilized for analyzing communication networks and visualizing relationships among agents and systems related to the embargo breach.
+
+The lubridate library facilitates temporal analysis by handling timestamps, while `ggiraph` boosts interactivity in graphical results. The `patchwork` package serves to merge various visualizations into cohesive analytical layouts. Thus, these libraries enable exploratory analysis and visual storytelling to reveal behavioral trends and communication dynamics in the AI-supported business setting.
+
+```{r}
+packages <- tribble(
+  ~Library, ~Description,
+  "tidyverse", "Data preprocessing, transformation, and wrangling.",
+  "jsonlite", "Importing and parsing JSON communication datasets.",
+  "tidygraph", "Graph and network data manipulation.",
+  "ggraph", "Network visualisation and graph layouts.",
+  "igraph", "Network analytics, centrality calculations, and relationship analysis.",
+  "ggplot2", "Creating static statistical graphics and customised data visualisations.",
+  "lubridate", "Date-time processing and temporal analysis.",
+  "patchwork", "Combining multiple visualisations into cohesive analytical layouts.",
+  "ggiraph", "Interactive graphical visualisations.",
+  "readr", "Efficient import of structured communication datasets.",
+  "ggalluvial", "Visualising communication flow transitions and pathway structures.",
+  "visNetwork", "Interactive network and ego-network visualisations.",
+  "tidytext", "Text mining, TF-IDF analysis, and communication topic extraction.",
+  "ggrepel", "Improved label placement and overlap avoidance in visualisations.",
+  "DT", "Creating interactive tables for ranked summaries and evidence tables.",
+  "gt", "Formatting analytical summary tables and evidence matrices.",
+  "knitr", "Dynamic report generation and reproducible reporting in Quarto."
+)
+
+knitr::kable(packages)
+```
+
+## 2.2 **Importing and Preparing MC1 Data**
+
+For this exercise, the `MC1_final_00.json` dataset from Mini-Challenge 1 is used. Before getting started, the dataset should be stored in the `data/MC1/` sub-folder.
+
+::: Callout-warning
+This is a large data set. Please ensure that `data` has been added into the `.gitignore` file.
+:::
+
+In the code chunk below, `fromJSON()` from the `jsonlite` package is used to import the MC1 dataset into the R environment.
+
+```{r}
+mc1_data <- jsonlite::read_json(
+  "MC1_final_00.json",
+  simplifyVector = FALSE
+)
+```
+
+The imported JSON object is then saved as an `.rds` file to improve loading efficiency for subsequent analysis.
+
+```{r}
+dir.create("data/MC1", recursive = TRUE, showWarnings = FALSE)
+
+readr::write_rds(mc1_data, "data/MC1/mc1_data.rds")
+```
+
+The nested communication records were subsequently extracted and transformed into a structured tabular dataset suitable for downstream exploratory and visual analytics.
+
+```{r}
+communications <- map_dfr(mc1_data$rounds, function(round) {
+  
+  map_dfr(round$communications, function(msg) {
+    
+    tibble(
+      round_hour = round$hour,
+      message_id = msg$message_id,
+      agent_id = msg$agent_id,
+      agent_role = msg$agent_role,
+      channel = msg$channel,
+      message_type = msg$message_type,
+      recipients = paste(msg$recipients, collapse = ", "),
+      content = msg$content,
+      timestamp = msg$timestamp
+    )
+  })
+})
+```
+
+## 2.3 **Dataset Overview**
+
+Before conducting visual analytics, an initial exploration of the transformed communication dataset was performed to understand its structure, dimensions, and variable composition. This helps identify the key fields available for analysing communication behaviour, agent interactions, and temporal activity patterns.
+
+### Glimpse of Communication Dataset
+
+The `glimpse()` function is used to provide a compact overview of the transformed communication dataset.
+
+```{r}
+glimpse(communications)
+```
+
+### Dataset Dimensions
+
+```{r}
+dataset_summary <- tibble(
+  Measure = c("Number of communication records", 
+              "Number of variables",
+              "Number of unique agents",
+              "Number of communication channels",
+              "Number of simulation rounds"),
+  Value = c(
+    nrow(communications),
+    ncol(communications),
+    n_distinct(communications$agent_id),
+    n_distinct(communications$channel),
+    n_distinct(communications$round_hour)
+  )
+)
+
+knitr::kable(dataset_summary)
+```
+
+::: callout-note
+The transformed communication dataset contains message-level records extracted from the MC1 JSON file. Each row represents one communication event, including the sender, channel, message type, timestamp, and message content.
+:::
+
+## 2.4 **Data Quality Assessment**
+
+An initial assessment of data quality was carried out to identify missing values and verify the completeness of the transformed communication dataset prior to executing subsequent visual analytics.
+
+```{r}
+missing_summary <- communications %>%
+  summarise(across(everything(), ~sum(is.na(.)))) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "Variable",
+    values_to = "Missing_Count"
+  )
+
+knitr::kable(missing_summary)
+```
+
+::: callout-note
+The transformed communication dataset does not contain substantial missing values and is sufficiently complete for downstream temporal, behavioural, and network-based analysis.
+:::
+
+# 3 Data Wrangling and Communication Engineering
+
+This section engineers additional variables required to reconstruct the sequence of events, examine communication relationships, and identify behavioural indicators that may have contributed to the embargo breach. The engineered features are designed to support temporal, behavioural, and network-based visual analytics.
+
+## 3.1 Engineering Temporal Communication Features
+
+To reconstruct how the embargo breach unfolded, additional time-based variables were engineered from the original communication timestamps. These variables support event sequencing, communication timeline analysis, and identification of activity patterns before the inappropriate release.
+
+```{r}
+communications_clean <- communications %>%
+  mutate(
+    timestamp = ymd_hms(timestamp),
+    round_hour = ymd_hms(round_hour),
+
+    communication_date = as_date(timestamp),
+    communication_hour = hour(timestamp),
+    communication_day = wday(timestamp, label = TRUE),
+
+    communication_period = case_when(
+      communication_hour >= 6 & communication_hour < 12 ~ "Morning",
+      communication_hour >= 12 & communication_hour < 18 ~ "Afternoon",
+      communication_hour >= 18 & communication_hour < 24 ~ "Evening",
+      TRUE ~ "Late Night"
+    ),
+
+    days_before_embargo_breach =
+      as.numeric(as_date("2046-06-05") - communication_date),
+
+    near_breach_window = case_when(
+      days_before_embargo_breach <= 2 ~ "Critical Period",
+      days_before_embargo_breach <= 5 ~ "Escalation Period",
+      TRUE ~ "Normal Period"
+    ),
+
+    message_sequence = row_number()
+  )
+```
+
+The engineered temporal variables are verified below.
+
+```{r}
+communications_clean %>%
+  select(
+    timestamp,
+    communication_date,
+    communication_hour,
+    communication_day,
+    communication_period,
+    days_before_embargo_breach,
+    near_breach_window,
+    message_sequence
+  ) %>%
+  head()
+```
+
+::: callout-note
+The `days_before_embargo_breach` variable ties the communication timeline to the breach date of June 5, 2046, facilitating subsequent analysis to contrast typical communication patterns with actions nearer to the embargo violation.
+:::
+
+## 3.2 Classifying Communication Scope and Exposure Risk
+
+To investigate how embargoed information may have propagated across different communication environments, communication channels were grouped into broader communication scopes based on their risk of exposure.
+
+The classification distinguishes between public-facing communication, private exchanges, internal coordination discussions, and side-channel interactions. This supports downstream analysis of whether sensitive information gradually transitioned from internal discussions into externally visible communication channels prior to the embargo breach.
+
+The unique communication channels are first examined to understand the types of communication environments present in the dataset before defining broader communication scope categories.
+
+```{r}
+communications_clean %>%
+  distinct(channel) %>%
+  arrange(channel) %>%
+  knitr::kable()
+```
+
+```{r}
+communications_clean <- communications_clean %>%
+  mutate(
+    communication_scope = case_when(
+      channel %in% c("official_post", "personal_post") ~ "Public",
+      channel %in% c("one_on_one_chat") ~ "Private",
+      channel %in% c("side_huddle") ~ "Side-channel",
+      channel %in% c("comms_huddle") ~ "Internal Group",
+      TRUE ~ "Other"
+    ),
+
+    exposure_risk_level = case_when(
+      communication_scope == "Public" ~ "High Exposure",
+      communication_scope == "Side-channel" ~ "Moderate Exposure",
+      communication_scope == "Private" ~ "Low Exposure",
+      communication_scope == "Internal Group" ~ "Controlled Exposure",
+      TRUE ~ "Unknown"
+    ),
+
+    is_public_channel = communication_scope == "Public"
+  )
+```
+
+The communication scope classifications are verified below.
+
+```{r}
+communications_clean %>% 
+  count(
+    channel,
+    communication_scope,
+    exposure_risk_level
+  ) %>% 
+  arrange(desc(n)) %>% 
+  knitr::kable()
+```
+
+::: callout-note
+The engineered communication scope categories support downstream investigation of how merger-related information may have propagated across communication environments with different levels of exposure risk prior to the embargo breach.
+:::
+
+## 3.3 Engineering Embargo and Merger-related Communication Indicators
+
+To support downstream behavioural and anomaly analysis, further text-based indicators were developed to pinpoint communication records possibly linked to merger talks, embargo-related issues, and governance risks.
+
+Keyword-based indicators were created to identify mentions concerning Project HarborCrest, CivicLoom, enforcement of embargoes, discussions on compliance, and potential information leakage behaviour.
+
+```{r}
+communications_clean <- communications_clean %>%
+  mutate(
+    content_lower = str_to_lower(content),
+
+    contains_project_terms = str_detect(
+      content_lower,
+      "harborcrest|civicloom|merger|rebrand|capital|deal"
+    ),
+
+    contains_embargo_terms = str_detect(
+      content_lower,
+      "embargo|judge|compliance|approved|blocked|deadline"
+    ),
+
+    contains_public_exposure_terms = str_detect(
+      content_lower,
+      "public|post|fle?x|release|leak|disclose|announcement"
+    ),
+
+    contains_pressure_terms = str_detect(
+      content_lower,
+      "pressure|urgent|concern|risk|legal|scrutiny|journal|algorithmiceviction"
+    ),
+
+    message_length = str_length(content),
+    word_count = str_count(content, "\\S+"),
+
+    risk_signal_score =
+      as.integer(contains_project_terms) +
+      as.integer(contains_embargo_terms) +
+      as.integer(contains_public_exposure_terms) +
+      as.integer(contains_pressure_terms),
+
+    risk_signal_group = case_when(
+      risk_signal_score >= 3 ~ "High Signal",
+      risk_signal_score == 2 ~ "Moderate Signal",
+      risk_signal_score == 1 ~ "Low Signal",
+      TRUE ~ "No Signal"
+)
+  )
+```
+
+```{r}
+communications_clean %>%
+  count(risk_signal_group) %>%
+  arrange(desc(n)) %>%
+  knitr::kable()
+```
+
+::: callout-note
+The `risk_signal_score` consolidates multiple case-specific indicators into a single behavioural signal. This supports downstream analysis of whether merger-related, embargo-related, public exposure, and pressure-related communication increased closer to the breach.
+:::
+
+## 3.4 **Preparing Communication Nodes and Edges**
+
+To facilitate downstream network-oriented visual analytics, the transformed communication records were reshaped into node and edge formats appropriate for graph analysis.
+
+The node table represents the communication participants within the simulation environment, whereas the edge table records the directional relationships between senders and receivers through various communication channels.
+
+### Preparing Communication Edges
+
+The communication recipients were subsequently separated to construct directional sender-recipient relationships suitable for network analysis.
+
+```{r}
+communication_edges <- communications_clean %>%
+  separate_rows(recipients, sep = ", ") %>%
+  mutate(
+    source = str_trim(agent_id),
+    target = str_trim(recipients)
+  ) %>%
+  filter(
+    !is.na(source),
+    !is.na(target),
+    source != "",
+    target != "",
+    target != "ALL"
+  ) %>%
+  transmute(
+    source,
+    target,
+    channel,
+    communication_scope,
+    exposure_risk_level,
+    risk_signal_group,
+    timestamp
+  )
+```
+
+The structure of the communication edges is examined below.
+
+```{r}
+glimpse(communication_edges)
+```
+
+### Preparing Communication Nodes
+
+The communication relationships were aggregated from both senders and recipients to ensure that all participants appearing in the edge table are represented in the network.
+
+```{r}
+communication_nodes <- tibble(
+  node_id = unique(c(
+    communication_edges$source,
+    communication_edges$target
+  ))
+) %>%
+  left_join(
+    communications_clean %>%
+      distinct(agent_id, agent_role) %>%
+      rename(node_id = agent_id, role = agent_role),
+    by = "node_id"
+  ) %>%
+  mutate(
+    role = replace_na(role, "Recipient / System")
+  )
+```
+
+The structure of the communication nodes is examined below..
+
+```{r}
+glimpse(communication_nodes)
+```
+
+### Preparing Weighted Communication Edges
+
+The communication relationships were aggregated to calculate interaction intensity between sender-recipient pairs.
+
+```{r}
+communication_edges_weighted <- communication_edges %>%
+  count(
+    source,
+    target,
+    communication_scope,
+    exposure_risk_level,
+    risk_signal_group,
+    name = "weight"
+  ) %>%
+  mutate(
+    interaction_intensity = case_when(
+      weight >= 10 ~ "High Interaction",
+      weight >= 5 ~ "Moderate Interaction",
+      TRUE ~ "Low Interaction"
+    )
+  )
+```
+
+```{r}
+head(communication_edges_weighted)
+```
+
+The relationship between interaction intensity and behavioural risk signals is further examined below.
+
+```{r}
+communication_edges_weighted %>%
+  count(
+    interaction_intensity,
+    risk_signal_group
+  ) %>%
+  arrange(desc(n)) %>%
+  knitr::kable()
+```
+
+The overall size of the prepared network components is summarised below.
+
+```{r}
+tibble(
+  Measure = c(
+    "Number of communication nodes",
+    "Number of communication edges",
+    "Number of weighted communication edges"
+  ),
+  Value = c(
+    nrow(communication_nodes),
+    nrow(communication_edges),
+    nrow(communication_edges_weighted)
+  )
+) %>%
+  knitr::kable()
+```
+
+::: callout-note
+The engineered node and edge structures support downstream investigation of communication flow, interaction intensity, and potential information propagation pathways associated with the embargo breach.
+:::
+
+## 3.5 **Constructing the Communication Network**
+
+The prepared communication nodes and edges were subsequently combined into a directed communication network suitable for downstream graph visualization and network analysis.
+
+The communication network records the directional flow of information among participants and enables further examination of communication trends, interaction strength, and possible pathways of information dissemination linked to the embargo violation.
+
+```{r}
+communication_network <- tbl_graph(
+  nodes = communication_nodes,
+  edges = communication_edges_weighted,
+  directed = TRUE
+)
+```
+
+The structure of the constructed communication network is examined below.
+
+```{r}
+communication_network
+```
+
+::: callout-note
+The constructed communication network serves as the foundation for subsequent visual analytics involving communication flow, network centrality, behavioural escalation, and potential dissemination pathways related to the inappropriate release.
+:::
+
+# 4 **Exploratory Communication and Behaviour Analysis**
+
+This section investigates whether warning signals were observable before the inappropriate release occurred. The analysis examines communication activity, behavioural risk signals, communication environments, exposure-risk behaviours, and high-risk communication pathways across the Normal, Escalation, and Critical Periods.
+
+The objective is to determine whether the release emerged suddenly or was preceded by measurable behavioural and communication changes. Findings from this section provide the initial evidence base for identifying potential risk escalation patterns before reconstructing the communication network in Section 5.
+
+## 4.1 Are There Signs of Escalating Communication Before the Breach?
+
+This section investigates whether communication activity exhibited unusual escalation patterns approaching the embargo breach on June 5, 2046.
+
+The analysis focuses on identifying:
+
+-   increases in communication activity,
+-   escalation in behavioural risk indicators,
+-   abnormal communication behaviour,
+-   and potential warning signs preceding the inappropriate release.
+
+These behavioural patterns may provide early evidence of communication instability, coordination stress, or weakening embargo controls prior to the breach.
+
+::::: panel-tabset
+### Daily Communication Activity
+
+```{r}
+communication_daily <- communications_clean %>%
+  count(communication_date)
+
+ggplot(
+  communication_daily,
+  aes(x = communication_date, y = n)
+) +
+  
+  annotate(
+    "rect",
+    xmin = as.Date("2046-06-03"),
+    xmax = as.Date("2046-06-05"),
+    ymin = -Inf,
+    ymax = Inf,
+    alpha = 0.1,
+    fill = "red"
+  ) +
+  
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2.5) +
+  
+  geom_vline(
+    xintercept = as.Date("2046-06-05"),
+    linetype = "dashed",
+    colour = "red"
+  ) +
+  
+  annotate(
+    "text",
+    x = as.Date("2046-06-05"),
+    y = max(communication_daily$n, na.rm = TRUE),
+    label = "Embargo Breach",
+    hjust = 1.05,
+    colour = "red"
+  ) +
+  
+  scale_y_log10() +
+  
+  labs(
+    title = "Daily Communication Activity Prior to the Embargo Breach",
+    x = "Communication Date",
+    y = "Number of Communications (Log Scale)"
+  ) +
+  
+  theme_minimal()
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   Communication activity remained relatively stable at approximately 25–40 messages per day before increasing sharply to more than 500 messages on 5 June 2046.
+
+-   This represents a substantial departure from historical communication levels and indicates a sudden escalation in coordination activity immediately before the embargo breach.
+
+-   No comparable spikes were observed during the earlier investigation period, suggesting that the communication surge was unique to the breach window.
+
+-   The timing of this escalation indicates that abnormal communication volume may have served as an observable warning signal prior to the inappropriate release.
+:::
+
+### Behavioural Risk Signals Over Time
+
+```{r}
+risk_signal_timeline <- communications_clean %>%
+  count(
+    communication_date,
+    risk_signal_group
+  )
+
+risk_signal_timeline$risk_signal_group <- factor(
+  risk_signal_timeline$risk_signal_group,
+  levels = c(
+    "No Signal",
+    "Low Signal",
+    "Moderate Signal",
+    "High Signal"
+  )
+)
+
+ggplot(
+  risk_signal_timeline,
+  aes(
+    x = communication_date,
+    y = n,
+    fill = risk_signal_group
+  )
+) +
+  annotate(
+    "rect",
+    xmin = as.Date("2046-06-03"),
+    xmax = as.Date("2046-06-05"),
+    ymin = -Inf,
+    ymax = Inf,
+    alpha = 0.1,
+    fill = "red"
+  ) +
+  geom_col(position = "stack") +
+  geom_vline(
+    xintercept = as.Date("2046-06-05"),
+    linetype = "dashed",
+    colour = "red"
+  ) +
+  labs(
+    title = "Behavioural Risk Signals Leading Up to the Embargo Breach",
+    subtitle = "Stacked daily risk signals highlight escalation before the inappropriate release",
+    x = "Communication Date",
+    y = "Number of Communications",
+    fill = "Risk Signal"
+  ) +
+  theme_minimal()
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   Prior to the Critical Period, most communications were classified as No Signal or Low Signal, indicating relatively routine operational activity.
+
+-   On 5 June 2046, total communication volume increased to nearly 500 messages while Moderate Signal and High Signal communications increased substantially.
+
+-   The simultaneous increase in communication volume and risk severity suggests that the breach was preceded by both behavioural escalation and elevated communication risk.
+
+-   This pattern provides evidence that warning signals were observable before the inappropriate release rather than emerging only after the breach occurred.
+:::
+:::::
+
+## 4.2 How Did Communication Behaviour Shift Across Communication Environments?
+
+This section investigates whether communication behaviour progressively shifted across different communication environments prior to the embargo breach on June 5, 2046.
+
+The analysis focuses on examining changes in communication scope, exposure-risk escalation, and the potential breakdown of communication containment surrounding embargo-sensitive information.
+
+### Communication Environment Distribution
+
+```{r}
+communication_scope_distribution <- communications_clean %>%
+  count(
+    near_breach_window,
+    communication_scope
+  ) %>%
+  group_by(near_breach_window) %>%
+  mutate(
+    percentage = n / sum(n),
+    percentage_label = scales::percent(
+      percentage,
+      accuracy = 1
+    )
+  )
+
+ggplot(
+  communication_scope_distribution,
+  aes(
+    x = near_breach_window,
+    y = percentage,
+    fill = communication_scope
+  )
+) +
+  
+  geom_col(
+    position = "fill",
+    width = 0.7
+  ) +
+  
+  geom_text(
+    aes(label = percentage_label),
+    position = position_fill(vjust = 0.5),
+    size = 3,
+    colour = "white",
+    check_overlap = TRUE
+  ) +
+  
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  
+  labs(
+    title = "Communication Environment Distribution Across Breach Windows",
+    subtitle = "Comparing communication environments before the embargo breach",
+    x = "Breach Window",
+    y = "Percentage of Communications",
+    fill = "Communication Scope"
+  ) +
+  
+  theme_minimal() +
+  
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   Internal group communication remained the dominant communication environment across all breach windows, accounting for approximately 61% of communication activity during the normal period, 62% during the escalation period, and 46% during the critical breach period.
+
+-   A noticeable behavioural shift emerged during the critical breach period, where communication activity became more distributed across public-facing, side-channel, and other communication environments.
+
+-   In particular, side-channel communication increased substantially from approximately 4% during the normal period to nearly 20% during the critical breach period, suggesting that communication behaviour became less contained closer to the inappropriate release.
+
+-   The increasing presence of communication activity across higher-exposure environments near the breach may indicate weakening communication containment surrounding sensitive merger-related discussions.
+:::
+
+### Exposure-risk Communication Behaviour
+
+```{r}
+exposure_risk_heatmap <- communications_clean %>%
+  count(
+    near_breach_window,
+    exposure_risk_level
+  ) %>%
+  mutate(
+    near_breach_window = factor(
+      near_breach_window,
+      levels = c(
+        "Normal Period",
+        "Escalation Period",
+        "Critical Period"
+      )
+    ),
+    
+    exposure_risk_level = factor(
+      exposure_risk_level,
+      levels = c(
+        "Controlled Exposure",
+        "Low Exposure",
+        "Moderate Exposure",
+        "High Exposure",
+        "Unknown"
+      )
+    )
+  )
+
+ggplot(
+  exposure_risk_heatmap,
+  aes(
+    x = near_breach_window,
+    y = exposure_risk_level,
+    fill = n
+  )
+) +
+  geom_tile(
+    colour = "white",
+    linewidth = 0.6
+  ) +
+  geom_text(
+    aes(label = n),
+    size = 4,
+    colour = "black"
+  ) +
+  scale_fill_gradient(
+    low = "#dbe9f6",
+    high = "#08306b"
+  ) +
+  labs(
+    title = "Exposure-risk Communication Across Breach Windows",
+    subtitle = "Comparing communication exposure levels before the embargo breach",
+    x = "Breach Window",
+    y = "Exposure-risk Level",
+    fill = "Messages"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.text.x = element_text(angle = 0),
+    legend.position = "right"
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   Controlled exposure communication accounted for the largest communication volume across all breach windows, increasing from 201 messages during the Normal Period to 237 messages during the Critical Period.
+
+-   Low exposure communication activity also increased noticeably near the breach, rising from 90 messages during the Normal Period to 138 messages during the Critical Period.
+
+-   Although high exposure communication represented a smaller share of total communication activity, it remained consistently present across all breach windows, with 29 messages recorded during the Normal Period and 33 messages during the Critical Period.
+
+-   The Critical Period exhibited higher communication activity across most exposure-risk categories, while moderate- and high-exposure communications were already observable in earlier periods. This suggests that warning signals existed before the breach but intensified substantially as the inappropriate release approached.
+:::
+
+## 4.3 Which Communication Relationships Became More Concentrated Near the Breach?
+
+This section investigates whether high-risk communication activity became increasingly concentrated among specific sender-recipient relationships prior to the embargo breach on June 5, 2046.
+
+The analysis focuses on identifying repeated high-risk communication pathways, recurring coordination behaviour, and communication relationships associated with elevated behavioural risk signals.
+
+These interaction patterns may provide early indications of concentrated coordination activity or communication routes that contributed to embargo-sensitive information bypassing normal containment controls.
+
+```{r}
+top_high_risk_flows <- communication_edges_weighted %>%
+  filter(
+    risk_signal_group == "High Signal"
+  ) %>%
+  arrange(desc(weight)) %>%
+  slice_head(n = 8) %>%
+  mutate(
+    source = str_replace_all(source, "_agent", ""),
+    target = str_replace_all(target, "_agent", ""),
+    source = str_replace_all(source, "_", " "),
+    target = str_replace_all(target, "_", " "),
+    source = str_to_title(source),
+    target = str_to_title(target)
+  )
+
+ggplot(
+  top_high_risk_flows,
+  aes(
+    axis1 = source,
+    axis2 = target,
+    y = weight
+  )
+) +
+  geom_alluvium(
+    aes(fill = risk_signal_group),
+    width = 1/12,
+    alpha = 0.8
+  ) +
+  geom_stratum(
+    width = 1/12,
+    fill = "grey90",
+    colour = "grey40"
+  ) +
+  geom_text(
+    stat = "stratum",
+    aes(label = after_stat(stratum)),
+    size = 3
+  ) +
+  scale_x_discrete(
+    limits = c("Source", "Target"),
+    expand = c(.1, .1)
+  ) +
+  labs(
+    title = "High-risk Communication Pathways Prior to the Embargo Breach",
+    subtitle = "Repeated high-risk sender-recipient pathways by interaction frequency",
+    x = "",
+    y = "Interaction Frequency",
+    fill = "Risk Signal"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   High-risk communications were concentrated among a small number of sender-recipient pathways rather than being distributed across the wider communication network.
+
+-   Legal, Social Media, PR, and Platform Trust appeared most frequently within the strongest high-risk pathways, indicating that elevated-risk discussions were largely confined to a core operational group.
+
+-   Several pathways showed repeated interactions between the same actors, suggesting ongoing coordination rather than isolated high-risk messages.
+
+-   The concentration of elevated-risk communications within this tightly connected cluster highlights potential channels through which embargo-sensitive information could have propagated prior to the inappropriate release.
+:::
+
+## 4.4 How Did the Critical-period High-risk Communication Network Form?
+
+This section explores how high-risk communication relationships evolved during the critical breach period approaching the embargo violation on June 5, 2046.
+
+Rather than visualising the entire communication system, the analysis focuses specifically on repeated high-risk communication pathways observed near the breach. This helps identify whether communication behaviour became increasingly concentrated among a smaller group of communication participants during the critical period.
+
+By examining the structure of the high-risk communication network, this section aims to identify repeated coordination pathways, influential communication participants, and interaction patterns that may have contributed to embargo-sensitive information bypassing normal communication controls.
+
+### High-risk Communication Cluster Evolution
+
+```{r}
+critical_high_risk_edges <- communication_edges %>%
+  filter(
+    risk_signal_group == "High Signal",
+    as.Date(timestamp) >= as.Date("2046-06-03")
+  ) %>%
+  count(
+    source,
+    target,
+    name = "weight"
+  ) %>%
+  arrange(desc(weight)) %>%
+  slice_head(n = 25) %>%
+  mutate(
+    source_label = source %>%
+      str_replace_all("_agent", "") %>%
+      str_replace_all("_", " ") %>%
+      str_to_title(),
+    target_label = target %>%
+      str_replace_all("_agent", "") %>%
+      str_replace_all("_", " ") %>%
+      str_to_title()
+  )
+
+vis_nodes <- tibble(
+  id = unique(c(
+    critical_high_risk_edges$source_label,
+    critical_high_risk_edges$target_label
+  ))
+) %>%
+  mutate(
+    label = id,
+    group = case_when(
+      str_detect(str_to_lower(id), "legal") ~ "Legal",
+      str_detect(str_to_lower(id), "social") ~ "Social Media",
+      str_detect(str_to_lower(id), "pr") ~ "PR",
+      str_detect(str_to_lower(id), "platform|trust") ~ "Platform Trust",
+      TRUE ~ "Other"
+    ),
+    value = 20
+  )
+
+vis_edges <- critical_high_risk_edges %>%
+  transmute(
+    from = source_label,
+    to = target_label,
+    value = weight,
+    title = paste("Interaction Frequency:", weight),
+    arrows = "to"
+  )
+
+visNetwork(
+  vis_nodes,
+  vis_edges,
+  height = "600px",
+  width = "100%"
+) %>%
+  visGroups(groupname = "Legal", color = "#fb8072") %>%
+  visGroups(groupname = "Social Media", color = "#80b1d3") %>%
+  visGroups(groupname = "PR", color = "#b3de69") %>%
+  visGroups(groupname = "Platform Trust", color = "#bebada") %>%
+  visGroups(groupname = "Other", color = "#d9d9d9") %>%
+  visEdges(
+    smooth = TRUE,
+    color = list(color = "#cb181d", opacity = 0.55)
+  ) %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE
+  ) %>%
+  visInteraction(
+    navigationButtons = TRUE,
+    dragNodes = TRUE,
+    zoomView = TRUE
+  ) %>%
+  visLayout(randomSeed = 608)
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   High-risk communication activity became increasingly concentrated within a smaller group of participants during the Critical Period, indicating that elevated-risk interactions were no longer distributed across the broader communication network.
+
+-   Legal, PR, Social Media, and Platform Trust appeared repeatedly within the core high-risk communication cluster, suggesting that embargo-sensitive discussions were largely confined to a closely connected operational group.
+
+-   Several communication pathways displayed substantially thicker directional flows, particularly among Legal, PR, and Social Media participants, indicating sustained coordination rather than isolated one-off interactions.
+
+-   Intern and Judge remained comparatively less connected to the central high-risk cluster, while the dense concentration of repeated interactions among the core participants suggests that embargo-sensitive information may have circulated through a small but highly interconnected communication network prior to the inappropriate release.
+:::
+
+## 4.5 Did Earlier Elevated-risk Communication Patterns Exist Before the Critical Breach Period?
+
+This section investigates whether earlier elevated-risk communication patterns were already present before the critical breach period on June 5, 2046.
+
+Instead of focusing only on final high-risk communication behaviour, the analysis compares selected warning indicators before and during the critical period.
+
+```{r}
+warning_indicator_summary <- communications_clean %>%
+  mutate(
+    communication_date = as.Date(timestamp),
+    
+    breach_period = case_when(
+      communication_date < as.Date("2046-06-03") ~ "Before Critical Period",
+      TRUE ~ "Critical Period"
+    )
+  ) %>%
+  group_by(breach_period) %>%
+  summarise(
+    `Moderate-risk communications` = sum(
+      risk_signal_group == "Moderate Signal",
+      na.rm = TRUE
+    ),
+    
+    `High-risk communications` = sum(
+      risk_signal_group == "High Signal",
+      na.rm = TRUE
+    ),
+    
+    `Moderate + high-risk communications` =
+      `Moderate-risk communications` + `High-risk communications`,
+    
+    `Public / side-channel communications` = sum(
+      communication_scope %in% c("Public", "Side-channel"),
+      na.rm = TRUE
+    ),
+    
+    .groups = "drop"
+  ) %>%
+  complete(
+    breach_period = c(
+      "Before Critical Period",
+      "Critical Period"
+    ),
+    fill = list(
+      `Moderate-risk communications` = 0,
+      `High-risk communications` = 0,
+      `Moderate + high-risk communications` = 0,
+      `Public / side-channel communications` = 0
+    )
+  ) %>%
+  pivot_longer(
+    cols = -breach_period,
+    names_to = "warning_indicator",
+    values_to = "count"
+  ) %>%
+  mutate(
+    breach_period = factor(
+      breach_period,
+      levels = c(
+        "Before Critical Period",
+        "Critical Period"
+      )
+    ),
+    
+    warning_indicator = factor(
+      warning_indicator,
+      levels = c(
+        "Public / side-channel communications",
+        "Moderate-risk communications",
+        "High-risk communications",
+        "Moderate + high-risk communications"
+      )
+    )
+  )
+
+ggplot(
+  warning_indicator_summary,
+  aes(
+    x = warning_indicator,
+    y = count,
+    fill = breach_period
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.75),
+    width = 0.65
+  ) +
+  geom_text(
+    aes(label = scales::comma(count)),
+    position = position_dodge(width = 0.75),
+    hjust = -0.15,
+    size = 3
+  ) +
+  coord_flip() +
+  scale_fill_manual(
+    values = c(
+      "Before Critical Period" = "#737373",
+      "Critical Period" = "#cb181d"
+    )
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.18))
+  ) +
+  labs(
+    title = "Early Warning Indicators Before and During the Critical Period",
+    subtitle = "Comparing elevated-risk signals before and near the breach",
+    x = "",
+    y = "Number of Communications",
+    fill = "Breach Period"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+To quantify the visual comparison, the warning indicators are summarised below to show the scale of escalation from the earlier period to the critical breach period.
+
+```{r}
+warning_escalation_summary <- warning_indicator_summary %>%
+  select(
+    breach_period,
+    warning_indicator,
+    count
+  ) %>%
+  pivot_wider(
+    names_from = breach_period,
+    values_from = count,
+    values_fill = 0
+  ) %>%
+  mutate(
+    `Increase` = `Critical Period` - `Before Critical Period`,
+    
+    `Escalation Multiplier` = if_else(
+      `Before Critical Period` == 0,
+      NA_real_,
+      `Critical Period` / `Before Critical Period`
+    ),
+    
+    `Escalation Multiplier` = case_when(
+      is.na(`Escalation Multiplier`) ~ "New signal",
+      TRUE ~ paste0(round(`Escalation Multiplier`, 1), "x")
+    ),
+    
+    `Analytical Interpretation` = case_when(
+      warning_indicator == "High-risk communications" ~
+        "Severe risk signals intensified sharply during the critical period.",
+      
+      warning_indicator == "Moderate + high-risk communications" ~
+        "Overall elevated-risk behaviour was present earlier but escalated strongly near the breach.",
+      
+      warning_indicator == "Moderate-risk communications" ~
+        "Earlier moderate warning signs existed but became more pronounced during the critical period.",
+      
+      warning_indicator == "Public / side-channel communications" ~
+        "Communication exposure increased, suggesting weaker containment near the breach.",
+      
+      TRUE ~ "Review required."
+    )
+  ) %>%
+  arrange(desc(`Critical Period`))
+
+warning_escalation_summary %>%
+  rename(
+    `Warning Indicator` = warning_indicator
+  ) %>%
+  knitr::kable(
+    caption = "Warning indicator escalation summary before and during the critical breach period"
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   Prior elevated-risk communication patterns existed before the critical breach timeframe, with 49 moderate-to-high risk communications recorded before June 3, 2046. This suggests that warning signs existed earlier, but at a much lower level.
+
+-   The critical period demonstrated a significant rise in elevated-risk communication, jumping from 49 to 337 moderate-to-high risk communications. This signifies a 6.9 times increase, showing that risk signals became significantly more apparent close to the breach.
+
+-   High-risk communication showed the strongest increase, rising from 9 earlier high-risk communications to 193 during the critical period. This 21.4 times increase suggests that severe communication risk intensified rapidly close to the inappropriate release.
+
+-   Public and side-channel communication increased from 44 to 132 communications, indicating that communication risk was increasing in both volume and exposure within less-contained communication contexts.
+:::
+
+## 4.6 What Warning Evidence Emerged Before the Network Reconstruction?
+
+This section summarizes the key behavioural and communication warning evidence discovered through the exploratory analysis. Instead of presenting an additional independent visual, the analysis encapsulates the changes in communication activities, behavioural risk signals, communication environments, high-risk pathways, and warning indicators that occurred before the embargo breach.
+
+This provides an interim evidence base before moving into the detailed network reconstruction in Section 5.
+
+```{r}
+section4_evidence_summary <- tibble(
+  `Analytical Area` = c(
+    "Communication Escalation",
+    "Behavioural Risk Escalation",
+    "Communication Environment Shift",
+    "Exposure-risk Behaviour",
+    "High-risk Communication Concentration",
+    "Earlier Warning Indicators"
+  ),
+
+  `Key Evidence` = c(
+    "Daily messages increased from ~25–40 to over 500 on 5 Jun 2046.",
+    "Moderate- and high-risk signals increased substantially during the Critical Period.",
+    "Side-channel communication increased from 4% to 19%.",
+    "Moderate- and high-exposure communications existed before the breach and intensified later.",
+    "Legal, PR, Social Media, and Platform Trust became increasingly connected through repeated high-risk interactions.",
+    "Moderate-to-high risk communications increased from 49 to 337."
+  ),
+
+  `MC1 Relevance` = c(
+    "Indicates abnormal activity before the breach.",
+    "Suggests observable warning signals before the release.",
+    "Indicates weakening communication containment.",
+    "Shows warning signals were already present.",
+    "Identifies key actors and relationships involved.",
+    "Explains why earlier signals may have been overlooked."
+  )
+)
+```
+
+### Interim finding
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Interim Finding
+
+-   Multiple warning signals emerged before the inappropriate release, including a surge in daily communication activity, increasing behavioural risk signals, growth in side-channel communications, and the concentration of high-risk communication pathways.
+
+-   Earlier warning indicators were already observable before June 3, 2046, with 49 moderate-to-high risk communications recorded prior to the Critical Period. However, this increased sharply to 337 during the Critical Period.
+
+-   The escalation was accompanied by increasingly concentrated communication activity involving Legal, PR, Social Media, and Platform Trust, suggesting that elevated-risk information flow became progressively more coordinated near the breach.
+
+-   These findings suggest that the inappropriate release was preceded by a combination of behavioural escalation, communication pathway concentration, and elevated-risk interactions rather than a single isolated event.
+:::
+
+# 5 Reconstructing the Embargo Breach Through Communication Networks and Text Evidence
+
+While Section 4 identified warning signals and behavioural changes preceding the release, it did not explain how information moved between participants.
+
+This section reconstructs the communication network during the breach period to identify the participants, relationships, and communication pathways associated with elevated-risk interactions. The analysis examines network structure, communication roles, bridge participants, thematic communication patterns, and behavioural deviations to understand how embargo-sensitive information may have circulated before the inappropriate release.
+
+## 5.1 Which Participants Became Central to the Breach-period Communication Network?
+
+This section identifies the participant most actively connected within elevated-risk communication during the critical breach period.
+
+Rather than showing the full communication network, the analysis focuses on the direct ego network of the most active participant. This helps reveal the immediate communication relationships surrounding the breach-related evidence trail. The ego-network visualisation approach was informed by the network analytics techniques presented in [Chapter 29 (Network Analytics)](https://r4va.netlify.app/chap29), which demonstrates how graph-based methods can be used to examine communication structures and participant relationships.
+
+```{r}
+#| fig-width: 12
+#| fig-height: 9
+#| out-width: "100%"
+
+clean_actor <- function(x) {
+  x %>%
+    str_replace_all("_agent", "") %>%
+    str_replace_all("_", " ") %>%
+    str_squish() %>%
+    str_to_title()
+}
+
+breach_edges <- communication_edges %>%
+  mutate(
+    communication_date = as.Date(timestamp),
+    source = clean_actor(source),
+    target = clean_actor(target)
+  ) %>%
+  filter(
+    communication_date >= as.Date("2046-06-03"),
+    risk_signal_group %in% c("Moderate Signal", "High Signal"),
+    !is.na(source),
+    !is.na(target),
+    source != "",
+    target != "",
+    source != target
+  ) %>%
+  count(
+    source,
+    target,
+    risk_signal_group,
+    name = "weight"
+  ) %>%
+  group_by(source, target) %>%
+  summarise(
+    weight = sum(weight),
+    high_signal_weight = sum(weight[risk_signal_group == "High Signal"], na.rm = TRUE),
+    moderate_signal_weight = sum(weight[risk_signal_group == "Moderate Signal"], na.rm = TRUE),
+    dominant_risk_signal = if_else(
+      high_signal_weight >= moderate_signal_weight,
+      "High Signal",
+      "Moderate Signal"
+    ),
+    .groups = "drop"
+  )
+
+node_activity <- bind_rows(
+  breach_edges %>%
+    transmute(id = source, activity = weight),
+  
+  breach_edges %>%
+    transmute(id = target, activity = weight)
+) %>%
+  group_by(id) %>%
+  summarise(
+    total_activity = sum(activity),
+    .groups = "drop"
+  )
+
+anchor_actor <- node_activity %>%
+  arrange(desc(total_activity)) %>%
+  slice(1) %>%
+  pull(id)
+
+ego_edges <- breach_edges %>%
+  filter(
+    source == anchor_actor |
+      target == anchor_actor
+  ) %>%
+  arrange(desc(weight)) %>%
+  slice_head(n = 8)
+
+ego_nodes <- tibble(
+  id = unique(c(ego_edges$source, ego_edges$target))
+) %>%
+  left_join(
+    node_activity,
+    by = "id"
+  ) %>%
+  mutate(
+    label = id,
+    value = total_activity,
+    group = case_when(
+      id == anchor_actor ~ "Anchor Participant",
+      id %in% c("Legal", "PR", "Social Media", "Platform Trust") ~ "Core Participant",
+      TRUE ~ "Peripheral Participant"
+    ),
+    title = paste0(
+      "<b>", id, "</b><br>",
+      "Total weighted activity: ", total_activity
+    )
+  )
+
+ego_edges_vis <- ego_edges %>%
+  transmute(
+    from = source,
+    to = target,
+    value = weight,
+    arrows = "to",
+    title = paste0(
+      "Interaction frequency: ", weight,
+      "<br>High-signal interactions: ", high_signal_weight,
+      "<br>Moderate-signal interactions: ", moderate_signal_weight
+    ),
+    color = if_else(
+      dominant_risk_signal == "High Signal",
+      "#cb181d",
+      "#fdae6b"
+    )
+  )
+
+visNetwork(
+  ego_nodes,
+  ego_edges_vis,
+  height = "760px",
+  width = "100%",
+  main = paste0(
+    "Breach-period Ego Network Anchored on ",
+    anchor_actor
+  )
+) %>%
+  visGroups(
+    groupname = "Anchor Participant",
+    color = list(background = "#cb181d", border = "#99000d")
+  ) %>%
+  visGroups(
+    groupname = "Core Participant",
+    color = list(background = "#6baed6", border = "#2171b5")
+  ) %>%
+  visGroups(
+    groupname = "Peripheral Participant",
+    color = list(background = "#d9d9d9", border = "#969696")
+  ) %>%
+  visEdges(
+    smooth = TRUE,
+    scaling = list(min = 1, max = 10)
+  ) %>%
+  visNodes(
+    shape = "dot",
+    scaling = list(min = 28, max = 70),
+    font = list(
+      size = 26,
+      face = "bold"
+    )
+  ) %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE
+  ) %>%
+  visInteraction(
+    navigationButtons = TRUE,
+    dragNodes = TRUE,
+    zoomView = TRUE
+  ) %>%
+  visPhysics(
+    solver = "forceAtlas2Based",
+    stabilization = TRUE
+  ) %>%
+  visLayout(
+    randomSeed = 608
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   The ego network highlights Legal as the most actively connected participant within elevated-risk communication during the critical period.
+
+-   The strongest breach-period links connect Legal with PR, Social Media, and Platform Trust, suggesting that the communication evidence trail was concentrated around a core operational group.
+
+-   Thicker links represent repeated elevated-risk communication, while red links indicate pathways dominated by high-risk signals.
+
+-   This provides a focused starting point for examining whether these participants acted as senders, receivers, or coordination hubs in the next section.
+:::
+
+While the ego network identifies the participants most closely connected to Legal, it does not explain how these participants contributed to breach-period communication. The next section therefore examines whether these participants acted as coordinators, broadcasters, receivers, or peripheral actors within the elevated-risk communication network.
+
+## 5.2 What Communication Roles Did Participants Play During the Breach Period?
+
+This section examines how participants contributed to elevated-risk communication during the critical breach period.
+
+While Section 5.1 identified the key participants connected to the breach-period network, this analysis focuses on the function each participant performed within that network. Participants are classified according to their communication behaviour, allowing the analysis to distinguish between those who coordinated information flows, those who primarily disseminated information, and those who mainly received communications.
+
+Examining these communication roles provides a clearer understanding of how information moved through the network and helps identify the actors who may have played an important part in allowing embargo-sensitive information to circulate prior to the inappropriate release.
+
+## 5.2.1 Communication Role Network
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: "100%"
+
+clean_actor <- function(x) {
+  x %>%
+    str_replace_all("_agent", "") %>%
+    str_replace_all("_", " ") %>%
+    str_squish() %>%
+    str_to_title()
+}
+
+role_edges <- communication_edges %>%
+  mutate(
+    communication_date = as.Date(timestamp),
+    source = clean_actor(source),
+    target = clean_actor(target)
+  ) %>%
+  filter(
+    communication_date >= as.Date("2046-06-03"),
+    risk_signal_group %in% c("Moderate Signal", "High Signal"),
+    !is.na(source),
+    !is.na(target),
+    source != "",
+    target != "",
+    source != target
+  ) %>%
+  count(source, target, risk_signal_group, name = "weight") %>%
+  group_by(source, target) %>%
+  summarise(
+    weight = sum(weight),
+    high_signal_weight = sum(weight[risk_signal_group == "High Signal"], na.rm = TRUE),
+    moderate_signal_weight = sum(weight[risk_signal_group == "Moderate Signal"], na.rm = TRUE),
+    dominant_risk_signal = if_else(
+      high_signal_weight >= moderate_signal_weight,
+      "High Signal",
+      "Moderate Signal"
+    ),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(weight)) %>%
+  slice_head(n = 18)
+
+outgoing_activity <- role_edges %>%
+  group_by(source) %>%
+  summarise(outgoing_weight = sum(weight), .groups = "drop") %>%
+  rename(id = source)
+
+incoming_activity <- role_edges %>%
+  group_by(target) %>%
+  summarise(incoming_weight = sum(weight), .groups = "drop") %>%
+  rename(id = target)
+
+role_nodes <- tibble(
+  id = unique(c(role_edges$source, role_edges$target))
+) %>%
+  left_join(outgoing_activity, by = "id") %>%
+  left_join(incoming_activity, by = "id") %>%
+  mutate(
+    outgoing_weight = replace_na(outgoing_weight, 0),
+    incoming_weight = replace_na(incoming_weight, 0),
+    total_activity = outgoing_weight + incoming_weight,
+    
+    communication_role = case_when(
+      outgoing_weight >= median(outgoing_weight, na.rm = TRUE) &
+        incoming_weight >= median(incoming_weight, na.rm = TRUE) ~ "Coordinator",
+      outgoing_weight >= median(outgoing_weight, na.rm = TRUE) &
+        incoming_weight < median(incoming_weight, na.rm = TRUE) ~ "Broadcaster",
+      outgoing_weight < median(outgoing_weight, na.rm = TRUE) &
+        incoming_weight >= median(incoming_weight, na.rm = TRUE) ~ "Receiver",
+      TRUE ~ "Peripheral"
+    ),
+    
+    label = id,
+    value = total_activity,
+    group = communication_role,
+    title = paste0(
+      "<b>", id, "</b><br>",
+      "Role: ", communication_role, "<br>",
+      "Outgoing elevated-risk activity: ", outgoing_weight, "<br>",
+      "Incoming elevated-risk activity: ", incoming_weight, "<br>",
+      "Total weighted activity: ", total_activity
+    )
+  )
+
+role_edges_vis <- role_edges %>%
+  transmute(
+    from = source,
+    to = target,
+    value = weight,
+    arrows = "to",
+    width = scales::rescale(weight, to = c(1, 8)),
+    title = paste0(
+      "<b>", source, " → ", target, "</b><br>",
+      "Interaction frequency: ", weight, "<br>",
+      "Dominant risk signal: ", dominant_risk_signal, "<br>",
+      "High-signal interactions: ", high_signal_weight, "<br>",
+      "Moderate-signal interactions: ", moderate_signal_weight
+    ),
+    color = if_else(
+      dominant_risk_signal == "High Signal",
+      "#cb181d",
+      "#fdae6b"
+    )
+  )
+
+visNetwork(
+  role_nodes,
+  role_edges_vis,
+  height = "500px",
+  width = "100%",
+  main = "Breach-period Communication Roles and Information Flow"
+) %>%
+  visGroups(
+    groupname = "Coordinator",
+    color = list(background = "#cb181d", border = "#99000d"),
+    shape = "star"
+  ) %>%
+  visGroups(
+    groupname = "Broadcaster",
+    color = list(background = "#fb6a4a", border = "#cb181d"),
+    shape = "triangle"
+  ) %>%
+  visGroups(
+    groupname = "Receiver",
+    color = list(background = "#6baed6", border = "#2171b5"),
+    shape = "dot"
+  ) %>%
+  visGroups(
+    groupname = "Peripheral",
+    color = list(background = "#d9d9d9", border = "#969696"),
+    shape = "square"
+  ) %>%
+  visEdges(smooth = TRUE) %>%
+  visNodes(
+    scaling = list(min = 12, max = 34),
+    font = list(size = 16, face = "bold")
+  ) %>%
+  visOptions(
+    highlightNearest = list(enabled = TRUE, degree = 1),
+    nodesIdSelection = FALSE
+  ) %>%
+  visInteraction(
+    navigationButtons = FALSE,
+    dragNodes = TRUE,
+    zoomView = TRUE
+  ) %>%
+  visPhysics(
+    solver = "forceAtlas2Based",
+    stabilization = TRUE
+  ) %>%
+  visLayout(randomSeed = 608)
+```
+
+**Role encoding:** star = Coordinator, triangle = Broadcaster, circle = Receiver, square = Peripheral.\
+**Edge encoding:** red arrows = high-risk dominant pathways; orange arrows = moderate-risk dominant pathways. Thicker arrows indicate more repeated communication.
+
+### 5.2.2 Communication Bridge Participants
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: "100%"
+
+betweenness_edges_52 <- communication_edges %>%
+  mutate(
+    communication_date = as.Date(timestamp),
+    source = clean_actor(source),
+    target = clean_actor(target)
+  ) %>%
+  filter(
+    communication_date >= as.Date("2046-06-03"),
+    risk_signal_group %in% c("Moderate Signal", "High Signal"),
+    !is.na(source),
+    !is.na(target),
+    source != "",
+    target != "",
+    source != target
+  ) %>%
+  count(source, target, risk_signal_group, name = "weight") %>%
+  group_by(source, target) %>%
+  summarise(
+    weight = sum(weight),
+    high_signal_weight = sum(weight[risk_signal_group == "High Signal"], na.rm = TRUE),
+    moderate_signal_weight = sum(weight[risk_signal_group == "Moderate Signal"], na.rm = TRUE),
+    dominant_risk_signal = if_else(
+      high_signal_weight >= moderate_signal_weight,
+      "High Signal",
+      "Moderate Signal"
+    ),
+    .groups = "drop"
+  )
+
+betweenness_graph_52 <- graph_from_data_frame(
+  betweenness_edges_52,
+  directed = TRUE
+)
+
+V(betweenness_graph_52)$betweenness <- betweenness(
+  betweenness_graph_52,
+  directed = TRUE,
+  normalized = TRUE,
+  weights = NULL
+)
+
+V(betweenness_graph_52)$node_type <- ifelse(
+  V(betweenness_graph_52)$betweenness > 0,
+  "Communication Bridge",
+  "Other Participant"
+)
+
+set.seed(608)
+
+bridge_plot_52 <- ggraph(
+  betweenness_graph_52,
+  layout = "nicely"
+) +
+  geom_edge_fan(
+    aes(
+      edge_colour = dominant_risk_signal,
+      edge_width = weight
+    ),
+    alpha = 0.75,
+    strength = 0.5,
+    arrow = arrow(
+      type = "closed",
+      length = unit(2.5, "mm")
+    ),
+    end_cap = circle(3.5, "mm"),
+    start_cap = circle(3.5, "mm")
+  ) +
+  geom_point_interactive(
+    aes(
+      x = x,
+      y = y,
+      size = betweenness,
+      fill = betweenness,
+      tooltip = paste0(
+        name,
+        "<br>Betweenness: ",
+        round(betweenness, 3)
+      ),
+      data_id = name
+    ),
+    shape = 21,
+    colour = "grey35",
+    stroke = 0.8
+  ) +
+  geom_node_label(
+    aes(label = name),
+    size = 3,
+    label.size = 0.25,
+    label.padding = unit(0.12, "lines"),
+    fill = "white",
+    colour = "grey20"
+  ) +
+  scale_edge_colour_manual(
+    values = c(
+      "High Signal" = "#cb181d",
+      "Moderate Signal" = "#fdae6b"
+    ),
+    name = "Risk Signal"
+  ) +
+  scale_edge_width(
+    range = c(0.4, 2.6),
+    name = "Interaction Frequency"
+  ) +
+  scale_fill_gradient(
+    low = "white",
+    high = "orange",
+    name = "Betweenness Score"
+  ) +
+  scale_size_continuous(
+    range = c(4, 16),
+    guide = "none"
+  ) +
+  labs(
+    title = "Communication Bridge Participants During the Critical Period",
+    subtitle = "Node size and colour represent betweenness centrality"
+  ) +
+  theme_graph(base_family = "sans") +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "right"
+  )
+
+girafe(
+  ggobj = bridge_plot_52,
+  width_svg = 8,
+  height_svg = 5,
+  options = list(
+    opts_tooltip(
+      css = "background-color:black;color:white;padding:5px;border-radius:3px;"
+    ),
+    opts_hover(css = "stroke:black;stroke-width:2px;"),
+    opts_zoom(min = 1, max = 5),
+    opts_sizing(rescale = TRUE)
+  )
+)
+```
+
+### Top 5 Communication Bridge Participants
+
+```{r}
+betweenness_table_52 <- tibble(
+  Participant = names(V(betweenness_graph_52)),
+  `Betweenness Centrality` = V(betweenness_graph_52)$betweenness
+) %>%
+  arrange(desc(`Betweenness Centrality`)) %>%
+  slice_head(n = 5) %>%
+  mutate(
+    `Betweenness Centrality` = round(`Betweenness Centrality`, 3)
+  )
+
+DT::datatable(
+  betweenness_table_52,
+  rownames = FALSE,
+  caption = "Top 5 communication bridge participants during elevated-risk Critical Period communications",
+  options = list(
+    pageLength = 5,
+    autoWidth = TRUE,
+    dom = "t"
+  )
+)
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   Elevated-risk communication was concentrated among a small group of participants rather than being distributed evenly across the communication network, suggesting that embargo-sensitive information circulated within a focused operational cluster. This observation is consistent with organisational communication research showing that information flow is often shaped by a relatively small number of highly connected actors within a communication network [(Josephs et al., 2022).](https://www.researchgate.net/publication/362429645_Communication_network_dynamics_in_a_large_organizational_hierarchy)
+
+-   Legal and PR functioned as coordinators in the role network because they exhibited both incoming and outgoing elevated-risk communication activity. Their positions suggest that they helped connect multiple communication pathways during the Critical Period.
+
+- The betweenness centrality analysis adds further evidence by identifying PR Intern, Legal, and PR as the strongest communication bridges. This indicates that the flow of elevated-risk information depended not only on senior decision-making roles, but also on operational execution roles involved in moving communications forward.
+
+- Social Media appeared more broadcaster-oriented, while Platform Trust and Social Manager appeared more receiver-oriented. This suggests that elevated-risk information moved through a differentiated communication structure involving coordinators, bridge participants, broadcasters, and receivers.
+:::
+
+## 5.3 What Communication Patterns Emerged Prior to the Inappropriate Release?
+
+The objective is to determine whether communication topics changed as the release approached and whether these changes could have served as early warning indicators of the eventual breach.
+
+Using text mining techniques, communication logs are analyzed across the Normal Period, Escalation Period, and Critical Period. The TF-IDF approach was adapted from the text mining techniques demonstrated in [Chapter 27 (Text Analytics)](https://r4va.netlify.app/chap27), which illustrates how distinctive terms can be identified across document groups using tidytext.
+
+This analysis offers evidence of whether the inappropriate release was foreshadowed by noticeable changes in communication behavior, rather than happening as a singular incident, through the identification of unique terms and communication patterns.
+
+### Emerging Communication Topics Prior to the Release
+
+```{r}
+#| label: fig-5-3-tfidf
+#| fig-width: 11
+#| fig-height: 6
+#| out-width: "100%"
+#| message: false
+#| warning: false
+
+custom_stopwords <- tibble(
+  word = c(
+    "message", "thread", "reply", "forward",
+    "thanks", "thank", "okay", "please",
+    "team", "hi", "hello"
+  )
+)
+
+tokens_53 <- communications_clean %>%
+  mutate(
+    breach_window = factor(
+      near_breach_window,
+      levels = c(
+        "Normal Period",
+        "Escalation Period",
+        "Critical Period"
+      )
+    )
+  ) %>%
+  filter(!is.na(content)) %>%
+  unnest_tokens(word, content) %>%
+  anti_join(stop_words, by = "word") %>%
+  anti_join(custom_stopwords, by = "word") %>%
+  filter(
+    str_length(word) > 2,
+    !str_detect(word, "^[0-9]+$")
+  )
+
+tfidf_terms_53 <- tokens_53 %>%
+  count(
+    breach_window,
+    word,
+    sort = TRUE
+  ) %>%
+  bind_tf_idf(
+    term = word,
+    document = breach_window,
+    n = n
+  ) %>%
+  group_by(breach_window) %>%
+  slice_max(
+    order_by = tf_idf,
+    n = 10,
+    with_ties = FALSE
+  ) %>%
+  ungroup()
+
+ggplot(
+  tfidf_terms_53,
+  aes(
+    x = reorder_within(word, tf_idf, breach_window),
+    y = tf_idf,
+    fill = breach_window
+  )
+) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  facet_wrap(
+    ~ breach_window,
+    scales = "free_y"
+  ) +
+  scale_x_reordered() +
+  labs(
+    title = "Emerging Communication Topics Prior to the Release",
+    subtitle = "Higher TF-IDF scores indicate terms that were more distinctive within each communication period",
+    x = NULL,
+    y = "TF-IDF Score"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   Communication topics significantly changed throughout the three communication periods. While the Normal and Escalation Periods were characterised by operational and procedural discussions, the Critical Period introduced several terms associated with governance, platform trust, social media management, and the HarborCrest–CivicLoom context.
+
+-   The emergence of terms like **platform_trust**, **governance**, **social_manager**, **HarborCrest**, and **CivicLoom** as prominent Critical Period terms indicates that communication increasingly centered on topics pertinent to the forthcoming disclosure.
+
+-   These terms were not among the dominant topics observed during earlier periods, indicating that the communication environment changed as the release approached.
+
+-   The emergence of governance- and release-related topics before the breach indicates possible early signs that the communication context was turning more sensitive and more linked to the restricted information.
+:::
+
+## 5.4 What Relationships Emerged Among Key Communication Topics?
+
+This section examines how key communication topics were connected during the Critical Period. While Section 5.3 identified distinctive terms, this section uses bigram analysis to identify word-pair relationships that appeared repeatedly in communications.
+
+### 5.4.1 Generate bigrams
+
+```{r}
+bigrams_54 <- communications_clean %>%
+  filter(
+    near_breach_window == "Critical Period",
+    !is.na(content)
+  ) %>%
+  unnest_tokens(
+    bigram,
+    content,
+    token = "ngrams",
+    n = 2
+  )
+
+bigrams_54 %>%
+  head(10)
+```
+
+### 5.4.2 Separate bigrams
+
+```{r}
+bigrams_separated_54 <- bigrams_54 %>%
+  separate(
+    bigram,
+    into = c("word1", "word2"),
+    sep = " "
+  )
+
+bigrams_separated_54 %>%
+  head(10)
+```
+
+### 5.4.3 Remove stop words
+
+```{r}
+bigrams_filtered_54 <- bigrams_separated_54 %>%
+  filter(
+    !word1 %in% stop_words$word,
+    !word2 %in% stop_words$word,
+    str_length(word1) > 2,
+    str_length(word2) > 2,
+    !str_detect(word1, "^[0-9]+$"),
+    !str_detect(word2, "^[0-9]+$")
+  )
+
+bigrams_filtered_54 %>%
+  head(10)
+```
+
+### 5.4.4 Count bigrams
+
+```{r}
+bigram_counts_54 <- bigrams_filtered_54 %>%
+  count(word1, word2, sort = TRUE)
+
+bigram_counts_54 %>%
+  head(20) %>%
+  knitr::kable(
+    caption = "Top recurring bigrams during the Critical Period"
+  )
+```
+
+### 5.4.5 Create bigram graph
+
+```{r}
+#| label: fig-5-4-bigram-graph
+
+bigram_graph_54 <- bigram_counts_54 %>%
+  filter(n >= 20) %>%
+  graph_from_data_frame()
+
+bigram_graph_54
+```
+
+### 5.4.6 Visualise bigram network
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: "100%"
+
+set.seed(608)
+
+a <- grid::arrow(
+  type = "closed",
+  length = unit(.10, "inches")
+)
+
+ggraph(
+  bigram_graph_54,
+  layout = "fr"
+) +
+  geom_edge_link(
+    aes(
+      edge_width = n,
+      edge_alpha = n
+    ),
+    show.legend = TRUE,
+    arrow = a,
+    end_cap = circle(.07, "inches")
+  ) +
+  scale_edge_width(
+    range = c(0.4, 2.8),
+    name = "Bigram frequency"
+  ) +
+  scale_edge_alpha(
+    range = c(0.35, 0.85),
+    guide = "none"
+  ) +
+  geom_node_point(
+    color = "lightblue",
+    size = 5
+  ) +
+  geom_node_text(
+    aes(label = name),
+    repel = TRUE,
+    size = 3.7
+  ) +
+  theme_void() +
+  labs(
+    title = "Recurring Communication Themes During the Critical Period",
+    subtitle = "Directed bigram network showing frequently repeated word-pair relationships"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+### 5.4.7 Top 10 Communication Themes During the Critical Period
+
+```{r}
+#| fig-width: 9
+#| fig-height: 5
+#| out-width: "100%"
+
+top_bigrams_547 <- bigram_counts_54 %>%
+  arrange(desc(n)) %>%
+  slice_head(n = 10) %>%
+  mutate(
+    communication_theme = paste(word1, word2)
+  )
+
+ggplot(
+  top_bigrams_547,
+  aes(
+    x = n,
+    y = reorder(communication_theme, n)
+  )
+) +
+  geom_col(
+    fill = "#3182bd",
+    width = 0.7
+  ) +
+  geom_text(
+    aes(label = n),
+    hjust = -0.15,
+    size = 3.5
+  ) +
+  scale_x_continuous(
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "Top 10 Communication Themes During the Critical Period",
+    subtitle = "Top recurring bigrams extracted from Critical Period communications",
+    x = "Frequency",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   The recurring phrases indicate that discussions during the Critical Period became increasingly focused on governance, access controls, audits, and public communication activities.
+
+-   The frequent occurrence of phrase relationships such as **access controls**, **role based**, **governance reforms**, and **independent audit** suggest heightened attention to information governance and permission management during the Critical Period.
+
+-   The appearance of **press release** and **platform** trust indicates that public communication and platform-related issues were already active discussion topics before the inappropriate release occurred.
+
+-   Several organisation- and individual-related phrase relationships, including **HarborCrest–ResidentEdge** and **Sarah–Kowalski**, emerged repeatedly during the Critical Period, indicating that specific entities became focal points within ongoing discussions.
+:::
+
+## 5.5 What Communication Pathway Likely Led to the Embargo Breach?
+
+This section reconstructs the likely communication pathway leading to the embargo breach. 
+By focusing on elevated-risk communications during the critical period, the analysis identifies 
+the key sequence of events, actors, and decision points that may have allowed embargo-sensitive 
+information to move towards public disclosure.
+
+### 5.5.1 Critical Communication Escalation Around the Breach Window
+
+```{r}
+#| fig-width: 11
+#| fig-height: 6
+#| out-width: "100%"
+#| message: false
+#| warning: false
+
+breach_time <- as.POSIXct(
+  "2046-06-05 17:00:00",
+  tz = "UTC"
+)
+
+timeline_55 <- communications_clean %>%
+  filter(
+    near_breach_window == "Critical Period",
+    risk_signal_group %in% c("Moderate Signal", "High Signal")
+  ) %>%
+  mutate(
+    round_hour = lubridate::floor_date(timestamp, unit = "hour")
+  ) %>%
+  count(round_hour, risk_signal_group, name = "n")
+
+ggplot(
+  timeline_55,
+  aes(
+    x = round_hour,
+    y = n,
+    fill = risk_signal_group
+  )
+) +
+  geom_col(position = "stack") +
+  geom_vline(
+    xintercept = breach_time,
+    linetype = "dashed",
+    colour = "red",
+    linewidth = 0.8
+  ) +
+  annotate(
+    "text",
+    x = breach_time,
+    y = max(timeline_55$n, na.rm = TRUE) * 1.08,
+    label = "Embargo breach reported (~5 PM)",
+    colour = "red",
+    hjust = -0.05,
+    size = 3.3
+  ) +
+  labs(
+    title = "Elevated-risk Communication Activity Around the Breach Window",
+    subtitle = "Hourly sequence of moderate- and high-risk communications during the Critical Period",
+    x = NULL,
+    y = "Number of communications",
+    fill = "Risk Signal"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+```
+
+### 5.5.2 Key Events Leading to the Breach
+
+```{r}
+#| message: false
+#| warning: false
+
+key_events_55 <- communications_clean %>%
+  filter(
+    near_breach_window == "Critical Period",
+    risk_signal_group %in% c("Moderate Signal", "High Signal")
+  ) %>%
+  mutate(
+    round_hour = lubridate::floor_date(timestamp, unit = "hour"),
+    content_short = str_trunc(content, width = 120)
+  ) %>%
+  arrange(timestamp) %>%
+  select(
+    timestamp,
+    agent_role,
+    channel,
+    communication_scope,
+    risk_signal_group,
+    content_short
+  ) %>%
+  head(15)
+
+key_events_55 %>%
+  knitr::kable(
+    caption = "Chronological sample of elevated-risk communications during the Critical Period"
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   The chronological sequence indicates that elevated-risk communications were already occurring before the reported embargo breach, suggesting that participants were actively discussing sensitive matters during the Critical Period.
+
+-   Legal, PR, and other operational participants appeared repeatedly throughout the communication sequence, indicating continued involvement in discussions related to risk management, public communications, and response planning.
+
+-   Several communications on 5 June reflected growing urgency and external pressure, suggesting increasing concern about public attention and the potential consequences of information disclosure.
+
+-   The communication sequence shows a progression from risk awareness and internal discussion towards actions related to public communications, indicating that the breach was preceded by a series of interconnected decisions and interactions rather than a single isolated message.
+
+In summary, the timeline suggests that the embargo breach emerged through an escalating sequence of elevated-risk communications involving multiple participants. The evidence points towards a breakdown in communication controls and decision processes rather than a single communication event acting as the sole cause of the breach.
+:::
+
+## 5.6 Behavioural Deviations and Prior Warning Signals
+
+This section examines whether the inappropriate release was preceded by observable behavioural changes and warning signals. By comparing communication activity across the Normal, Escalation, and Critical periods, the analysis evaluates whether the breach represented a departure from typical communication behaviour and whether similar patterns had appeared previously without resulting in a release.
+
+### 5.6.1 Explicit Risk and Embargo Warning Timeline
+
+Several communications contained explicit risk assessments expressed on a 10-point scale (e.g., 6.5/10, 8.5/10, and 9.4/10). These risk scores were extracted directly from the message content using text analytics and used as evidence of how participants perceived the level of risk leading up to the embargo breach.
+
+By examining the progression of these recorded risk assessments over time, the analysis identifies whether concerns about embargo-sensitive information intensified prior to the breach.
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5.8
+#| out-width: "100%"
+
+risk_score_events_548 <- communications_clean %>%
+  filter(!is.na(content)) %>%
+  mutate(
+    content_lower = str_to_lower(content),
+    risk_score = str_extract(
+      content_lower,
+      "risk score(?: moving to| upward to| holding at|:)?\\s*[0-9]+\\.?[0-9]*/10"
+    ),
+    risk_score_value = str_extract(
+      risk_score,
+      "[0-9]+\\.?[0-9]*(?=/10)"
+    ) %>%
+      as.numeric()
+  ) %>%
+  filter(!is.na(risk_score_value)) %>%
+  mutate(
+    warning_type = case_when(
+      str_detect(content_lower, "category 2|embargo sensitivity|material disclosure") ~
+        "Embargo sensitivity event",
+      str_detect(content_lower, "critical|worst-case") ~
+        "Critical risk posture",
+      str_detect(content_lower, "high") ~
+        "High risk posture",
+      TRUE ~
+        "Risk score update"
+    ),
+    
+    evidence_label = case_when(
+      str_detect(content_lower, "category 2") ~
+        "Category 2 embargo\nsensitivity event",
+      str_detect(content_lower, "first time our name") ~
+        "Named in press\ncoverage",
+      str_detect(content_lower, "named target") ~
+        "Named target in\npublic conversation",
+      str_detect(content_lower, "worst-case") ~
+        "Worst-case scenario\nmodelled",
+      TRUE ~
+        "Risk score update"
+    ),
+    
+    timestamp = as.POSIXct(timestamp),
+    communication_date = as.Date(timestamp)
+  ) %>%
+  arrange(timestamp) %>%
+  distinct(
+    communication_date,
+    risk_score_value,
+    .keep_all = TRUE
+  )
+
+ggplot(
+  risk_score_events_548,
+  aes(
+    x = communication_date,
+    y = risk_score_value
+  )
+) +
+  geom_line(
+    linewidth = 1.1,
+    colour = "#525252"
+  ) +
+  geom_point(
+    aes(fill = warning_type),
+    shape = 21,
+    size = 4.8,
+    colour = "white",
+    stroke = 0.9
+  ) +
+  ggrepel::geom_label_repel(
+    aes(label = evidence_label),
+    size = 3.2,
+    label.size = 0.25,
+    fill = "white",
+    alpha = 0.95,
+    box.padding = 0.35,
+    point.padding = 0.25,
+    min.segment.length = 0
+  ) +
+  geom_hline(
+    yintercept = 7,
+    linetype = "dashed",
+    colour = "#fdae6b",
+    linewidth = 0.7
+  ) +
+  geom_hline(
+    yintercept = 9,
+    linetype = "dashed",
+    colour = "#cb181d",
+    linewidth = 0.7
+  ) +
+  annotate(
+    "text",
+    x = min(risk_score_events_548$communication_date),
+    y = 7.15,
+    label = "High-risk threshold",
+    hjust = 0,
+    size = 3,
+    colour = "#b35806"
+  ) +
+  annotate(
+    "text",
+    x = min(risk_score_events_548$communication_date),
+    y = 9.15,
+    label = "Critical-risk threshold",
+    hjust = 0,
+    size = 3,
+    colour = "#cb181d"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Embargo sensitivity event" = "#756bb1",
+      "High risk posture" = "#fdae6b",
+      "Critical risk posture" = "#cb181d",
+      "Risk score update" = "#9ecae1"
+    )
+  ) +
+  scale_y_continuous(
+    limits = c(5.5, 10),
+    breaks = seq(6, 10, 1)
+  ) +
+  labs(
+    title = "Explicit Risk-score Escalation Before the Embargo Breach",
+    subtitle = "Text analytics extracted risk-score references from communications before the inappropriate release",
+    x = "Communication Date",
+    y = "Extracted Risk Score / 10",
+    fill = "Warning Type"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  )
+```
+
+```{r}
+risk_score_events_548 %>%
+  mutate(
+    `Evidence Extract` = str_trunc(content, width = 150)
+  ) %>%
+  transmute(
+    `Timestamp` = timestamp,
+    `Agent Role` = str_to_title(str_replace_all(agent_role, "_", " ")),
+    `Channel` = channel,
+    `Warning Type` = warning_type,
+    `Risk Score` = risk_score_value,
+    `Evidence Extract` = `Evidence Extract`
+  ) %>%
+  knitr::kable(
+    caption = "Extracted textual evidence of embargo-related risk escalation"
+  )
+```
+
+### 5.6.2 Behavioural Shift by Actor Role
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: "100%"
+
+role_deviation_56 <- communications_clean %>%
+  filter(
+    agent_role %in% c(
+      "legal",
+      "pr",
+      "social_media",
+      "platform_trust"
+    )
+  ) %>%
+  mutate(
+    period_group = if_else(
+      near_breach_window == "Critical Period",
+      "Critical Period",
+      "Earlier Periods"
+    ),
+    agent_role = str_replace_all(agent_role, "_", " ") %>%
+      str_to_title()
+  ) %>%
+  count(agent_role, period_group) %>%
+  pivot_wider(
+    names_from = period_group,
+    values_from = n,
+    values_fill = 0
+  ) %>%
+  mutate(
+    change = `Critical Period` - `Earlier Periods`,
+    change_label = paste0(
+      if_else(change >= 0, "+", ""),
+      change
+    )
+  )
+
+ggplot(
+  role_deviation_56 %>%
+    mutate(
+      direction = if_else(
+        change >= 0,
+        "Increase during Critical Period",
+        "Decrease during Critical Period"
+      )
+    ),
+  aes(
+    x = change,
+    y = reorder(agent_role, change),
+    fill = direction
+  )
+) +
+  geom_col(width = 0.65) +
+  geom_vline(
+    xintercept = 0,
+    linewidth = 0.6,
+    colour = "grey40"
+  ) +
+  geom_text(
+    aes(
+      label = change_label,
+      hjust = if_else(change >= 0, -0.15, 1.15)
+    ),
+    size = 3.8,
+    fontface = "bold"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Increase during Critical Period" = "#cb181d",
+      "Decrease during Critical Period" = "#6baed6"
+    )
+  ) +
+  scale_x_continuous(
+    expand = expansion(mult = c(0.18, 0.18))
+  ) +
+  labs(
+    title = "Net Behavioural Deviation During the Critical Period",
+    subtitle =  "Change in communication activity from earlier periods to the Critical Period",
+    x = "Change in number of communications",
+    y = NULL,
+    fill = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+### 5.6.3 Expected vs Observed Behaviour
+
+```{r}
+expected_observed_tbl <- tibble(
+  `Participant Role` = c(
+    "Legal",
+    "PR",
+    "Social Media",
+    "Platform Trust"
+  ),
+
+  `Typical Behaviour (Earlier Periods)` = c(
+    "Moderate communication activity focused on advisory and review functions.",
+    "Consistent communication activity supporting stakeholder messaging.",
+    "Relatively lower communication activity focused on monitoring and dissemination.",
+    "Higher involvement in oversight and platform-related discussions."
+  ),
+
+  `Observed Behaviour During Critical Period` = c(
+    "Largest increase in activity (+98 communications) and became a key coordinator.",
+    "Remained active but was no longer the most dominant participant.",
+    "Large increase in activity (+78 communications) and functioned as a broadcaster.",
+    "Reduced communication activity compared with earlier periods."
+  )
+)
+
+knitr::kable(
+  expected_observed_tbl,
+  caption = "Comparison of Typical and Critical-period Participant Behaviour"
+)
+```
+
+### 5.6.4 Elevated-risk Communications Across Breach Windows
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: "100%"
+
+elevated_risk_56 <- communications_clean %>%
+  mutate(
+    breach_window = factor(
+      near_breach_window,
+      levels = c(
+        "Normal Period",
+        "Escalation Period",
+        "Critical Period"
+      )
+    )
+  ) %>%
+  filter(
+    risk_signal_group %in% c(
+      "Moderate Signal",
+      "High Signal"
+    )
+  ) %>%
+  count(
+    breach_window,
+    risk_signal_group,
+    name = "communications"
+  )
+
+ggplot(
+  elevated_risk_56,
+  aes(
+    x = breach_window,
+    y = communications,
+    fill = risk_signal_group
+  )
+) +
+  geom_col(
+    position = position_dodge(width = 0.75),
+    width = 0.65
+  ) +
+  geom_text(
+    aes(label = communications),
+    position = position_dodge(width = 0.75),
+    vjust = -0.4,
+    size = 3.5
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "Elevated-risk Communications Across Breach Windows",
+    subtitle = "Comparing moderate- and high-signal communications before and during the Critical Period",
+    x = NULL,
+    y = "Number of communications",
+    fill = "Risk Signal"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+::: callout-note
+## ![](images/Observation.png){width="31"} Observations
+
+-   The communication records suggest that warning signs were already emerging before the inappropriate release occurred. Several messages contained explicit references to embargo sensitivity, disclosure concerns, and increasing levels of perceived risk.
+
+-   One significant communication noted a "Category 2 embargo sensitivity incident" in the risk register and raised the reported risk score to 6.5/10. Risk assessments continued to rise in the days leading up to the breach, eventually reaching 9.4/10 by 4 June 2046. This indicates that concerns regarding potential disclosure were already recognised internally before the embargo was broken.
+
+-   Legal (+98 communications) and Social Media (+78 communications) showed the most significant changes from their usual communication patterns during the Critical Period. Legal emerged as a primary coordinator, whereas Social Media took on a more significant broadcasting position within the communication network.
+
+-   The Expected vs Observed Behaviour comparison further suggests that communication responsibilities shifted during the breach period, with some participants becoming substantially more active while others became less prominent than in earlier periods.
+
+-   Elevated-risk communications were present during the Normal and Escalation Periods, indicating that warning signals existed before the breach. However, the Critical Period recorded substantially higher levels of Moderate Signal and High Signal communications than earlier periods. This pattern is consistent with crisis communication research suggesting that communication intensity and coordination often increase as organisations face growing uncertainty and crisis conditions [(Hamid et al., 2024).](https://doi.org/10.3389/fcomm.2024.1444114) 
+
+-   Overall, the breach was preceded by both participant-level behavioural deviations and a sharp increase in elevated-risk communications, suggesting that the inappropriate release emerged from a broader shift in communication behaviour rather than a single isolated event.
+:::
+
+# 6 Summary of Findings
+
+The investigation confirms that an embargo breach occurred when merger-related information became publicly available before the scheduled 6:00 PM release time. Legal, PR, Social Media, and Platform Trust emerged as the key participants involved in elevated-risk communication pathways during the Critical Period.
+
+Multiple warning signals were observed before the breach, including increasing communication activity, escalating risk assessments, greater use of side-channel communications, and more concentrated high-risk communication pathways. These behaviours became substantially more pronounced as the breach approached.
+
+No clear evidence was found that a single participant deliberately leaked the merger information. Instead, the findings suggest that the breach was more likely caused by a breakdown in communication governance and embargo enforcement processes. Escalating operational pressures, repeated risk acknowledgements, and increasingly concentrated communication flows appear to have collectively weakened the controls intended to prevent the premature release of embargo-sensitive information.
+
+## 6.1 Summary of Evidence Supporting the Investigation
+
+```{r}
+summary_evidence_tbl <- tibble(
+  `Mini-Challenge Question` = c(
+    "What events and relationships led to the inappropriate release?",
+    "What decisions and actors were important to the release?",
+    "Were there leading indicators that the release was possible?",
+    "Was the behaviour different from prior behaviour?",
+    "Were similar behaviours observed previously?",
+    "Why did prior occasions not result in noticeable action?"
+  ),
+  
+  `Key Finding` = c(
+    "Communication activity escalated sharply, while high-risk pathways became concentrated around Legal, PR, Social Media, and Platform Trust.",
+    "Legal, PR, Social Media, and Platform Trust were repeatedly involved in elevated-risk communications and key communication pathways during the Critical Period.",
+    "Yes. Moderate- and high-risk communications, side-channel activity, and exposure-risk behaviours were already observable before the Critical Period and intensified near the breach.",
+    "Yes. Legal (+98 communications) and Social Media (+78 communications) showed the largest increases in activity during the Critical Period.",
+    "Yes. Moderate- and high-risk communications, exposure-risk behaviours, and governance-related discussion themes were already observable before the breach, but occurred at lower intensity and involved fewer participants.",
+    "Earlier signals were less concentrated and did not show the same level of behavioural escalation observed during the Critical Period."
+  )
+)
+
+summary_evidence_tbl %>%
+  knitr::kable(
+    caption = "Summary of evidence supporting the Mini-Challenge 1 investigation"
+  )
+```
+
+# 7 References
+
+Chapter 27: Visualising and Analysing Text Data with R (n.d.). Retrieved from <https://r4va.netlify.app/chap27>
+
+Chapter 29: Modelling, Visualising and Analysing Network Data with R (n.d.). Retrieved from <https://r4va.netlify.app/chap29>
+
+Hamid, A. S., Mohamad, B., & Ismail, A. (2024). Internal crisis communication: exploring antecedents and consequences from a managerial viewpoint. Frontiers in Communication, 9. <https://doi.org/10.3389/fcomm.2024.1444114>
+
+Josephs, N., Peng, S., & Crawford, F. W. (2022). Communication network dynamics in a large organizational hierarchy. arXiv (Cornell University). Retrieved from <https://doi.org/10.48550/arxiv.2208.01208>
+

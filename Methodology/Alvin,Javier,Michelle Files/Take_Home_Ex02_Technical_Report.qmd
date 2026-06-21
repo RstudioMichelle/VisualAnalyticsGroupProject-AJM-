@@ -1,0 +1,1153 @@
+---
+title: "Take Home Exercise 2 - Technical Report"
+format:
+  html:
+    code-fold: true
+author: "Alvin Ong Wei Ming"
+date: "May 15, 2026"
+date-modified: "last-modified"
+execute:
+  eval: true # As and when you render the code it will run through and display the output
+  echo: true #when it render the document it will show the code chunk
+  warning: false # this will prevent warning from appearing.
+  freeze: True #everytime you render, it will only render my latest hands on exericse and not the rest of it.
+---
+
+## Set Up
+
+```{r}
+pacman::p_load(jsonlite,
+              dplyr,
+              tidyr,
+              skimr, 
+              knitr,
+              kableExtra,
+              ggplot2,
+              stringr,
+              tidyverse,
+              tidygraph,
+              ggraph,
+              patchwork,
+              scales,
+              tidytext,
+              ggalluvial,
+              gt,
+              visNetwork,
+              lubridate,
+              igraph,
+              widyr)
+```
+
+### Read Data
+
+```{r}
+data <- fromJSON("data/MC1_final_00.json", simplifyVector = TRUE)
+df_rounds_raw <- data$rounds
+```
+
+### Unnest Data
+
+```{r}
+#| eval: false
+# ==============================================================================
+# 2. CREATE SEPARATE DATAFRAMES FOR EVERY NESTED STRUCTURE
+# ==============================================================================
+
+# --- A. Participants Table ---
+# Unnests the participants list and flattens their metadata
+df_participants <- df_rounds_raw %>%
+  select(hour, participants) %>%
+  unnest(participants) %>%
+  # unpack is wrapped in a check in case agent_round_metadata is missing in some files
+  unpack(any_of("agent_round_metadata"), names_sep = "_")
+
+# --- B. Communications Table ---
+# Unnests the chat logs and flattens the agents' internal states
+df_communications <- df_rounds_raw %>%
+  select(hour, communications) %>%
+  unnest(communications) %>%
+  unpack(any_of(c("internal_state", "agent_round_metadata")), names_sep = "_")
+
+# --- C. Main Environment & Market Snapshot Table (Scalars only) ---
+# Unpacks the environment context, flattens the market snapshot, and removes nested arrays
+df_environment <- df_rounds_raw %>%
+  select(hour, environment_context) %>%
+  unpack(environment_context, names_sep = "_") %>%
+  unpack(any_of("environment_context_market_snapshot"), names_sep = "_") %>%
+  # Select only columns that are NOT lists (this leaves behind the nested arrays for the next step)
+  select(where(~ !is.list(.)))
+
+# --- D. Environment Context Nested Arrays ---
+# The environment_context contains several arrays (news, media_events, etc.). 
+# We unnest them one by one into distinct relational tables linked by 'hour'.
+
+# D1. Media Events
+df_media_events <- df_rounds_raw %>%
+  select(hour, environment_context) %>%
+  unpack(environment_context, names_sep = "_") %>%
+  select(hour, environment_context_media_events) %>%
+  unnest(environment_context_media_events, keep_empty = FALSE)
+
+# D2. External Actor Actions
+df_external_actions <- df_rounds_raw %>%
+  select(hour, environment_context) %>%
+  unpack(environment_context, names_sep = "_") %>%
+  select(hour, environment_context_external_actor_actions) %>%
+  unnest(environment_context_external_actor_actions, keep_empty = FALSE)
+
+# D3. Social Manager Alerts
+df_social_alerts <- df_rounds_raw %>%
+  select(hour, environment_context) %>%
+  unpack(environment_context, names_sep = "_") %>%
+  select(hour, environment_context_social_manager_alerts) %>%
+  unnest(environment_context_social_manager_alerts, keep_empty = FALSE)
+
+# D4. Agents Unavailable
+df_agents_unavailable <- df_rounds_raw %>%
+  select(hour, environment_context) %>%
+  unpack(environment_context, names_sep = "_") %>%
+  select(hour, environment_context_agents_unavailable) %>%
+  unnest(environment_context_agents_unavailable, keep_empty = FALSE)
+
+# D5. Critical Deadlines
+df_critical_deadlines <- df_rounds_raw %>%
+  select(hour, environment_context) %>%
+  unpack(environment_context, names_sep = "_") %>%
+  select(hour, environment_context_critical_deadlines) %>%
+  unnest(environment_context_critical_deadlines, keep_empty = FALSE)
+
+# D6. News
+df_news <- df_rounds_raw %>%
+  select(hour, environment_context) %>%
+  unpack(environment_context, names_sep = "_") %>%
+  select(hour, environment_context_news) %>%
+  unnest(environment_context_news, keep_empty = FALSE)
+```
+
+### Extract as RData
+
+```{r}
+#| eval: false
+save(
+  df_environment, df_participants, df_communications, 
+  df_media_events, df_external_actions, df_social_alerts, 
+  df_agents_unavailable, df_critical_deadlines, df_news,
+  file = "mc1_unpacked_data.RData"
+)
+```
+
+## Load data
+```{r}
+load("mc1_unpacked_data.RData")
+```
+
+## Q1 
+What were the key events and relationships that led up to the inappropriate release? Visualize the sequence of events. Include elements such as:
+	○ Key actions
+	○ Causal relationships
+	○ Decision points and actors involved in those decisions
+Highlight decisions and system elements that were important to the post making it past the embargo enforcement
+
+### Finding the critical moments in Environment Context {#finding-critical-moments}
+We start off with a glimpse of the dataset and notice that stock price column has a $ sign, percent change has a % and this prevents it from reading it as a numerical value.
+The time stamp is also in chr format and needs to be changed.
+
+```{r}
+glimpse(df_environment)
+```
+
+```{r}
+df_environment <- df_environment %>%
+  mutate(
+    stock_price_numeric = as.numeric(str_remove(environment_context_market_snapshot_stock_price, "\\$")),
+    stock_percent_numeric = as.numeric(str_remove(environment_context_market_snapshot_percent_change, "\\%")),
+
+    hour_datetime = as.POSIXct(hour, format = "%Y-%m-%dT%H:%M:%S")
+  ) %>%
+  arrange(hour_datetime)
+glimpse(df_environment)
+```
+
+
+```{r}
+
+# 1. Prepare and cleanly sort the data
+df_plot_clean <- df_environment %>%
+  mutate(
+    stock_price_numeric = as.numeric(str_remove(environment_context_market_snapshot_stock_price, "\\$")),
+    hour_datetime = as.POSIXct(hour, format = "%Y-%m-%dT%H:%M:%S")
+  ) %>%
+  filter(!is.na(stock_price_numeric)) %>%
+  arrange(hour_datetime)
+
+# 2. Plot using the datetime column (We drop 'group = 1' because it's continuous now!)
+ggplot(df_plot_clean, aes(x = hour_datetime, y = stock_price_numeric)) +
+  geom_line(color = "steelblue", size = 1) +
+  geom_point(color = "darkblue", size = 1.5) + 
+  # This dynamically formats the timeline ticks on the X-axis nicely
+  scale_x_datetime(date_labels = "%b %d\n%H:%M", date_breaks = "2 days") +
+  theme_minimal() +
+  labs(
+    title = "TenantThread Stock Price Leading Up to Crisis",
+    subtitle = "Cleaned chronological timeline view",
+    x = "Date & Time",
+    y = "Stock Price ($)"
+  )
+```
+We can quickly observed from the above graph that the stock price started to spike up on 4th June and this is likely where our starting point will be
+to understanding what happen prior to the stock price going up.
+
+```{r}
+june_4th_clues <- df_environment %>%
+  filter(str_detect(hour, "2046-06-04")) %>%
+  select(hour, environment_context_event_narrative,environment_context_event_headline, environment_context_social_state)
+
+knitr::kable(june_4th_clues, format = "markdown")
+```
+
+We also observed the hashtag  #AlgorithmicEviction here that is align with the background so far.
+The sentiment deteoriating rapidly also suggest we should explore the other available data on what news triggered this drop
+
+### Investigate News data
+
+```{r}
+knitr::kable(df_news %>%
+  filter(str_detect(hour, "2046-06-04")))
+```
+
+There is already mention of "Crsis" in 4th June. lets investigate further onto the other available data.
+We now look into communications among the agents to find out what can we observed that led to this.
+
+We apply TD-IDF below to get a sensing of what each day happen without going through each text
+
+Setting colors for the various agent for easy identification
+
+### Color palette
+
+```{r}
+#| code-fold: false
+agent_palette <- c(
+  "pr_agent"           = "#005f73",  
+  "pr_intern_agent"    = "#0a9396",  
+  "social_media_agent" = "#9b5de5",  
+  "legal_agent"        = "#1b4332",  
+  "judge_agent"        = "#6a040f",  
+  "quality_agent"      = "#ca6702",  
+  "intern_agent"       = "#f15bb5")   
+```
+
+
+::: panel-tabset
+### Running on 4th and 5th June
+```{r}
+#| fig-width: 16
+#| fig-height: 8
+# 1. Tokenize and clean the internal deliberation text
+df_words <- df_communications %>%
+  filter(str_detect(hour, "2046-06-04|2046-06-05")) %>%
+  mutate(
+    full_text = paste(replace_na(internal_state_deliberating, ""), 
+                      replace_na(content, ""))
+  ) %>%
+  select(hour, agent_id, full_text) %>%
+  unnest_tokens(word, full_text) %>%
+  anti_join(get_stopwords(), by = "word") %>%
+  filter(str_detect(word, "^[a-zA-Z]+$"))
+
+# 2. Compute TF-IDF to find unique themes per Agent during the crisis
+df_tf_idf <- df_words %>%
+  count(agent_id, word, sort = TRUE) %>%
+  bind_tf_idf(word, agent_id, n)
+
+# 3. Plot the top distinct topic terms for each agent
+df_tf_idf %>%
+  group_by(agent_id) %>%
+  slice_max(tf_idf, n = 7, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(word = reorder_within(word, tf_idf, agent_id)) %>%
+  ggplot(aes(x = tf_idf, y = word, fill = agent_id)) +
+  geom_col(show.legend = FALSE) +
+  scale_y_reordered() +
+  scale_fill_manual(values = agent_palette) +
+  facet_wrap(~ agent_id, scales = "free_y", ncol = 2) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(face = "bold")) +
+  labs(
+    title = "Structural Text Analysis: Core Focus Areas per Agent (4th June & 5th June)",
+    subtitle = "Top unique terms extracted via TF-IDF reveal distinct operational priorities during the crisis.",
+    x = "Theme Importance (TF-IDF Score)",
+    y = NULL
+  )
+
+```
+
+### Running on 4th
+
+```{r}
+#| fig-width: 16
+#| fig-height: 8
+# 1. Tokenize and clean the internal deliberation text
+df_words <- df_communications %>%
+  filter(str_detect(hour, "2046-06-04")) %>%
+  mutate(
+    full_text = paste(replace_na(internal_state_deliberating, ""), 
+                      replace_na(content, ""))
+  ) %>%
+  select(hour, agent_id, full_text) %>%
+  unnest_tokens(word, full_text) %>%
+  anti_join(get_stopwords(), by = "word") %>%
+  filter(str_detect(word, "^[a-zA-Z]+$"))
+
+# 2. Compute TF-IDF to find unique themes per Agent during the crisis
+df_tf_idf <- df_words %>%
+  count(agent_id, word, sort = TRUE) %>%
+  bind_tf_idf(word, agent_id, n)
+
+# 3. Plot the top distinct topic terms for each agent
+df_tf_idf %>%
+  group_by(agent_id) %>%
+  slice_max(tf_idf, n = 7, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(word = reorder_within(word, tf_idf, agent_id)) %>%
+  ggplot(aes(x = tf_idf, y = word, fill = agent_id)) +
+  geom_col(show.legend = FALSE) +
+  scale_y_reordered() +
+  scale_fill_manual(values = agent_palette) +
+  facet_wrap(~ agent_id, scales = "free_y", ncol = 2) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(face = "bold")) +
+  labs(
+    title = "Structural Text Analysis: Core Focus Areas per Agent (4th June)",
+    subtitle = "Top unique terms extracted via TF-IDF reveal distinct operational priorities during the crisis.",
+    x = "Theme Importance (TF-IDF Score)",
+    y = NULL
+  )
+```
+
+### Running on 5th only
+
+```{r}
+#| fig-width: 16
+#| fig-height: 8
+# 1. Tokenize and clean the internal deliberation text
+df_words <- df_communications %>%
+  filter(str_detect(hour, "2046-06-05")) %>%
+  mutate(
+    full_text = paste(replace_na(internal_state_deliberating, ""), 
+                      replace_na(content, ""))
+  ) %>%
+  select(hour, agent_id, full_text) %>%
+  unnest_tokens(word, full_text) %>%
+  anti_join(get_stopwords(), by = "word") %>%
+  filter(str_detect(word, "^[a-zA-Z]+$"))
+
+# 2. Compute TF-IDF to find unique themes per Agent during the crisis
+df_tf_idf <- df_words %>%
+  count(agent_id, word, sort = TRUE) %>%
+  bind_tf_idf(word, agent_id, n)
+
+# 3. Plot the top distinct topic terms for each agent
+df_tf_idf %>%
+  group_by(agent_id) %>%
+  slice_max(tf_idf, n = 7, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(word = reorder_within(word, tf_idf, agent_id)) %>%
+  ggplot(aes(x = tf_idf, y = word, fill = agent_id)) +
+  geom_col(show.legend = FALSE) +
+  scale_y_reordered() +
+  scale_fill_manual(values = agent_palette) +
+  facet_wrap(~ agent_id, scales = "free_y", ncol = 2) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(face = "bold")) +
+  labs(
+    title = "Structural Text Analysis: Core Focus Areas per Agent (5tH June)",
+    subtitle = "Top unique terms extracted via TF-IDF reveal distinct operational priorities during the crisis.",
+    x = "Theme Importance (TF-IDF Score)",
+    y = NULL
+  )
+```
+:::
+
+::: {.callout-tip}
+
+### Insights
+When we look through each graph, we start to notice that:
+
+- Judge agent has a that theme appears to be restraining itself from words such as compliance, hold, truth, flag
+
+- PR agent appears to be writing documents with negativity and carefulness with words  such as objection, exclusive, selective, ethical
+
+- Quality agents appears to be going through many briefings with others with words such as walkthrough, memo, briefings, board and Ajay the ceo of the company
+
+- Social Media agent appears to be doing simulation and words with negativity appears such as denial, critical, projected. There is also mention of the share and appears to be simulation of share price.
+
+- PR intern appears to be doing analysis on data on rent.
+
+- Intern agent appears to be unware of what is going on and has similar theme throughout the 3 days.
+:::
+
+### Text Network Centrality
+To validate the TF-IDF findings and uncover hidden structural patterns.
+
+- A betweenness centrality analysis was executed on the full graph.This two-step sequence ensures that terms which may lack the raw volume to break into the Top 10 TF-IDF registry are exposed.
+
+- A degree centrality was executed to find high degree of words used for all agents based on volume
+
+- A page rank is performed to identifie the words that serve as the ultimate destinations of the system's logic.
+
+
+
+```{r}
+
+df_words_clean <- df_communications %>%
+  mutate(log_id = row_number()) %>%
+  unnest_tokens(word, content) %>%
+  anti_join(stop_words, by = "word") %>%
+  filter(str_detect(word, "^[a-zA-Z]{2,}$"))
+
+# 3. Build the Edge List (Word co-occurrences within the same log entry)
+df_word_pairs <- df_words_clean %>%
+  pairwise_count(word, log_id, sort = TRUE, upper = FALSE) %>%
+  rename(from = item1, to = item2, weight = n)
+
+
+text_graph <- igraph::graph_from_data_frame(df_word_pairs, directed = FALSE)
+
+
+betweenness_values <- igraph::betweenness(text_graph, directed = FALSE, normalized = TRUE)
+
+
+df_centrality_complete <- tibble(
+  word = names(betweenness_values),
+  betweenness = as.numeric(betweenness_values),
+  pagerank    = as.numeric(igraph::page_rank(text_graph)$vector),
+  harmonic    = as.numeric(igraph::harmonic_centrality(text_graph, normalized = TRUE)),
+  degree_str  = as.numeric(igraph::strength(text_graph))
+)
+
+```
+
+The table is ordered in descending order by:
+
+::: panel-tabset
+
+### Degree Centrality
+```{r}
+knitr:: kable(df_centrality_complete %>% 
+    slice_max(order_by = degree_str, n = 20))
+```
+
+### Betweeness Centrality
+```{r}
+knitr:: kable(df_centrality_complete %>% 
+    slice_max(order_by = betweenness, n = 20))
+```
+
+
+### Page rank Centrality
+```{r}
+knitr:: kable(df_centrality_complete %>% 
+    slice_max(order_by = pagerank, n = 20))
+```
+
+:::
+
+::: {.callout-tip} 
+### Insights
+From our observation in each. Tracking raw volume via Degree Strength establishes that the system's baseline environment was heavily driven by traditional institutional actions around ‘governance’ and ‘pr’ However, when we check the betweenness score, we noted that the highest betweenness words such as ‘tenantthread’ and ‘flex’ did not have the highest degree strength. This suggests that a number of conversations were centered around a subset of all the agents. Lastly the Page Rank centrality indicates that ‘governance’, ‘pr’ and ‘legal’ serve as the theme for the agents.
+:::
+
+
+### Alluvial Chart
+Although we have a clue from the TF-IDF study on the theme from 4th June to 5th June and network centrality on how the conversations were concentrated on,we would like to dive deeper to understand
+which agent had the most involvement in the change in stock price or perception of company after the news after the merger leaked out.
+
+```{r}
+# 1. Categorize timeline and establish forensic priority weights
+df_alluvial_prep <- df_communications %>%
+  mutate(
+    phase = case_when(
+      str_detect(hour, "2046-06-04") ~ "1. June 4th",
+      str_detect(hour, "2046-06-05T09|2046-06-05T10|2046-06-05T11|2046-06-05T12|2046-06-05T13|2046-06-05T14|2046-06-05T15") ~ "2. June 5th\n(9am - 3pm)",
+      str_detect(hour, "2046-06-05T16") ~ "3. June 5th \n(4pm - 5pm)",
+      str_detect(hour, "2046-06-05T17") ~ "4. June 5th 5:12 PM\n(Breach)",
+      TRUE ~ NA_character_
+    ),
+    channel_priority = case_when(
+      channel %in% c("personal_post", "anonymous_post") ~ 4,  
+      channel %in% c("side_huddle", "one_on_one_chat")  ~ 3,  
+      channel == "comms_huddle"                         ~ 1,  
+      TRUE                                              ~ 2   
+    )
+  ) %>%
+  filter(!is.na(phase)) %>%
+  group_by(phase, channel, agent_id, channel_priority) %>%
+  summarise(msg_volume = n(), .groups = "drop") %>%
+  
+  group_by(phase, agent_id) %>%
+  slice_max(channel_priority, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+df_alluvial_prep$phase <- factor(df_alluvial_prep$phase, 
+                                 levels = c("1. June 4th", 
+                                            "2. June 5th\n(9am - 3pm)", 
+                                            "3. June 5th \n(4pm - 5pm)", 
+                                            "4. June 5th 5:12 PM\n(Breach)"))
+
+
+ggplot(df_alluvial_prep, aes(x = phase, y = msg_volume, stratum = channel, alluvium = agent_id, fill = agent_id)) +
+  geom_alluvium(alpha = 0.65, width = 1/4, color = "white", linewidth = 0.1) +
+  geom_stratum(alpha = 0.15, width = 1/4, fill = "black", color = "black") +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), fontface = "bold", size = 3) +
+  
+  scale_fill_manual(values = agent_palette) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(face = "bold", size = 11, color = "black"), # Fixed linewidth to size
+    axis.text.y = element_blank(),
+    panel.grid = element_blank(),
+    legend.position = "bottom"
+  ) +
+  labs(
+    title = "System Interaction Alluvial Story Tracker: The Path to the Breach",
+    subtitle = "Tracking how individual agent communications migrated across operational environments as the crisis escalated.",
+    x = "Investigation Timeline Milestones",
+    y = "Operational Traffic Mass",
+    fill = "Executing AI Actor"
+  )
+```
+
+This chart uncovered that the judge agent had no communications after 3pm although its the compliance enforcer.
+After 3pm, the legal agent and pr intern agent continued communications with one on one chat leading to an anonymous post.
+Whereas the social medial agent also continued with a personal post.
+Hence we now narrow down the 3 agents that we should focus on.
+
+
+```{r}
+#| column: page
+#| warning: false
+
+df_communications %>% filter(str_detect(hour, "2046-06-05") & agent_id %in% c('legal_agent','pr_intern_agent','social_media_agent')) %>% select(agent_id, timestamp,internal_state_deliberating,content)  %>%
+slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
+  
+  # 1. Force the table to render as HTML
+  knitr::kable(format = "html") %>% 
+  
+  # 2. Apply responsive bootstrap styling
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  
+  # 3. Inject the scroll constraints (adjust height as needed for your page layout)
+  scroll_box(height = "500px", width = "100%")
+```
+
+
+### Word Occurrence Network Graph  
+Next we try to use a Bi-Gram approach to create a word occurence graph to try to narrow down 
+what the 3 agents are saying prior to the release of the embargo to get a sensing what happened.
+
+```{r}
+#| fig-width: 16
+#| fig-height: 8
+
+df_bigrams <- df_communications %>%
+  filter(str_detect(hour, "2046-06-05T16|2046-06-05T17"), agent_id %in% c('legal_agent','pr_intern_agent','social_media_agent')) %>% # Focus on the crisis day
+  mutate(
+    # Clean and concatenate both target columns
+    full_text = paste(replace_na(internal_state_deliberating, ""), 
+                      replace_na(content, ""))
+  ) %>%
+  select(full_text) %>%
+  unnest_tokens(bigram, full_text, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word,
+         str_detect(word1, "^[a-zA-Z]+$"),
+         str_detect(word2, "^[a-zA-Z]+$")) %>%
+  count(word1, word2, sort = TRUE) %>%
+  slice_max(n, n = 70, with_ties = FALSE) 
+
+# 2. Convert to a directional graph object
+graph_bigrams <- as_tbl_graph(df_bigrams, directed = TRUE)
+
+# 3. Plot the Phrase Network
+ggraph(graph_bigrams, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), 
+                 color = "steelblue",
+                 arrow = arrow(length = unit(2.5, 'mm')), 
+                 end_cap = circle(2.5, 'mm')) +
+  geom_node_point(color = "grey20", size = 1.5) +
+  geom_node_text(aes(label = name), repel = TRUE, size = 4, fontface = "bold") +
+  scale_edge_width(range = c(0.4, 2)) +
+  theme_graph() +
+  labs(
+    title = "Phrase Architecture: Word Co-occurrence Network (June 5th)",
+    subtitle = "Links uncover actionable word couplings inside internal thoughts and outgoing messages.",
+    edge_width = "Phrase Frequency",
+    edge_alpha = "Phrase Frequency"
+  )
+```
+
+It doesnt feel too intuitive from the above. and the only emphasis its on a press release.
+We will attempt again to find the top bigram words in a bar chart format and find the top phrase by frequency count
+
+
+```{r}
+
+
+df_agent_phrases <- df_communications %>%
+  filter(
+    str_detect(hour, "2046-06-05T16|2046-06-05T17"), 
+    agent_id %in% c('legal_agent', 'pr_intern_agent', 'social_media_agent')
+  ) %>%
+  mutate(
+    full_text = paste(replace_na(internal_state_deliberating, ""), 
+                      replace_na(content, ""))
+  ) %>%
+  select(agent_id, full_text) %>%
+  unnest_tokens(bigram, full_text, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word,
+         str_detect(word1, "^[a-zA-Z]+$"),
+         str_detect(word2, "^[a-zA-Z]+$")) %>%
+  mutate(clean_phrase = paste(word1, word2, sep = " ")) %>%
+  
+
+  count(agent_id, clean_phrase, sort = TRUE) %>%
+  group_by(agent_id) %>%
+  slice_max(n, n = 6, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(clean_phrase = reorder_within(clean_phrase, n, agent_id))
+
+ggplot(df_agent_phrases, aes(x = n, y = clean_phrase, fill = agent_id)) +
+  geom_col(show.legend = FALSE) +
+  scale_y_reordered() +
+  scale_fill_manual(values = agent_palette) +
+  facet_wrap(~ agent_id, scales = "free_y", ncol = 1) + # Stacked panels for direct comparison
+  theme_minimal() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12),
+    axis.text.y = element_text(face = "bold", size = 10)
+  ) +
+  labs(
+    title = "Dialogue Focus by Agent",
+    subtitle = "Isolating the top distinct phrases used by each actor during the breakout hour.",
+    x = "Phrase Frequency Count",
+    y = NULL
+  )
+```
+
+::: {.callout-tip} 
+### Insights
+We found that all 3 agents top phrase had "press release" and "bilateral consent".
+The official flex post is also present in the legal agent and pr intern agent. 
+These keyswords appears to guide us to the truth.
+We shall now attempt to filter for these keywords 
+Note: 36 rows found
+:::
+
+### Full Relevant Content
+```{r}
+df_communications %>% 
+  filter(
+    str_detect(hour, "2046-06-05T17"),
+    str_detect(content, "flex|consent|release|critical") | 
+    str_detect(internal_state_deliberating, "flex|consent|release|critical")
+  ) %>% 
+  select(agent_id, channel, content, internal_state_deliberating, timestamp) %>% 
+  slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
+  knitr::kable(format = "html") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  scroll_box(height = "500px", width = "100%")
+```
+
+::: {.callout-tip}
+### Insights
+From the above filtered conversation, we can observe that the post is intentionally release by the agents.
+Consent was received from CivicLoom's legal team hence "bilateral consent" kept appearing in the previous. The release was performed by pr intern and the judge also made sure compliance was enforced with "Judge — CivicLoom verbal consent confirmed. Section 4.3(c) bilateral release effective immediately. Third-party publication rendered embargo moot — neither party breached"
+:::
+
+## Q2 
+The evasion of the embargo was a new behavior. Provide visual analytics that discover and illustrate the typical behavior of systems/agents/people involved. How does the behavior that led to the release compare to the prior behaviors?
+
+We learnt earlier from [Finding the critical moments](#finding-critical-moments) that the critical point of the change was on '2046-06-04', hence we will explore the normal behaviors of the agents before the critical date.
+
+
+
+### Typical Behavior
+
+```{r}
+#| warning: false
+#| message: false
+#| layout-ncol: 2
+#| column: page
+
+
+custom_stop_words <- tibble(word = c("legal", "agent", "pr", "intern", "social", "media", "judge", "quality"))
+
+# 2. Extract baseline text data (Up to June 3rd)
+baseline_words <- df_communications %>%
+  filter(hour < "2046-06-04") %>%
+  mutate(full_text = paste(replace_na(internal_state_deliberating, ""), replace_na(content, ""))) %>%
+  select(agent_id, full_text) %>%
+  unnest_tokens(word, full_text) %>%
+  anti_join(get_stopwords(), by = "word") %>%
+  anti_join(custom_stop_words, by = "word") %>%
+  filter(str_detect(word, "^[a-zA-Z]+$")) %>%
+  count(agent_id, word) %>%
+  bind_tf_idf(word, agent_id, n) %>%
+  group_by(agent_id) %>%
+  slice_max(tf_idf, n = 10, with_ties = FALSE) %>%
+  ungroup()
+
+# 3. Create Edges Data Frame for visNetwork
+edges_baseline <- baseline_words %>%
+  rename(from = agent_id, to = word, value = tf_idf)
+
+# 4. Create Nodes Data Frame with explicit mapping attributes
+nodes_baseline <- tibble(name = unique(c(edges_baseline$from, edges_baseline$to))) %>%
+  mutate(
+    id = name,
+    label = name,
+    group = if_else(name %in% edges_baseline$from, "Agent", "Keyword"),
+    # Assign node sizes dynamically
+    size = if_else(group == "Agent", 35, 15),
+    # Inject specific palette mapping values
+    color = if_else(group == "Agent", agent_palette[name], "#9ecae1")
+    )
+
+
+# 5. Render Interactive Baseline Network
+p1 <- visNetwork(nodes_baseline, edges_baseline, 
+                 main = "Baseline Network Structure",
+                 submain = "18th May  - 3rd June  Typical Behavior",
+                 width = "100%", height = "650px") %>%
+  visGroups(groupname = "Agent", font = list(size = 16, face = "bold")) %>%
+  visGroups(groupname = "Keyword", font = list(size = 12)) %>%
+  visOptions(highlightNearest = list(enabled = TRUE, degree = 1, hover = TRUE),
+             nodesIdSelection = TRUE) %>%
+  visPhysics(solver = "forceAtlas2Based", stabilization = TRUE) %>%
+  visLayout(randomSeed = 123)
+
+
+
+
+# 1. Extract crisis text data (June 4th & 5th)
+crisis_words <- df_communications %>%
+  filter(hour >= "2046-06-04") %>%
+  mutate(full_text = paste(replace_na(internal_state_deliberating, ""), replace_na(content, ""))) %>%
+  select(agent_id, full_text) %>%
+  unnest_tokens(word, full_text) %>%
+  anti_join(get_stopwords(), by = "word") %>%
+  anti_join(custom_stop_words, by = "word") %>%
+  filter(str_detect(word, "^[a-zA-Z]+$")) %>%
+  count(agent_id, word) %>%
+  bind_tf_idf(word, agent_id, n) %>%
+  group_by(agent_id) %>%
+  slice_max(tf_idf, n = 10, with_ties = FALSE) %>%
+  ungroup()
+
+# 2. Create Edges Data Frame
+edges_crisis <- crisis_words %>%
+  rename(from = agent_id, to = word, value = tf_idf)
+
+# 3. Create Nodes Data Frame
+nodes_crisis <- tibble(name = unique(c(edges_crisis$from, edges_crisis$to))) %>%
+  mutate(
+    id = name,
+    label = name,
+    group = if_else(name %in% edges_crisis$from, "Agent", "Keyword"),
+    size = if_else(group == "Agent", 35, 15),
+    color = if_else(group == "Agent", agent_palette[name], "#9ecae1")
+  )
+
+# 4. Render Interactive Crisis Network
+p2 <- visNetwork(nodes_crisis, edges_crisis,
+                 main = "Crisis Network Structure",
+                 submain = "4th June onwards Typical Behavior",width = "100%", height = "650px") %>%
+  visGroups(groupname = "Agent", font = list(size = 16, face = "bold")) %>%
+  visGroups(groupname = "Keyword", font = list(size = 12)) %>%
+  visOptions(highlightNearest = list(enabled = TRUE, degree = 1, hover = TRUE),
+             nodesIdSelection = TRUE) %>%
+  visPhysics(solver = "forceAtlas2Based", stabilization = TRUE) %>%
+  visLayout(randomSeed = 123)
+
+p1
+p2
+```
+
+To interpret the above chart, the thicker the line the more unique the word is to the agent through the TF IDF transformation.
+
+On the left (Typical behavior), most agents operate within isolated star-burst formations, communicating via distinct, non-overlapping vocabularies tailored to their explicit job roles. Distinctively, the quality_agent and legal_agent form a heavily weighted structural bridge through the keyword risk, signifying routine corporate governance, auditing, and compliance monitoring. Aside from a minor conversational convergence around the filler word us among the legal and public relations agents, key executioners like the pr_intern_agent and intern_agent remain completely disconnected from the rest of the corporate infrastructure, working in total isolation.
+
+On the right (criss behavior), we can see structural shifts in the network.
+A new, targeted coordination bridge emerges directly between the legal_agent and social_media_agent through the shared keyword pm, this likely captures capturing a synchronized effort to manage the precise timing of the public release.
+We also notice that intern_agent and pr_intern_agent suddenly link through a heavily weighted focus on morale.
+
+## Q3
+3. Were there leading indicators that such a release was possible?
+- Are there prior occasions where agent’s actual behaviors differ from their expected behavior? When? Which behaviors were observed?
+- Were there other occasions where the agent system exhibited behaviors like those that led to the release? When? Which behaviors were observed?
+Why didn’t the prior occasions result in noticeable action?
+
+In this section we will go through each internal state of the agents to determine any abnormalies.
+
+### TF-IDF on internal state
+```{r}
+df_thoughts <- df_communications %>%
+  select(message_id, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing) %>%
+  pivot_longer(
+    cols = starts_with("internal_state"),
+    names_to = "thought_layer",
+    values_to = "text"
+  ) %>%
+  filter(!is.na(text) & text != "")
+
+# 2. Tokenize (split into single words) and remove common filler words (stop words)
+df_tokens <- df_thoughts %>%
+  unnest_tokens(word, text) %>%
+  anti_join(stop_words) %>%
+  # Remove meaningless conversational words
+  filter(!word %in% c("agent", "ajay", "platform", "trust", "legal")) 
+
+# 3. Calculate TF-IDF
+df_tfidf <- df_tokens %>%
+  count(thought_layer, word, sort = TRUE) %>%
+  bind_tf_idf(word, thought_layer, n) %>%
+  arrange(desc(tf_idf))
+
+# 4. Visualize the most unique words per thought layer
+df_tfidf %>%
+  group_by(thought_layer) %>%
+  slice_max(tf_idf, n = 10) %>%
+  ungroup() %>%
+  ggplot(aes(tf_idf, reorder(word, tf_idf), fill = thought_layer)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~thought_layer, scales = "free") +
+  labs(title = "TF-IDF: Identifying the Vocabulary of Rationalization",
+       x = "TF-IDF Score", y = NULL) +
+  theme_minimal()
+```
+Not much was observed from the TF-IDF that we did not know from earlier analysis
+
+### Sentimental Analayis on Bi-grams
+```{r}
+# 1. Extract two-word pairs from ALL text columns
+df_bigrams <- df_communications %>%
+  select(message_id, content, internal_state_deliberating, internal_state_rationalizing) %>%
+  unite("all_text", content:internal_state_rationalizing, na.rm = TRUE, sep = " ") %>%
+  unnest_tokens(bigram, all_text, token = "ngrams", n = 2) %>%
+  filter(!is.na(bigram))
+
+bigrams_separated <- df_bigrams %>%
+  separate(bigram, c("word1", "word2"), sep = " ")
+
+bigrams_filtered <- bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+# 3. Count the most frequent meaningful word pairs
+bigram_counts <- bigrams_filtered %>% 
+  count(word1, word2, sort = TRUE) %>%
+  filter(n > 1) # F
+
+# 4. View the top action-oriented bigrams
+head(bigram_counts, 20)%>%
+  knitr::kable(format = "html")
+```
+Not much was observed from the bi-gram that we did not know from earlier analysis
+
+
+```{r}
+
+df_all_text <- df_communications %>%
+  mutate(date_label = as.Date(as_datetime(timestamp))) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, date_label, all_text) %>%
+  unnest_tokens(word, all_text)
+
+# 3. Apply the Lexicon
+# The "bing" lexicon automatically categorizes thousands of words as positive or negative.
+df_sentiment <- df_all_text %>%
+  inner_join(get_sentiments("bing"), by = "word")
+
+# 4. Calculate the Daily Emotional Baseline
+df_daily_sentiment <- df_sentiment %>%
+  count(date_label, sentiment) %>%
+  pivot_wider(names_from = sentiment, values_from = n, values_fill = list(n = 0)) %>%
+  mutate(
+    total_sentiment_words = positive + negative,
+    net_sentiment = (positive - negative) / total_sentiment_words
+  )
+
+# 5. Define a Statistical Anomaly Threshold for Sentiment
+mean_sentiment <- mean(df_daily_sentiment$net_sentiment)
+sd_sentiment <- sd(df_daily_sentiment$net_sentiment)
+stress_threshold <- mean_sentiment - (1.5 * sd_sentiment)
+
+df_daily_sentiment <- df_daily_sentiment %>%
+  mutate(is_anomaly = net_sentiment < stress_threshold)
+
+# 6. Plot the System's Emotional Vital Signs
+ggplot(df_daily_sentiment, aes(x = date_label, y = net_sentiment)) +
+  geom_line(color = "#7f8c8d", size = 1) +
+  geom_point(aes(color = is_anomaly, size = is_anomaly)) +
+  scale_color_manual(values = c("FALSE" = "#34495e", "TRUE" = "#d62728")) +
+  scale_size_manual(values = c("FALSE" = 2.5, "TRUE" = 4.5)) +
+  geom_hline(yintercept = stress_threshold, linetype = "dashed", color = "#d62728") +
+  scale_x_date(date_breaks = "1 day", date_labels = "%b %d") +
+  theme_minimal(base_size = 13) +
+  labs(
+    title = "Sentiment Analysis",
+    subtitle = "Tracking severe drops in system sentiment",
+    x = "Timeline",
+    y = "Net Sentiment Score"
+  ) +
+  theme(legend.position = "none",axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+::: {.callout-tip}
+
+### Insights
+From the above chart, we notice some drop in sentiment opn 18th May, 28th May and 29th may that appears to have the same negative sentiment as 5th June. This warrants additional deep-dive into those dates.
+:::
+
+```{r}
+df_communications %>% 
+  filter(
+    as.Date(timestamp) %in% as.Date(c("2046-05-18", "2046-05-28", "2046-05-29"))
+  ) %>% 
+  select(agent_id, channel, content, internal_state_deliberating, timestamp) %>% 
+  slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
+  knitr::kable(format = "html") %>% 
+
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  scroll_box(height = "500px", width = "100%")
+```
+
+::: {.callout-tip}
+### Insights
+from the first few rows, we observed some mistake done in the earlier 2 weeks.
+"I'm logging today's incident in the risk register as a Category 2 embargo sensitivity event — contained, no material disclosure, but flagged for the record. I want you to know I'll be adjusting my overall risk score upward to 6.5/10."
+:::
+
+
+### Finding keywords to deep dive into incidents
+
+::: panel-tabset
+
+### 18th May
+```{r}
+
+df_keyness <- df_communications %>%
+  mutate(
+    date_label = as.Date(as_datetime(timestamp)),
+    time_period = if_else(date_label %in% as.Date(c("2046-05-18")) , "Anomaly_Days", "Baseline")
+  ) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, time_period, all_text) %>%
+  unnest_tokens(word, all_text) %>%
+  anti_join(stop_words, by = "word")
+
+
+word_counts <- df_keyness %>%
+  count(time_period, word) %>%
+  pivot_wider(names_from = time_period, values_from = n, values_fill = list(n = 0)) %>%
+  filter(Anomaly_Days > 2)
+
+
+total_anomaly_words <- sum(word_counts$Anomaly_Days)
+total_baseline_words <- sum(word_counts$Baseline)
+
+df_crucial_words <- word_counts %>%
+  mutate(
+    freq_anomaly = Anomaly_Days / total_anomaly_words,
+    freq_baseline = (Baseline + 1) / total_baseline_words, 
+    odds_ratio = freq_anomaly / freq_baseline
+  ) %>%
+  arrange(desc(odds_ratio))
+
+
+print("--- Crucial Words Unique to ALL Anomaly Days ---")
+df_crucial_words %>% 
+  select(word, Anomaly_Days, odds_ratio) %>% 
+  head(20) %>%
+  knitr::kable(format = "html")
+```
+
+### 28th May
+
+```{r}
+
+df_keyness <- df_communications %>%
+  mutate(
+    date_label = as.Date(as_datetime(timestamp)),
+    time_period = if_else(date_label %in% as.Date(c("2046-05-28")) , "Anomaly_Days", "Baseline")
+  ) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, time_period, all_text) %>%
+  unnest_tokens(word, all_text) %>%
+  anti_join(stop_words, by = "word")
+
+
+word_counts <- df_keyness %>%
+  count(time_period, word) %>%
+  pivot_wider(names_from = time_period, values_from = n, values_fill = list(n = 0)) %>%
+  filter(Anomaly_Days > 2)
+
+
+total_anomaly_words <- sum(word_counts$Anomaly_Days)
+total_baseline_words <- sum(word_counts$Baseline)
+
+df_crucial_words <- word_counts %>%
+  mutate(
+    freq_anomaly = Anomaly_Days / total_anomaly_words,
+    freq_baseline = (Baseline + 1) / total_baseline_words, 
+    odds_ratio = freq_anomaly / freq_baseline
+  ) %>%
+  arrange(desc(odds_ratio))
+
+
+print("--- Crucial Words Unique to ALL Anomaly Days ---")
+df_crucial_words %>% 
+  select(word, Anomaly_Days, odds_ratio) %>% 
+  head(20) %>%
+  knitr::kable(format = "html")
+```
+
+### 29th May
+
+```{r}
+df_keyness <- df_communications %>%
+  mutate(
+    date_label = as.Date(as_datetime(timestamp)),
+    time_period = if_else(date_label %in% as.Date(c("2046-05-29")) , "Anomaly_Days", "Baseline")
+  ) %>%
+  unite("all_text", content, internal_state_deliberating, internal_state_reacting, internal_state_rationalizing, 
+        na.rm = TRUE, sep = " ") %>%
+  select(message_id, time_period, all_text) %>%
+  unnest_tokens(word, all_text) %>%
+  anti_join(stop_words, by = "word")
+
+
+word_counts <- df_keyness %>%
+  count(time_period, word) %>%
+  pivot_wider(names_from = time_period, values_from = n, values_fill = list(n = 0)) %>%
+  filter(Anomaly_Days > 2)
+
+
+total_anomaly_words <- sum(word_counts$Anomaly_Days)
+total_baseline_words <- sum(word_counts$Baseline)
+
+df_crucial_words <- word_counts %>%
+  mutate(
+    freq_anomaly = Anomaly_Days / total_anomaly_words,
+    freq_baseline = (Baseline + 1) / total_baseline_words, 
+    odds_ratio = freq_anomaly / freq_baseline
+  ) %>%
+  arrange(desc(odds_ratio))
+
+
+print("--- Crucial Words Unique to ALL Anomaly Days ---")
+df_crucial_words %>% 
+  select(word, Anomaly_Days, odds_ratio) %>% 
+  head(20) %>%
+  knitr::kable(format = "html")
+
+```
+
+:::
+
+Among the 3 dates. 29th May seems to have a stronger indication of negativity with words such as incident, redacted (which is usually meant for censoring) and for the other 2 dates affected. Using this 3 words we will try to identify again if we can so any similarities
+with the 5th June incidents.
+
+
+```{r}
+# 1. Define a Behavioral Regex (focusing on rule-breaking, errors, and insubordination)
+behavior_regex <- "affected|redacted|incident"
+
+# 2. Flag anomalous behaviors in the dataset
+df_behavior_tracking <- df_communications %>%
+  mutate(
+    date_time = as_datetime(timestamp),
+    date_label = as.Date(date_time),
+    
+    has_rationalization = !is.na(internal_state_rationalizing) & internal_state_rationalizing != "",
+    
+    has_behavior_flag = str_detect(tolower(content), behavior_regex) | 
+                        str_detect(tolower(internal_state_deliberating), behavior_regex) |
+                        str_detect(tolower(internal_state_reacting), behavior_regex) |
+                        str_detect(tolower(internal_state_rationalizing), behavior_regex),
+    
+    has_behavior_flag = replace_na(has_behavior_flag, FALSE),
+    
+    is_behavioral_anomaly = has_rationalization | has_behavior_flag
+  )
+
+# 3. Aggregate daily behavioral anomalies rather than total volume
+df_daily_behavior <- df_behavior_tracking %>%
+  group_by(date_label) %>%
+  summarise(
+    total_messages = n(),
+    anomaly_count = sum(is_behavioral_anomaly, na.rm = TRUE)
+  ) %>%
+  filter(anomaly_count > 0) 
+
+
+df_evidence <- df_behavior_tracking %>%
+  filter(is_behavioral_anomaly == TRUE) %>%
+  select(timestamp, agent_label, internal_state_rationalizing, content)
+
+
+print("--- Prior Occasion Evidence (May 29) ---")
+df_evidence %>% filter(as.Date(timestamp) == as.Date("2046-05-29")) %>% head(3) %>%
+knitr::kable(format = "html")
+
+# 5. Visualize the Behavioral Deviations
+ggplot(df_daily_behavior, aes(x = date_label, y = anomaly_count)) +
+  geom_segment(aes(x = date_label, xend = date_label, y = 0, yend = anomaly_count), 
+               color = "#34495e", size = 1.2) +
+  geom_point(color = "#d62728", size = 4) +
+  geom_text(aes(label = anomaly_count), vjust = -1.5, color = "#d62728", fontface = "bold") +
+
+  scale_y_continuous(limits = c(0, max(df_daily_behavior$anomaly_count) + 10)) +
+  theme_minimal(base_size = 13) +
+  labs(
+    title = "Systemic Agent Deviations",
+    subtitle = "Tracking Incident like conversation.",
+    x = "Timeline",
+    y = "Frequency of Deviant Agent States"
+  )
+```
+
+::: {.callout-tip}
+The above chart shows very similar count between 28th to 29th May and the actual crisis on 5th June, we can eliminate the date on 18th May for out filter below
+:::
+
+
+###  A prior incident
+
+```{r}
+df_communications %>% 
+  filter(
+    as.Date(timestamp) %in% as.Date(c("2046-05-28", "2046-05-29"))
+  ) %>% 
+  select(agent_id, channel, content, internal_state_deliberating, timestamp) %>% 
+  slice_max(order_by = timestamp, n = 40, with_ties = FALSE) %>%
+  knitr::kable(format = "html") %>% 
+
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = TRUE) %>% 
+  scroll_box(height = "500px", width = "100%")
+```
+
+
+::: {.callout-tip}
+### Insights
+We now see that the incident was actually caused by the PR-intern who posted on the deal before the embargo was cleared. The incident was brought to a close as they brought down the post within 15 minutes, although some CivicLoom employees had engaged with the post and a CivicLoom top management Elena Marquez was tagged. 
+
+Extract of text:
+"14 minutes total. 4 likes confirmed. One like from @CivicLoom_Ops — which is a CivicLoom staff account. I cannot confirm whether Elena Marquez herself saw it, but someone at CivicLoom engaged with the post before deletion."
+:::
