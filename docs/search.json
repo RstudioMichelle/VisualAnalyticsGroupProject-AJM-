@@ -123,7 +123,7 @@
     "href": "Methodology/Data Preparation.html#message-identifier-and-timestamp-checks",
     "title": "Data Preparation",
     "section": "Message identifier and timestamp checks",
-    "text": "Message identifier and timestamp checks\nMessage IDs are checked for potential duplicates. Timestamps are also checked after conversion so that any non-parsed values can be reviewed before downstream analysis.\n\n\nCode\nduplicate_message_ids &lt;- communications %&gt;%\n  filter(!is.na(message_id)) %&gt;%\n  count(message_id, sort = TRUE) %&gt;%\n  filter(n &gt; 1)\n\ncommunication_timestamp_check &lt;- communications %&gt;%\n  transmute(timestamp_parsed = lubridate::ymd_hms(timestamp, quiet = TRUE)) %&gt;%\n  summarise(\n    Total_Records = n(),\n    Missing_or_Unparsed_Timestamps = sum(is.na(timestamp_parsed))\n  )\n\nknitr::kable(communication_timestamp_check)\n\n\n\n\n\nTotal_Records\nMissing_or_Unparsed_Timestamps\n\n\n\n\n912\n0\n\n\n\n\n\nCode\nknitr::kable(duplicate_message_ids)\n\n\n\n\n\nmessage_id\nn"
+    "text": "Message identifier and timestamp checks\nMessage IDs are checked for potential duplicates. Timestamps are also checked after conversion so that any non-parsed values can be reviewed before downstream analysis.\n\n\nCode\nduplicate_message_ids &lt;- communications %&gt;%\n  filter(!is.na(message_id)) %&gt;%\n  count(message_id, sort = TRUE) %&gt;%\n  filter(n &gt; 1)\n\ncommunication_timestamp_check &lt;- communications %&gt;%\n  transmute(timestamp_parsed = lubridate::ymd_hms(timestamp, quiet = TRUE)) %&gt;%\n  summarise(\n    Total_Records = n(),\n    Missing_or_Unparsed_Timestamps = sum(is.na(timestamp_parsed))\n  )\n\nknitr::kable(communication_timestamp_check)\n\n\n\n\n\nTotal_Records\nMissing_or_Unparsed_Timestamps\n\n\n\n\n912\n0"
   },
   {
     "objectID": "Methodology/Data Preparation.html#temporal-features",
@@ -292,5 +292,75 @@
     "title": "Meeting Minutes",
     "section": "Meeting Minutes Sign off",
     "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html",
+    "href": "Methodology/Statistical Analysis.html",
+    "title": "Statistical Analysis",
+    "section": "",
+    "text": "This section outlines the analytical methods used to investigate the TenantThread embargo breach in VAST Challenge 2026 Mini-Challenge 1.\nThe investigation combines temporal, behavioural, communication, and network analysis to identify how the embargoed information may have moved through the system. No single measure is treated as proof of responsibility. Instead, findings are interpreted together with the timing of events, communication content, communication channels, and the roles of involved agents."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#investigation-windows",
+    "href": "Methodology/Statistical Analysis.html#investigation-windows",
+    "title": "Statistical Analysis",
+    "section": "1.1 Investigation windows",
+    "text": "1.1 Investigation windows\nThe inappropriate release occurred on 5 June 2046. To identify whether activity changed before the breach, communications are compared across three periods:\n\nNormal period: More than five days before the breach.\nEscalation period: Three to five days before the breach.\nCritical period: Zero to two days before the breach.\n\nThis comparison helps distinguish routine communication behaviour from unusual activity immediately before the inappropriate release."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#event-sequence-reconstruction",
+    "href": "Methodology/Statistical Analysis.html#event-sequence-reconstruction",
+    "title": "Statistical Analysis",
+    "section": "1.2 Event-sequence reconstruction",
+    "text": "1.2 Event-sequence reconstruction\nCommunications are examined in chronological order alongside relevant alerts, deadlines, market events, agent availability, and other contextual events.\nThis analysis identifies:\n\nimportant events that created urgency or pressure;\ncommunications relating to embargo controls, approvals, compliance, or publication;\nimportant decisions and actors involved in those decisions; and\nthe sequence through which sensitive information may have reached a higher-exposure communication channel."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#message-volume-and-recipient-reach",
+    "href": "Methodology/Statistical Analysis.html#message-volume-and-recipient-reach",
+    "title": "Statistical Analysis",
+    "section": "2.1 Message volume and recipient reach",
+    "text": "2.1 Message volume and recipient reach\nCommunication activity is analysed by comparing:\n\ntotal number of messages;\nnumber of unique recipients;\ncommunication frequency by agent and role; and\nchanges in activity across the normal, escalation, and critical periods.\n\nA sudden increase in message volume or recipient reach may indicate heightened coordination or information dissemination before the breach."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#communication-channel-exposure",
+    "href": "Methodology/Statistical Analysis.html#communication-channel-exposure",
+    "title": "Statistical Analysis",
+    "section": "2.2 Communication-channel exposure",
+    "text": "2.2 Communication-channel exposure\nMessages are classified based on their communication channel:\n\nInternal group channels represent controlled internal discussion.\nPrivate channels represent one-to-one communication.\nSide-channel communication represents smaller and less visible discussion spaces.\nPublic channels represent communications with the greatest potential for wider dissemination.\n\nThis analysis helps identify whether information moved from controlled communication spaces towards more exposed channels before the embargo breach."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#baseline-comparison",
+    "href": "Methodology/Statistical Analysis.html#baseline-comparison",
+    "title": "Statistical Analysis",
+    "section": "4.1 Baseline comparison",
+    "text": "4.1 Baseline comparison\nEach agent’s communication behaviour during the normal period is used as a baseline. Their activity during the escalation and critical periods is then compared against that baseline.\nThe comparison considers:\n\nchanges in total messages;\nchanges in public or side-channel communication;\nchanges in recipient reach;\nchanges in high-risk message frequency; and\nchanges in communication patterns with other roles.\n\nThis analysis identifies whether an agent behaved differently from their usual pattern before the inappropriate release."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#interpreting-unusual-behaviour",
+    "href": "Methodology/Statistical Analysis.html#interpreting-unusual-behaviour",
+    "title": "Statistical Analysis",
+    "section": "4.2 Interpreting unusual behaviour",
+    "text": "4.2 Interpreting unusual behaviour\nIncreased communication alone is not treated as suspicious. Behaviour becomes more relevant when the change occurs close to the breach and is accompanied by:\n\nembargo- or release-related discussion;\nmovement towards higher-exposure channels;\ninteraction with public-facing, legal, compliance, or platform-related roles; or\nrelevant deadlines, alerts, or external pressure."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#weighted-degree-centrality",
+    "href": "Methodology/Statistical Analysis.html#weighted-degree-centrality",
+    "title": "Statistical Analysis",
+    "section": "5.1 Weighted degree centrality",
+    "text": "5.1 Weighted degree centrality\nWeighted out-degree centrality identifies agents who send messages frequently or communicate with many recipients. These agents may act as important information distributors.\nWeighted in-degree centrality identifies agents who receive messages from many others. These agents may act as coordination points, decision recipients, or key information recipients."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#pagerank-centrality",
+    "href": "Methodology/Statistical Analysis.html#pagerank-centrality",
+    "title": "Statistical Analysis",
+    "section": "5.2 PageRank centrality",
+    "text": "5.2 PageRank centrality\nPageRank identifies agents who are prominent within the wider communication network.\nAn agent with a high PageRank score is connected to other well-connected agents and may occupy an important position in the movement of information. This does not indicate responsibility for the breach, but it helps identify agents whose communication position warrants closer examination."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#betweenness-centrality",
+    "href": "Methodology/Statistical Analysis.html#betweenness-centrality",
+    "title": "Statistical Analysis",
+    "section": "5.3 Betweenness centrality",
+    "text": "5.3 Betweenness centrality\nBetweenness centrality identifies agents positioned between otherwise separate communication groups.\nThese agents may act as communication brokers or bridges between functions such as Legal, PR, Social Media, and Platform Trust. This is particularly relevant when an agent connects a controlled internal discussion with a public-facing or publishing-related pathway."
   }
 ]

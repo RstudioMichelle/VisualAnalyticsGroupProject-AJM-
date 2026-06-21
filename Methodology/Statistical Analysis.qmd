@@ -1,5 +1,146 @@
 ---
-title: "Statistical Analysis"
-format: html
+title: "Statistical Analysis "
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: false
 ---
 
+This section outlines the analytical methods used to investigate the TenantThread embargo breach in VAST Challenge 2026 Mini-Challenge 1.
+
+The investigation combines temporal, behavioural, communication, and network analysis to identify how the embargoed information may have moved through the system. No single measure is treated as proof of responsibility. Instead, findings are interpreted together with the timing of events, communication content, communication channels, and the roles of involved agents.
+
+# 1 Temporal and event-sequence analysis
+
+## 1.1 Investigation windows
+
+The inappropriate release occurred on **5 June 2046**. To identify whether activity changed before the breach, communications are compared across three periods:
+
+* **Normal period:** More than five days before the breach.
+* **Escalation period:** Three to five days before the breach.
+* **Critical period:** Zero to two days before the breach.
+
+This comparison helps distinguish routine communication behaviour from unusual activity immediately before the inappropriate release.
+
+## 1.2 Event-sequence reconstruction
+
+Communications are examined in chronological order alongside relevant alerts, deadlines, market events, agent availability, and other contextual events.
+
+This analysis identifies:
+
+* important events that created urgency or pressure;
+* communications relating to embargo controls, approvals, compliance, or publication;
+* important decisions and actors involved in those decisions; and
+* the sequence through which sensitive information may have reached a higher-exposure communication channel.
+
+# 2 Communication activity analysis
+
+## 2.1 Message volume and recipient reach
+
+Communication activity is analysed by comparing:
+
+* total number of messages;
+* number of unique recipients;
+* communication frequency by agent and role; and
+* changes in activity across the normal, escalation, and critical periods.
+
+A sudden increase in message volume or recipient reach may indicate heightened coordination or information dissemination before the breach.
+
+## 2.2 Communication-channel exposure
+
+Messages are classified based on their communication channel:
+
+* **Internal group** channels represent controlled internal discussion.
+* **Private** channels represent one-to-one communication.
+* **Side-channel** communication represents smaller and less visible discussion spaces.
+* **Public** channels represent communications with the greatest potential for wider dissemination.
+
+This analysis helps identify whether information moved from controlled communication spaces towards more exposed channels before the embargo breach.
+
+# 3 Message-content risk analysis
+
+Messages are examined for themes related to:
+
+* the HarborCrest–CivicLoom merger;
+* embargo restrictions and compliance controls;
+* approvals, blocking, deadlines, and governance;
+* publication, release, disclosure, leaking, or public posting; and
+* urgency, pressure, legal concern, scrutiny, or reputational risk.
+
+Messages containing several of these themes are treated as higher-risk communications for investigation.
+
+A higher risk level does not prove misconduct. It identifies messages that should be reviewed together with their sender, recipients, timing, communication channel, and surrounding events.
+
+# 4 Behavioural deviation analysis
+
+## 4.1 Baseline comparison
+
+Each agent’s communication behaviour during the normal period is used as a baseline. Their activity during the escalation and critical periods is then compared against that baseline.
+
+The comparison considers:
+
+* changes in total messages;
+* changes in public or side-channel communication;
+* changes in recipient reach;
+* changes in high-risk message frequency; and
+* changes in communication patterns with other roles.
+
+This analysis identifies whether an agent behaved differently from their usual pattern before the inappropriate release.
+
+## 4.2 Interpreting unusual behaviour
+
+Increased communication alone is not treated as suspicious. Behaviour becomes more relevant when the change occurs close to the breach and is accompanied by:
+
+* embargo- or release-related discussion;
+* movement towards higher-exposure channels;
+* interaction with public-facing, legal, compliance, or platform-related roles; or
+* relevant deadlines, alerts, or external pressure.
+
+# 5 Communication-network analysis
+
+A directed communication network is used to examine how information moved between agents. Each connection represents communication from a sender to a recipient.
+
+## 5.1 Weighted degree centrality
+
+**Weighted out-degree centrality** identifies agents who send messages frequently or communicate with many recipients. These agents may act as important information distributors.
+
+**Weighted in-degree centrality** identifies agents who receive messages from many others. These agents may act as coordination points, decision recipients, or key information recipients.
+
+## 5.2 PageRank centrality
+
+PageRank identifies agents who are prominent within the wider communication network.
+
+An agent with a high PageRank score is connected to other well-connected agents and may occupy an important position in the movement of information. This does not indicate responsibility for the breach, but it helps identify agents whose communication position warrants closer examination.
+
+## 5.3 Betweenness centrality
+
+Betweenness centrality identifies agents positioned between otherwise separate communication groups.
+
+These agents may act as communication brokers or bridges between functions such as Legal, PR, Social Media, and Platform Trust. This is particularly relevant when an agent connects a controlled internal discussion with a public-facing or publishing-related pathway.
+
+# 6 Leading-indicator analysis
+
+The investigation also examines whether earlier signals suggested that an embargo breach was possible.
+
+Potential leading indicators include:
+
+* sudden increases in message volume;
+* unexpected use of public or side-channel communication;
+* repeated mentions of embargo, release, approval, or deadlines;
+* increased contact between internal and public-facing roles; and
+* recurring communication patterns similar to those observed before the breach.
+
+Earlier incidents may not have resulted in noticeable action because they were isolated, lower in exposure, or did not occur near a critical deadline. Therefore, the investigation evaluates combinations of signals rather than relying on one message or one network measure.
+
+# 7 How the analyses support the investigation
+
+The combined analyses support the Mini-Challenge questions by identifying:
+
+* the key events and communication relationships leading to the inappropriate release;
+* important actors, decisions, and possible dissemination pathways;
+* whether behaviour before the breach differed from normal activity;
+* whether similar behaviour appeared earlier; and
+* why earlier warning signs may not have resulted in action.
+
+These methods will also guide the interactive views in the Shiny application, including the event timeline, communication explorer, behaviour comparison, network pathway analysis, and leading-indicator investigation.

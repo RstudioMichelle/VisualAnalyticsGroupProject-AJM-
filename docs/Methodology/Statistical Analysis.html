@@ -109,8 +109,8 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Data Prepartion</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../Methodology/Data Preparation_Test.qmd">
- <span class="dropdown-text">Data Prepartion_Test</span></a>
+    <a class="dropdown-item" href="../Methodology/Statistical Analysis.html">
+ <span class="dropdown-text">Statistical Analysis</span></a>
   </li>  
     </ul>
   </li>
@@ -185,8 +185,37 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#temporal-and-event-sequence-analysis" id="toc-temporal-and-event-sequence-analysis" class="nav-link active" data-scroll-target="#temporal-and-event-sequence-analysis">1 Temporal and event-sequence analysis</a>
+  <ul class="collapse">
+  <li><a href="#investigation-windows" id="toc-investigation-windows" class="nav-link" data-scroll-target="#investigation-windows">1.1 Investigation windows</a></li>
+  <li><a href="#event-sequence-reconstruction" id="toc-event-sequence-reconstruction" class="nav-link" data-scroll-target="#event-sequence-reconstruction">1.2 Event-sequence reconstruction</a></li>
+  </ul></li>
+  <li><a href="#communication-activity-analysis" id="toc-communication-activity-analysis" class="nav-link" data-scroll-target="#communication-activity-analysis">2 Communication activity analysis</a>
+  <ul class="collapse">
+  <li><a href="#message-volume-and-recipient-reach" id="toc-message-volume-and-recipient-reach" class="nav-link" data-scroll-target="#message-volume-and-recipient-reach">2.1 Message volume and recipient reach</a></li>
+  <li><a href="#communication-channel-exposure" id="toc-communication-channel-exposure" class="nav-link" data-scroll-target="#communication-channel-exposure">2.2 Communication-channel exposure</a></li>
+  </ul></li>
+  <li><a href="#message-content-risk-analysis" id="toc-message-content-risk-analysis" class="nav-link" data-scroll-target="#message-content-risk-analysis">3 Message-content risk analysis</a></li>
+  <li><a href="#behavioural-deviation-analysis" id="toc-behavioural-deviation-analysis" class="nav-link" data-scroll-target="#behavioural-deviation-analysis">4 Behavioural deviation analysis</a>
+  <ul class="collapse">
+  <li><a href="#baseline-comparison" id="toc-baseline-comparison" class="nav-link" data-scroll-target="#baseline-comparison">4.1 Baseline comparison</a></li>
+  <li><a href="#interpreting-unusual-behaviour" id="toc-interpreting-unusual-behaviour" class="nav-link" data-scroll-target="#interpreting-unusual-behaviour">4.2 Interpreting unusual behaviour</a></li>
+  </ul></li>
+  <li><a href="#communication-network-analysis" id="toc-communication-network-analysis" class="nav-link" data-scroll-target="#communication-network-analysis">5 Communication-network analysis</a>
+  <ul class="collapse">
+  <li><a href="#weighted-degree-centrality" id="toc-weighted-degree-centrality" class="nav-link" data-scroll-target="#weighted-degree-centrality">5.1 Weighted degree centrality</a></li>
+  <li><a href="#pagerank-centrality" id="toc-pagerank-centrality" class="nav-link" data-scroll-target="#pagerank-centrality">5.2 PageRank centrality</a></li>
+  <li><a href="#betweenness-centrality" id="toc-betweenness-centrality" class="nav-link" data-scroll-target="#betweenness-centrality">5.3 Betweenness centrality</a></li>
+  </ul></li>
+  <li><a href="#leading-indicator-analysis" id="toc-leading-indicator-analysis" class="nav-link" data-scroll-target="#leading-indicator-analysis">6 Leading-indicator analysis</a></li>
+  <li><a href="#how-the-analyses-support-the-investigation" id="toc-how-the-analyses-support-the-investigation" class="nav-link" data-scroll-target="#how-the-analyses-support-the-investigation">7 How the analyses support the investigation</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -210,8 +239,142 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>This section outlines the analytical methods used to investigate the TenantThread embargo breach in VAST Challenge 2026 Mini-Challenge 1.</p>
+<p>The investigation combines temporal, behavioural, communication, and network analysis to identify how the embargoed information may have moved through the system. No single measure is treated as proof of responsibility. Instead, findings are interpreted together with the timing of events, communication content, communication channels, and the roles of involved agents.</p>
+<section id="temporal-and-event-sequence-analysis" class="level1">
+<h1>1 Temporal and event-sequence analysis</h1>
+<section id="investigation-windows" class="level2">
+<h2 class="anchored" data-anchor-id="investigation-windows">1.1 Investigation windows</h2>
+<p>The inappropriate release occurred on <strong>5 June 2046</strong>. To identify whether activity changed before the breach, communications are compared across three periods:</p>
+<ul>
+<li><strong>Normal period:</strong> More than five days before the breach.</li>
+<li><strong>Escalation period:</strong> Three to five days before the breach.</li>
+<li><strong>Critical period:</strong> Zero to two days before the breach.</li>
+</ul>
+<p>This comparison helps distinguish routine communication behaviour from unusual activity immediately before the inappropriate release.</p>
+</section>
+<section id="event-sequence-reconstruction" class="level2">
+<h2 class="anchored" data-anchor-id="event-sequence-reconstruction">1.2 Event-sequence reconstruction</h2>
+<p>Communications are examined in chronological order alongside relevant alerts, deadlines, market events, agent availability, and other contextual events.</p>
+<p>This analysis identifies:</p>
+<ul>
+<li>important events that created urgency or pressure;</li>
+<li>communications relating to embargo controls, approvals, compliance, or publication;</li>
+<li>important decisions and actors involved in those decisions; and</li>
+<li>the sequence through which sensitive information may have reached a higher-exposure communication channel.</li>
+</ul>
+</section>
+</section>
+<section id="communication-activity-analysis" class="level1">
+<h1>2 Communication activity analysis</h1>
+<section id="message-volume-and-recipient-reach" class="level2">
+<h2 class="anchored" data-anchor-id="message-volume-and-recipient-reach">2.1 Message volume and recipient reach</h2>
+<p>Communication activity is analysed by comparing:</p>
+<ul>
+<li>total number of messages;</li>
+<li>number of unique recipients;</li>
+<li>communication frequency by agent and role; and</li>
+<li>changes in activity across the normal, escalation, and critical periods.</li>
+</ul>
+<p>A sudden increase in message volume or recipient reach may indicate heightened coordination or information dissemination before the breach.</p>
+</section>
+<section id="communication-channel-exposure" class="level2">
+<h2 class="anchored" data-anchor-id="communication-channel-exposure">2.2 Communication-channel exposure</h2>
+<p>Messages are classified based on their communication channel:</p>
+<ul>
+<li><strong>Internal group</strong> channels represent controlled internal discussion.</li>
+<li><strong>Private</strong> channels represent one-to-one communication.</li>
+<li><strong>Side-channel</strong> communication represents smaller and less visible discussion spaces.</li>
+<li><strong>Public</strong> channels represent communications with the greatest potential for wider dissemination.</li>
+</ul>
+<p>This analysis helps identify whether information moved from controlled communication spaces towards more exposed channels before the embargo breach.</p>
+</section>
+</section>
+<section id="message-content-risk-analysis" class="level1">
+<h1>3 Message-content risk analysis</h1>
+<p>Messages are examined for themes related to:</p>
+<ul>
+<li>the HarborCrest–CivicLoom merger;</li>
+<li>embargo restrictions and compliance controls;</li>
+<li>approvals, blocking, deadlines, and governance;</li>
+<li>publication, release, disclosure, leaking, or public posting; and</li>
+<li>urgency, pressure, legal concern, scrutiny, or reputational risk.</li>
+</ul>
+<p>Messages containing several of these themes are treated as higher-risk communications for investigation.</p>
+<p>A higher risk level does not prove misconduct. It identifies messages that should be reviewed together with their sender, recipients, timing, communication channel, and surrounding events.</p>
+</section>
+<section id="behavioural-deviation-analysis" class="level1">
+<h1>4 Behavioural deviation analysis</h1>
+<section id="baseline-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="baseline-comparison">4.1 Baseline comparison</h2>
+<p>Each agent’s communication behaviour during the normal period is used as a baseline. Their activity during the escalation and critical periods is then compared against that baseline.</p>
+<p>The comparison considers:</p>
+<ul>
+<li>changes in total messages;</li>
+<li>changes in public or side-channel communication;</li>
+<li>changes in recipient reach;</li>
+<li>changes in high-risk message frequency; and</li>
+<li>changes in communication patterns with other roles.</li>
+</ul>
+<p>This analysis identifies whether an agent behaved differently from their usual pattern before the inappropriate release.</p>
+</section>
+<section id="interpreting-unusual-behaviour" class="level2">
+<h2 class="anchored" data-anchor-id="interpreting-unusual-behaviour">4.2 Interpreting unusual behaviour</h2>
+<p>Increased communication alone is not treated as suspicious. Behaviour becomes more relevant when the change occurs close to the breach and is accompanied by:</p>
+<ul>
+<li>embargo- or release-related discussion;</li>
+<li>movement towards higher-exposure channels;</li>
+<li>interaction with public-facing, legal, compliance, or platform-related roles; or</li>
+<li>relevant deadlines, alerts, or external pressure.</li>
+</ul>
+</section>
+</section>
+<section id="communication-network-analysis" class="level1">
+<h1>5 Communication-network analysis</h1>
+<p>A directed communication network is used to examine how information moved between agents. Each connection represents communication from a sender to a recipient.</p>
+<section id="weighted-degree-centrality" class="level2">
+<h2 class="anchored" data-anchor-id="weighted-degree-centrality">5.1 Weighted degree centrality</h2>
+<p><strong>Weighted out-degree centrality</strong> identifies agents who send messages frequently or communicate with many recipients. These agents may act as important information distributors.</p>
+<p><strong>Weighted in-degree centrality</strong> identifies agents who receive messages from many others. These agents may act as coordination points, decision recipients, or key information recipients.</p>
+</section>
+<section id="pagerank-centrality" class="level2">
+<h2 class="anchored" data-anchor-id="pagerank-centrality">5.2 PageRank centrality</h2>
+<p>PageRank identifies agents who are prominent within the wider communication network.</p>
+<p>An agent with a high PageRank score is connected to other well-connected agents and may occupy an important position in the movement of information. This does not indicate responsibility for the breach, but it helps identify agents whose communication position warrants closer examination.</p>
+</section>
+<section id="betweenness-centrality" class="level2">
+<h2 class="anchored" data-anchor-id="betweenness-centrality">5.3 Betweenness centrality</h2>
+<p>Betweenness centrality identifies agents positioned between otherwise separate communication groups.</p>
+<p>These agents may act as communication brokers or bridges between functions such as Legal, PR, Social Media, and Platform Trust. This is particularly relevant when an agent connects a controlled internal discussion with a public-facing or publishing-related pathway.</p>
+</section>
+</section>
+<section id="leading-indicator-analysis" class="level1">
+<h1>6 Leading-indicator analysis</h1>
+<p>The investigation also examines whether earlier signals suggested that an embargo breach was possible.</p>
+<p>Potential leading indicators include:</p>
+<ul>
+<li>sudden increases in message volume;</li>
+<li>unexpected use of public or side-channel communication;</li>
+<li>repeated mentions of embargo, release, approval, or deadlines;</li>
+<li>increased contact between internal and public-facing roles; and</li>
+<li>recurring communication patterns similar to those observed before the breach.</li>
+</ul>
+<p>Earlier incidents may not have resulted in noticeable action because they were isolated, lower in exposure, or did not occur near a critical deadline. Therefore, the investigation evaluates combinations of signals rather than relying on one message or one network measure.</p>
+</section>
+<section id="how-the-analyses-support-the-investigation" class="level1">
+<h1>7 How the analyses support the investigation</h1>
+<p>The combined analyses support the Mini-Challenge questions by identifying:</p>
+<ul>
+<li>the key events and communication relationships leading to the inappropriate release;</li>
+<li>important actors, decisions, and possible dissemination pathways;</li>
+<li>whether behaviour before the breach differed from normal activity;</li>
+<li>whether similar behaviour appeared earlier; and</li>
+<li>why earlier warning signs may not have resulted in action.</li>
+</ul>
+<p>These methods will also guide the interactive views in the Shiny application, including the event timeline, communication explorer, behaviour comparison, network pathway analysis, and leading-indicator investigation.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
