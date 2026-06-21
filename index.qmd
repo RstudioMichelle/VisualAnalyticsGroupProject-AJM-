@@ -6,6 +6,8 @@ page-layout: full
 
 ## TenantThread: Embargo Breach Investigation
 
+![](images/Embargo-02.png)
+
 This project is based on **Mini-Challenge 1 of VAST Challenge 2026**.
 
 TenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on **Project HarborCrest**, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.
@@ -16,6 +18,7 @@ For the detailed project objectives and proposed approach, please refer to the *
 
 ## About Us
 
+```{=html}
 <style>
 .about-team {
   max-width: 900px;
@@ -142,66 +145,72 @@ For the detailed project objectives and proposed approach, please refer to the *
   }
 }
 </style>
+```
 
-<div class="about-team">
+::::::::::::::: about-team
+::: about-team-row
+<img src="images/Alvin.jpg" alt="Alvin Ong" class="about-team-photo"/>
 
-<div class="about-team-row">
+<img src="images/Javier.jpg" alt="Javier Phang" class="about-team-photo"/>
 
-<img src="images/Alvin.jpg" class="about-team-photo" alt="Alvin Ong">
+<img src="images/Michelle.jpg" alt="Michelle" class="about-team-photo"/>
+:::
 
-<img src="images/Javier.jpg" class="about-team-photo" alt="Javier Phang">
+:::::: about-team-names
+::: about-team-name
+Alvin Ong
+:::
 
-<img src="images/Michelle.jpg" class="about-team-photo" alt="Michelle Chen">
+::: about-team-name
+Javier Phang
+:::
 
-</div>
+::: about-team-name
+Michelle
+:::
+::::::
 
-<div class="about-team-names">
+::::::::: about-team-emails
+:::: about-team-email
+::: about-team-icon
+✉
+:::
 
-<div class="about-team-name">Alvin Ong</div>
+<a href="mailto:alvin.ong.2024@mitb.smu.edu.sg">alvin.ong.2024\@mitb.smu.edu.sg</a>
+::::
 
-<div class="about-team-name">Javier Phang</div>
+:::: about-team-email
+::: about-team-icon
+✉
+:::
 
-<div class="about-team-name">Michelle Chen</div>
+<a href="mailto:javierphang.2024@mitb.smu.edu.sg">javierphang.2024\@mitb.smu.edu.sg</a>
+::::
 
-</div>
+:::: about-team-email
+::: about-team-icon
+✉
+:::
 
-<div class="about-team-emails">
+<a href="mailto:michelle.c.2024@mitb.smu.edu.sg">michelle.c.2024\@mitb.smu.edu.sg</a>
+::::
+:::::::::
+:::::::::::::::
 
-<div class="about-team-email">
-<div class="about-team-icon">✉</div>
-<a href="mailto:alvin.ong.2024@mitb.smu.edu.sg">alvin.ong.2024@mitb.smu.edu.sg</a>
-</div>
-
-<div class="about-team-email">
-<div class="about-team-icon">✉</div>
-<a href="mailto:javierphang.2024@mitb.smu.edu.sg">javierphang.2024@mitb.smu.edu.sg</a>
-</div>
-
-<div class="about-team-email">
-<div class="about-team-icon">✉</div>
-<a href="mailto:michelle.c.2024@mitb.smu.edu.sg">michelle.c.2024@mitb.smu.edu.sg</a>
-</div>
-
-</div>
-
-</div>
-
-<div class="mentor-section">
-
+::::: mentor-section
 ## Our Mentor
 
 [![](images/Prof%20Kam.jpg){.mentor-photo}](https://faculty.smu.edu.sg/profile/kam-tin-seong-486)
 
 ### [Professor Kam Tin Seong](https://faculty.smu.edu.sg/profile/kam-tin-seong-486)
 
-<div class="mentor-role">
+::: mentor-role
 Associate Professor of Information Systems (Practice)
-</div>
+:::
 
-<div class="mentor-role">
+::: mentor-role
 School of Computing and Information Systems, Singapore Management University
-</div>
+:::
 
 <a class="mentor-button" href="https://faculty.smu.edu.sg/profile/kam-tin-seong-486" target="_blank">View Faculty Profile</a>
-
-</div>
+:::::
