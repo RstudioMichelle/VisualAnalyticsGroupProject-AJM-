@@ -14,11 +14,11 @@ execute:
 
 ## In Attendance
 
-- Alvin Ong
+-   Alvin Ong
 
-- Javier Phang
+-   Javier Phang
 
-- Michelle Chen
+-   Michelle Chen
 
 ## **Agenda**
 
@@ -28,22 +28,21 @@ execute:
 
 ## **Discussion on proposal**
 
-1.	Michelle started the meeting by discussing the skeleton and next steps for the project.
-2.	Javier suggested that the team could refer to the seniors’ previous work and the DAL poster as references for the poster wireframe.
-3.	All three team members agreed and noted useful pointers for the poster structure and design.
-4.	Next, the team started reviewing each other’s work and sharing findings on which charts could be used for the poster.
-5.	Alvin started the discussion by going through the VAST Challenge Mini-Challenge 1 questions. He suggested breaking down the questions into smaller components to make it easier for the team to structure the project poster.
-6.	Michelle and Javier clarified several points from Alvin’s work, especially regarding the network graph. Alvin addressed their questions and explained his approach.
-7.	Michelle then shared her findings with the team. Alvin and Javier listened and provided their inputs where necessary.
-8.	Javier also shared his findings and discussed the possible charts that could support the poster.
-9.	Michelle suggested placing the selected charts into the draft document so that the team could begin wireframing the poster.
-10.	The team discussed the possibility of including one or two additional network graphs to strengthen the findings for Question 3.
-11.	Alvin volunteered to explore the additional network graphs and investigate how the findings could be made more conclusive and comprehensive.
-12.	The team then finalised the individual tasks for each member. Michelle will focus on the poster by filling up the objective, motivation, and methodology sections. Javier will start working on the Shiny app, while Alvin will enhance the network graphs.
-13.	The team also agreed on the roles for the project. Michelle will take on the role of Project Manager, Javier will be the Business Analyst, and Alvin will be the Data Analyst.
-14.	The team reached a consensus that the main priority is to wireframe the poster and Shiny app first. After that, the team will revisit the individual components and finalise the visualisations to be used.
-15.	The team aimed to complete the agreed tasks before the next meeting on 25 June.
-
+1.  Michelle started the meeting by discussing the skeleton and next steps for the project.
+2.  Javier suggested that the team could refer to the seniors’ previous work and the DAL poster as references for the poster wireframe.
+3.  All three team members agreed and noted useful pointers for the poster structure and design.
+4.  Next, the team started reviewing each other’s work and sharing findings on which charts could be used for the poster.
+5.  Alvin started the discussion by going through the VAST Challenge Mini-Challenge 1 questions. He suggested breaking down the questions into smaller components to make it easier for the team to structure the project poster.
+6.  Michelle and Javier clarified several points from Alvin’s work, especially regarding the network graph. Alvin addressed their questions and explained his approach.
+7.  Michelle then shared her findings with the team. Alvin and Javier listened and provided their inputs where necessary.
+8.  Javier also shared his findings and discussed the possible charts that could support the poster.
+9.  Michelle suggested placing the selected charts into the draft document so that the team could begin wireframing the poster.
+10. The team discussed the possibility of including one or two additional network graphs to strengthen the findings for Question 3.
+11. Alvin volunteered to explore the additional network graphs and investigate how the findings could be made more conclusive and comprehensive.
+12. The team then finalised the individual tasks for each member. Michelle will focus on the poster by filling up the objective, motivation, and methodology sections. Javier will start working on the Shiny app, while Alvin will enhance the network graphs.
+13. The team also agreed on the roles for the project. Michelle will take on the role of Project Manager, Javier will be the Business Analyst, and Alvin will be the Data Analyst.
+14. The team reached a consensus that the main priority is to wireframe the poster and Shiny app first. After that, the team will revisit the individual components and finalise the visualisations to be used.
+15. The team aimed to complete the agreed tasks before the next meeting on 21 June.
 
 ## Questions to ask Prof Kam during consultation
 
@@ -52,10 +51,10 @@ No question asked at this point
 ## Action items
 
 1.  In preparation for the next meeting::
-    - Alvin to work on enhancing the network graphs.
-    - Javier to start working on the Shiny app.
-    - Michelle to work on the poster structure, including the objective, motivation, and          methodology sections.
-    - All three team members to share and justify their selected charts and findings in the       draft document.
+    -   Alvin to work on enhancing the network graphs.
+    -   Javier to start working on the Shiny app.
+    -   Michelle to work on the poster structure, including the objective, motivation, and methodology sections.
+    -   All three team members to share and justify their selected charts and findings in the draft document.
 
 ## Meeting Minutes Sign off
 

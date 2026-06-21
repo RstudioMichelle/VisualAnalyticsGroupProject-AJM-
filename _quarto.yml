@@ -17,7 +17,7 @@ website:
       - icon: diagram-3
         text: "Methodology"
         menu:
-          - text: "Data Prepartion"
+          - text: "Data Preparation"
             href: "Methodology/Data Preparation.qmd"
           - text: "Statistical Analysis"
             href: "Methodology/Statistical Analysis.qmd"
