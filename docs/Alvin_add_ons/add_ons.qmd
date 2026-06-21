@@ -1,0 +1,283 @@
+---
+title: "add_ons"
+format: html
+---
+
+### Load Packages
+```{r}
+pacman::p_load(igraph,visNetwork,tidyverse,knitr)
+```
+
+### Load Data
+```{r}
+load("data/mc1_unpacked_data.RData")
+```
+
+## Generate the overall graph
+```{r}
+
+edges <- df_communications %>%
+  filter(!is.na(responding_to)) %>%
+  select(
+    from = responding_to, 
+    to = message_id, 
+    label = message_type,       
+    type = message_type
+  ) %>%
+  mutate(color = case_when(
+    type == "broadcast" ~ "gray",
+    type == "one_on_one_chat" ~ "blue",
+    TRUE ~ "black"
+  ))
+
+# 2. Define the Nodes (Agents, Actions, and Decisions)
+nodes <- df_communications %>%
+  select(
+    id = message_id,
+    agent = agent_id,              # Corrected column name
+    role = agent_role,             # Added for extra tooltip context
+    message_type = message_type,
+    content = content,             # Corrected column name
+    channel = channel,
+    deliberating = internal_state_deliberating
+  ) %>%
+  distinct(id, .keep_all = TRUE) %>%
+  mutate(
+    # PROXY LOGIC: Adjust these based on how you define a "decision" and a "fail"
+    # Assuming a decision involves deliberation, and the fail is the public post
+    is_decision = !is.na(deliberating), 
+    embargo_fail = (channel == "official_post" | message_type == "public_post"), 
+    
+    # Visual mappings for the interactive dashboard
+    shape = ifelse(is_decision, "diamond", "dot"),
+    color = ifelse(embargo_fail, "red", "lightblue"),
+    title = paste0(
+      "<p><b>Agent:</b> ", agent, 
+      "<br><b>Role:</b> ", role, 
+      "<br><b>Channel:</b> ", channel,
+      "<br><b>Action:</b> ", content, "</p>"
+    ) 
+  )
+
+
+edges_clean <- edges %>%
+  filter(from %in% nodes$id & to %in% nodes$id)
+
+# 3. Create the igraph object 
+event_graph <- graph_from_data_frame(d = edges_clean, vertices = nodes, directed = TRUE)
+
+visIgraph(event_graph) %>%
+visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE)
+```
+
+
+## Subgraph Analysis
+ Top 5 Critical Events/Decision Points
+
+```{r}
+
+sc_scores <- subgraph_centrality(event_graph)
+
+# 2. Bind the scores back to your original nodes data frame
+nodes_with_analysis <- nodes %>%
+  mutate(
+    subgraph_centrality = sc_scores[id],
+    # Scale the scores between 10 and 50 so they map beautifully to node sizes in visNetwork
+    value = 10 + 40 * (subgraph_centrality - min(subgraph_centrality)) / 
+                      (max(subgraph_centrality) - min(subgraph_centrality))
+  )
+
+# 3. Identify the Top 5 Critical Events/Decision Points
+top_critical_events <- nodes_with_analysis %>%
+  arrange(desc(subgraph_centrality)) %>%
+  head(5) %>%
+  select(id, agent, message_type, channel, subgraph_centrality, content)
+
+# Print the top contributors to the console
+print("--- TOP 5 CRITICAL SUBGRAPH CENTRALITY EVENTS ---")
+kable(top_critical_events)
+```
+
+
+```{r}
+
+# 1. Clean data preparation
+vis_nodes <- nodes_with_analysis %>%
+  mutate(
+    label = id,
+    # Standardize values to prevent extreme scaling physics issues
+    value = log(subgraph_centrality + 1) * 5 
+  )
+
+vis_edges <- edges_clean %>%
+  mutate(
+    arrows = "to",
+    smooth = FALSE # CRITICAL: Curved/smooth lines drastically slow down rendering. Set to FALSE.
+  )
+
+# 2. Build High-Performance Network
+visNetwork(vis_nodes, vis_edges, width = "100%", height = "700px") %>%
+  # Configure pre-rendering physics
+  visPhysics(
+    solver = "forceAtlas2Based",
+    forceAtlas2Based = list(
+      gravitationalConstant = -30,
+      centralGravity = 0.01,
+      springLength = 50,
+      avoidOverlap = 0.5
+    ),
+    # Pre-compute the network layout for 150 iterations before showing it
+    stabilization = list(
+      enabled = TRUE,
+      iterations = 150,
+      updateInterval = 25 # Shows progress bar instead of frozen screen
+    )
+  ) %>%
+  # FREEZE THE GRAPH ONCE CALM
+  # This stops the ongoing simulation, removing 100% of the ongoing lag
+  visEvents(stabilizationIterationsDone = "function () { this.setOptions({ physics: false }); }") %>%
+  visOptions(
+    highlightNearest = list(
+      enabled = TRUE, 
+      degree = 1,      
+      hover = FALSE # CRITICAL: Change hover to FALSE. Real-time hover triggers a re-draw that causes micro-stutters.
+    ),
+    nodesIdSelection = TRUE,
+    selectedBy = "agent"
+  ) %>%
+  visInteraction(
+    navigationButtons = TRUE,
+    hideEdgesOnDrag = TRUE,  # Hides complex lines while you pan/zoom to keep FPS high
+    hideNodesOnDrag = FALSE
+  ) %>%
+  visLayout(
+    randomSeed = 42,
+    improvedLayout = FALSE # Disables an intensive pre-calculation pass
+  )
+```
+
+## Upgraded Ver
+
+```{r}
+library(dplyr)
+library(igraph)
+library(visNetwork)
+
+# ==========================================
+# 1. METRICS & WEIGHTS CALCULATION
+# ==========================================
+
+# Compute Edge Weights
+edges_weighted <- edges_clean %>%
+  group_by(from, to, type, color) %>%
+  summarise(weight = n(), .groups = 'drop') %>%
+  mutate(
+    smooth = FALSE,
+    arrows = "to",
+    value = weight, # Edge thickness maps to communication frequency
+    title = paste("Edge Weight (Freq):", weight)
+  )
+
+# Calculate Network Centrality Metrics
+sc_scores <- subgraph_centrality(event_graph)
+bc_scores <- betweenness(event_graph, directed = TRUE)
+
+# Build Comprehensive Analytics Node Table
+nodes_analytics <- nodes_with_analysis %>%
+  mutate(
+    subgraph_score  = round(sc_scores[id], 2),
+    betweenness_score = round(bc_scores[id], 2),
+    label = id,
+    # Normalize node sizing for high performance
+    value = log(subgraph_score + 1) * 5,
+    # Update HTML tooltip to display all calculated metrics right on hover
+    title = paste0(
+      "<div style='font-family: sans-serif; padding: 5px;'>",
+      "<b>Message ID:</b> ", id, "<br>",
+      "<b>Agent ID:</b> ", agent, "<br>",
+      "<b>Role:</b> ", role, "<br><hr>",
+      "<b>Subgraph Centrality:</b> ", subgraph_score, "<br>",
+      "<b>Betweenness Centrality:</b> ", betweenness_score, "<br><hr>",
+      "<b>Action:</b> ", content,
+      "</div>"
+    )
+  )
+
+# ==========================================
+# 2. GENERATE HIGH-PERFORMANCE VISUALIZATION
+# ==========================================
+
+network_view <- visNetwork(nodes_analytics, edges_weighted, width = "100%", height = "800px") %>%
+  visPhysics(
+    solver = "forceAtlas2Based",
+    stabilization = list(enabled = TRUE, iterations = 120)
+  ) %>%
+  # Freeze physics instantly after stabilization to completely eliminate lag in the RStudio pane
+  visEvents(stabilizationIterationsDone = "function () { this.setOptions({ physics: false }); }") %>%
+  visOptions(
+    highlightNearest = list(enabled = TRUE, degree = 1, hover = FALSE),
+    nodesIdSelection = TRUE,
+    selectedBy = "agent"
+  ) %>%
+  visInteraction(hideEdgesOnDrag = TRUE, navigationButtons = TRUE) %>%
+  visLayout(randomSeed = 42, improvedLayout = FALSE)
+
+# Render the graph inside your RStudio Viewer Pane
+network_view
+```
+
+
+```{r}
+# Compute Edge Weights for this view
+edges_weighted <- edges_clean %>%
+  group_by(from, to, type, color) %>%
+  summarise(weight = n(), .groups = 'drop') %>%
+  mutate(
+    smooth = FALSE,
+    arrows = "to"
+  )
+
+# Keep only the weak components that contain an embargo failure (red node)
+components <- components(event_graph, mode = "weak")
+
+nodes_with_components <- data.frame(
+  id = V(event_graph)$name,
+  component_id = components$membership
+) %>% 
+  left_join(nodes_with_analysis, by = "id") # FIXED variable name here
+
+# Identify component IDs that have an embargo failure
+critical_component_ids <- nodes_with_components %>%
+  filter(embargo_fail == TRUE) %>%
+  pull(component_id) %>%
+  unique()
+
+# Filter our tables using the clean consistent names
+interpretable_nodes <- nodes_with_analysis %>%
+  filter(id %in% nodes_with_components$id[nodes_with_components$component_id %in% critical_component_ids])
+
+interpretable_edges <- edges_weighted %>%
+  filter(from %in% interpretable_nodes$id & to %in% interpretable_nodes$id)
+
+# Render Using the Left-To-Right Causal Tree
+visNetwork(interpretable_nodes, interpretable_edges, width = "100%", height = "800px") %>%
+  visHierarchicalLayout(
+    direction = "LR",        
+    sortMethod = "directed", 
+    nodeSpacing = 150,       
+    levelSeparation = 200
+  ) %>%
+  visPhysics(enabled = FALSE) %>% 
+  visOptions(
+    highlightNearest = list(
+      enabled = TRUE, 
+      degree = 1, 
+      algorithm = "all" 
+    ),
+    nodesIdSelection = TRUE,
+    selectedBy = "agent"
+  ) %>%
+  visInteraction(navigationButtons = TRUE) %>%
+  visLayout(randomSeed = 42)
+```
+
