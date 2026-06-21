@@ -17,9 +17,11 @@ website:
       - icon: diagram-3
         text: "Methodology"
         menu:
-          - text: "Methodology"
+          - text: "Data Prepartion"
             href: "Methodology/Data Preparation.qmd"
-
+          - text: "Data Prepartion_Test"
+            href: "Methodology/Data Preparation_Test.qmd"
+          
       - icon: card-list
         href: Findings.qmd
         text: "Findings"

@@ -1,18 +1,62 @@
 ---
 title: "Data Preparation"
 toc: true
-toc-depth: 3
+toc-location: right
+toc-depth: 2
+page-layout: full
 number-sections: true
 format:
   html:
     code-fold: true
-    code-tools: true
+    code-tools: false
 execute:
   echo: true
   warning: false
   message: false
   freeze: false
 ---
+
+<style>
+/* Keep the page table of contents readable even when custom site CSS is used. */
+#quarto-margin-sidebar {
+  min-width: 17rem !important;
+  width: 17rem !important;
+}
+
+#TOC,
+#TOC ul,
+#TOC li,
+#TOC a {
+  line-height: 1.45 !important;
+}
+
+#TOC li {
+  height: auto !important;
+  margin-bottom: 0.28rem !important;
+}
+
+#TOC a {
+  display: block;
+  white-space: normal !important;
+}
+
+/* Keep wide preparation tables inside the page instead of shrinking the text. */
+.cell-output-display,
+.cell-output {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+#quarto-document-content table {
+  width: 100%;
+  font-size: 0.82rem;
+}
+
+#quarto-document-content th,
+#quarto-document-content td {
+  vertical-align: top;
+}
+</style>
 
 This page documents how the VAST Challenge 2026 Mini-Challenge 1 data, stored as a nested RDS object, is converted into clean, reusable tables for the investigation and the Shiny application. The RDS object was previously created from the supplied JSON data. This page focuses only on data loading, validation and feature engineering; no charts are produced here.
 
@@ -23,6 +67,7 @@ This page documents how the VAST Challenge 2026 Mini-Challenge 1 data, stored as
 The following packages are used to load and standardise the nested RDS source, prepare tabular data, derive time-based and case-specific features, and create network-ready data tables.
 
 ```{r}
+#| echo: false
 pacman::p_load(
   jsonlite,
   tidyverse,
@@ -46,6 +91,24 @@ package_summary <- tribble(
 )
 
 knitr::kable(package_summary)
+```
+
+```{r}
+#| echo: false
+
+# Produces compact preview tables for long text-based MC1 fields.
+show_table <- function(data, n = 10, text_columns = character(), max_chars = 110) {
+  preview <- data %>%
+    slice_head(n = n) %>%
+    mutate(
+      across(
+        any_of(text_columns),
+        ~ stringr::str_trunc(as.character(.x), width = max_chars)
+      )
+    )
+
+  knitr::kable(preview, format = "html")
+}
 ```
 
 ## Loading the raw MC1 data
@@ -105,7 +168,10 @@ df_participants <- df_rounds_raw %>%
   unnest(participants) %>%
   unpack(any_of("agent_round_metadata"), names_sep = "_")
 
-knitr::kable(head(df_participants, 10))
+participants_preview <- df_participants %>%
+  select(any_of(c("hour", "agent_id", "agent_role", "agent_label", "declared_action")))
+
+show_table(participants_preview)
 ```
 
 ## Communications
@@ -132,13 +198,16 @@ communications <- df_communications %>%
   ) %>%
   rename(round_hour = hour)
 
-knitr::kable(
-  communications %>%
-    select(any_of(c(
-      "round_hour", "message_id", "agent_id", "agent_role", "channel",
-      "message_type", "recipients", "content", "timestamp"
-    ))) %>%
-    head(10)
+communications_preview <- communications %>%
+  select(any_of(c(
+    "round_hour", "message_id", "agent_id", "agent_role", "channel",
+    "recipients", "content", "timestamp"
+  )))
+
+show_table(
+  communications_preview,
+  text_columns = c("recipients", "content"),
+  max_chars = 95
 )
 ```
 
@@ -175,7 +244,23 @@ if ("environment_context_market_snapshot_percent_change" %in% names(df_environme
     )
 }
 
-knitr::kable(head(df_environment_clean, 10))
+environment_preview <- df_environment_clean %>%
+  select(any_of(c(
+    "hour", "environment_context_event_narrative",
+    "environment_context_event_headline",
+    "environment_context_market_snapshot_stock_price",
+    "environment_context_market_snapshot_percent_change",
+    "stock_price_numeric", "stock_percent_numeric"
+  )))
+
+show_table(
+  environment_preview,
+  text_columns = c(
+    "environment_context_event_narrative",
+    "environment_context_event_headline"
+  ),
+  max_chars = 120
+)
 ```
 
 ## Environmental event tables
@@ -183,6 +268,7 @@ knitr::kable(head(df_environment_clean, 10))
 The helper function below extracts each nested environment array and keeps the `hour` field as the key for joining events back to a simulation round.
 
 ```{r}
+#| echo: false
 extract_environment_array <- function(rounds, array_column) {
 
   environment_data <- rounds %>%
@@ -290,8 +376,13 @@ communication_timestamp_check <- communications %>%
     Missing_or_Unparsed_Timestamps = sum(is.na(timestamp_parsed))
   )
 
+duplicate_message_id_check <- tibble(
+  Check = "Duplicate message IDs",
+  Value = nrow(duplicate_message_ids)
+)
+
 knitr::kable(communication_timestamp_check)
-knitr::kable(duplicate_message_ids)
+knitr::kable(duplicate_message_id_check)
 ```
 
 # Communication feature engineering
@@ -498,7 +589,13 @@ communication_edges <- communications_clean %>%
     from != to
   )
 
-knitr::kable(head(communication_edges, 10))
+show_table(
+  communication_edges %>%
+    select(from, to, channel, communication_scope, exposure_risk_level,
+           risk_signal_group, timestamp),
+  text_columns = c("from", "to"),
+  max_chars = 45
+)
 ```
 
 ## Nodes and weighted edges
@@ -548,7 +645,7 @@ network_inventory <- tibble(
 )
 
 knitr::kable(network_inventory)
-knitr::kable(head(communication_edges_weighted, 10))
+show_table(communication_edges_weighted, max_chars = 45)
 ```
 
 ## Creating the communication network object
@@ -561,6 +658,14 @@ communication_network <- tidygraph::tbl_graph(
   edges = communication_edges_weighted,
   directed = TRUE
 )
+
+network_object_summary <- tibble(
+  Measure = c("Network type", "Nodes", "Weighted edges"),
+  Value = c("Directed communication network", nrow(communication_nodes),
+            nrow(communication_edges_weighted))
+)
+
+knitr::kable(network_object_summary)
 ```
 
 # Saving prepared data
@@ -595,9 +700,9 @@ knitr::kable(tibble(
 ))
 ```
 
-A later page can load the prepared object with:
+A later page can load the prepared object using:
 
-```{r}
+```r
 prepared_mc1 <- readr::read_rds(
   file.path("data", "MC1", "mc1_prepared_data.rds")
 )
