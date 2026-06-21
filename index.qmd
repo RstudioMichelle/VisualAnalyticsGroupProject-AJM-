@@ -153,7 +153,7 @@ For the detailed project objectives and proposed approach, please refer to the *
 
 <img src="images/Javier.jpg" alt="Javier Phang" class="about-team-photo"/>
 
-<img src="images/Michelle.jpg" alt="Michelle" class="about-team-photo"/>
+<img src="images/Michelle.jpg" alt="Michelle Chen" class="about-team-photo"/>
 :::
 
 :::::: about-team-names
