@@ -1,0 +1,15 @@
+name,role
+intern,Recipient / System
+intern_agent,intern
+judge,Recipient / System
+judge_agent,judge
+legal,Recipient / System
+legal_agent,legal
+platform_trust,Recipient / System
+pr,Recipient / System
+pr_agent,pr
+pr_intern,Recipient / System
+pr_intern_agent,pr_intern
+quality_agent,platform_trust
+social_manager,Recipient / System
+social_media_agent,social_media
