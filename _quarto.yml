@@ -1,6 +1,10 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "!docs/"
+    - "!Alvin_add_ons/" 
+    - "*.qmd"
 
 website:
   title: "Visual Analytics Project"

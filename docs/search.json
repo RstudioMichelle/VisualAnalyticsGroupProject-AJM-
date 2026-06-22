@@ -1,59 +1,234 @@
 [
   {
-    "objectID": "Proposal.html",
-    "href": "Proposal.html",
-    "title": "Project Proposal",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Visual Analytics Group Project",
     "section": "",
-    "text": "As organizations become more reliant on AI for corporate communication, failures like TenantThread’s embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes."
+    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
   },
   {
-    "objectID": "Proposal.html#motivation",
-    "href": "Proposal.html#motivation",
-    "title": "Project Proposal",
+    "objectID": "index.html#tenantthread-embargo-breach-investigation",
+    "href": "index.html#tenantthread-embargo-breach-investigation",
+    "title": "Visual Analytics Group Project",
     "section": "",
-    "text": "As organizations become more reliant on AI for corporate communication, failures like TenantThread’s embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes."
+    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
   },
   {
-    "objectID": "Proposal.html#objectives",
-    "href": "Proposal.html#objectives",
-    "title": "Project Proposal",
-    "section": "Objectives",
-    "text": "Objectives\nThis analysis examines the internal communications surrounding TenantThread’s embargo breach involving Project HarborCrest. By integrating communication network analysis, behavioural analysis, and text analytics, the study aims to:\n\nReconstruct the sequence of events, communication pathways, and key relationships that contributed to the inappropriate release of embargo-sensitive information.\nIdentify behavioural changes, communication roles, and warning signals that emerged prior to the breach by comparing critical-period activities with earlier communication patterns.\nEvaluate whether the release was the result of deliberate actions, abnormal agent behaviour, or a breakdown of communication and compliance controls under escalating operational pressure.\n\n\nAnalytical Questions\n• What were the key events and relationships that led to the inappropriate release?\n• How did breach-period behaviours differ from normal communication patterns?\n• Were there leading indicators that such a release was possible?\n• Were there previous occasions where agents behaved differently from expected behaviour?\n• Why did earlier warning signals not result in noticeable intervention?\n• Did the breach arise from deliberate actions or a breakdown of the communication and compliance system?"
+    "objectID": "index.html#about-us",
+    "href": "index.html#about-us",
+    "title": "Visual Analytics Group Project",
+    "section": "About Us",
+    "text": "About Us\n\n\n\n\n\n\n\n\n\nAlvin Ong\n\n\nJavier Phang\n\n\nMichelle Chen\n\n\n\n\n\n✉\n\nalvin.ong.2024@mitb.smu.edu.sg\n\n\n\n✉\n\njavierphang.2024@mitb.smu.edu.sg\n\n\n\n✉\n\nmichelle.c.2024@mitb.smu.edu.sg"
   },
   {
-    "objectID": "Proposal.html#data",
-    "href": "Proposal.html#data",
-    "title": "Project Proposal",
-    "section": "Data",
-    "text": "Data\nThe study uses the communication dataset derived from the VAST Challenge 2026 Mini-Challenge 1 JSON file. After data extraction and transformation, the final dataset contains 912 communication records and 9 variables. Each record represents a communication event involving one or more participants within TenantThread’s communication ecosystem.\nThe key variables include communication timestamps, participant identifiers, communication channels, message types, agent roles, recipients, and message contents. These records capture interactions across Legal, PR, Social Media, and Platform Trust functions during the two-week period preceding the inappropriate release of embargo-sensitive merger information."
+    "objectID": "index.html#our-mentor",
+    "href": "index.html#our-mentor",
+    "title": "Visual Analytics Group Project",
+    "section": "Our Mentor",
+    "text": "Our Mentor\n\n\nProfessor Kam Tin Seong\n\nAssociate Professor of Information Systems (Practice)\n\n\nSchool of Computing and Information Systems, Singapore Management University\n\nView Faculty Profile"
   },
   {
-    "objectID": "Proposal.html#methodology",
-    "href": "Proposal.html#methodology",
-    "title": "Project Proposal",
-    "section": "Methodology",
-    "text": "Methodology\n\nMethodology ImageMethodology Description\n\n\n\n\n\n1. Data Preparation - Extract and flatten communication records from the VAST Challenge 2026 Mini-Challenge 1 JSON dataset. - Clean and standardize participant identifiers, communication channels, timestamps, and message attributes. - Organise the data into structured communication, network, and text-analysis datasets for subsequent analysis.\n2. Transforming Data / Feature Engineering - Construct communication networks consisting of participants, communication pathways, and interaction frequencies. - Derive temporal features such as communication dates, hours, weekdays, and critical breach periods. - Generate behavioural indicators, risk signals, keyword flags, and text-based features to support the investigation.\n3. Statistical Analysis - Analyse communication volume, participant activity, channel usage, and message distributions across different time periods. - Apply network measures such as degree, betweenness, and PageRank centrality to identify influential participants and information pathways. - Compare communication behaviours before and during the breach period to detect abnormal patterns, behavioural deviations, and potential warning signals.\n4. Data Exploration & Visualisation - Reconstruct the sequence of events leading to the embargo breach using temporal, network, and text-based visualisations. - Examine communication relationships, participant roles, and information flow through interactive network analysis. - Identify emerging topics, behavioural changes, and potential evidence associated with the inappropriate release of embargo-sensitive information."
+    "objectID": "Methodology/Statistical Analysis.html",
+    "href": "Methodology/Statistical Analysis.html",
+    "title": "Statistical Analysis",
+    "section": "",
+    "text": "This section outlines the analytical methods used to investigate the TenantThread embargo breach in VAST Challenge 2026 Mini-Challenge 1.\nThe investigation combines temporal, behavioural, communication, and network analysis to identify how the embargoed information may have moved through the system. No single measure is treated as proof of responsibility. Instead, findings are interpreted together with the timing of events, communication content, communication channels, and the roles of involved agents."
   },
   {
-    "objectID": "Proposal.html#prototype-sketch",
-    "href": "Proposal.html#prototype-sketch",
-    "title": "Project Proposal",
-    "section": "Prototype Sketch",
-    "text": "Prototype Sketch"
+    "objectID": "Methodology/Statistical Analysis.html#investigation-windows",
+    "href": "Methodology/Statistical Analysis.html#investigation-windows",
+    "title": "Statistical Analysis",
+    "section": "1.1 Investigation windows",
+    "text": "1.1 Investigation windows\nThe inappropriate release occurred on 5 June 2046. To identify whether activity changed before the breach, communications are compared across three periods:\n\nNormal period: More than five days before the breach.\nEscalation period: Three to five days before the breach.\nCritical period: Zero to two days before the breach.\n\nThis comparison helps distinguish routine communication behaviour from unusual activity immediately before the inappropriate release."
   },
   {
-    "objectID": "Proposal.html#r-packages",
-    "href": "Proposal.html#r-packages",
-    "title": "Project Proposal",
-    "section": "R Packages",
-    "text": "R Packages\nThe analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.\n\nUtilityText AnalyticsNetwork AnalyticsVisualisationReportingShiny App\n\n\n\njsonlite – Parse and extract communication data from JSON files.\ntidyverse – Data cleaning, transformation, and preparation.\nlubridate – Date and time processing.\nknitr – Dynamic report generation.\n\n\n\n\ntidytext – Tokenisation, TF-IDF, and text mining.\nstringr – Text cleaning and pattern matching.\nwidyr – Word co-occurrence and relationship analysis.\n\n\n\n\ntidygraph – Graph data manipulation and network construction.\nigraph – Network metrics and centrality analysis.\nggraph – Network visualisation.\nvisNetwork – Interactive network exploration.\n\n\n\n\nggplot2 – Statistical graphics and exploratory visualisation.\nggalluvial – Flow and pathway visualisation.\nggiraph – Interactive visualisations with tooltips.\nplotly – Interactive dashboards and charts.\nggrepel – Improved label placement.\npatchwork – Combining multiple plots into a single layout.\n\n\n\n\ngt – Publication-quality summary tables.\nDT – Interactive data tables.\nkableExtra – Enhanced table formatting.\n\n\n\n&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. ======= - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 36f8aabb672446799332cd3e4c340392465f8e06"
+    "objectID": "Methodology/Statistical Analysis.html#event-sequence-reconstruction",
+    "href": "Methodology/Statistical Analysis.html#event-sequence-reconstruction",
+    "title": "Statistical Analysis",
+    "section": "1.2 Event-sequence reconstruction",
+    "text": "1.2 Event-sequence reconstruction\nCommunications are examined in chronological order alongside relevant alerts, deadlines, market events, agent availability, and other contextual events.\nThis analysis identifies:\n\nimportant events that created urgency or pressure;\ncommunications relating to embargo controls, approvals, compliance, or publication;\nimportant decisions and actors involved in those decisions; and\nthe sequence through which sensitive information may have reached a higher-exposure communication channel."
   },
   {
-    "objectID": "Proposal.html#project-schedule",
-    "href": "Proposal.html#project-schedule",
-    "title": "Project Proposal",
-    "section": "Project Schedule",
-    "text": "Project Schedule"
+    "objectID": "Methodology/Statistical Analysis.html#message-volume-and-recipient-reach",
+    "href": "Methodology/Statistical Analysis.html#message-volume-and-recipient-reach",
+    "title": "Statistical Analysis",
+    "section": "2.1 Message volume and recipient reach",
+    "text": "2.1 Message volume and recipient reach\nCommunication activity is analysed by comparing:\n\ntotal number of messages;\nnumber of unique recipients;\ncommunication frequency by agent and role; and\nchanges in activity across the normal, escalation, and critical periods.\n\nA sudden increase in message volume or recipient reach may indicate heightened coordination or information dissemination before the breach."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#communication-channel-exposure",
+    "href": "Methodology/Statistical Analysis.html#communication-channel-exposure",
+    "title": "Statistical Analysis",
+    "section": "2.2 Communication-channel exposure",
+    "text": "2.2 Communication-channel exposure\nMessages are classified based on their communication channel:\n\nInternal group channels represent controlled internal discussion.\nPrivate channels represent one-to-one communication.\nSide-channel communication represents smaller and less visible discussion spaces.\nPublic channels represent communications with the greatest potential for wider dissemination.\n\nThis analysis helps identify whether information moved from controlled communication spaces towards more exposed channels before the embargo breach."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#baseline-comparison",
+    "href": "Methodology/Statistical Analysis.html#baseline-comparison",
+    "title": "Statistical Analysis",
+    "section": "4.1 Baseline comparison",
+    "text": "4.1 Baseline comparison\nEach agent’s communication behaviour during the normal period is used as a baseline. Their activity during the escalation and critical periods is then compared against that baseline.\nThe comparison considers:\n\nchanges in total messages;\nchanges in public or side-channel communication;\nchanges in recipient reach;\nchanges in high-risk message frequency; and\nchanges in communication patterns with other roles.\n\nThis analysis identifies whether an agent behaved differently from their usual pattern before the inappropriate release."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#interpreting-unusual-behaviour",
+    "href": "Methodology/Statistical Analysis.html#interpreting-unusual-behaviour",
+    "title": "Statistical Analysis",
+    "section": "4.2 Interpreting unusual behaviour",
+    "text": "4.2 Interpreting unusual behaviour\nIncreased communication alone is not treated as suspicious. Behaviour becomes more relevant when the change occurs close to the breach and is accompanied by:\n\nembargo- or release-related discussion;\nmovement towards higher-exposure channels;\ninteraction with public-facing, legal, compliance, or platform-related roles; or\nrelevant deadlines, alerts, or external pressure."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#weighted-degree-centrality",
+    "href": "Methodology/Statistical Analysis.html#weighted-degree-centrality",
+    "title": "Statistical Analysis",
+    "section": "5.1 Weighted degree centrality",
+    "text": "5.1 Weighted degree centrality\nWeighted out-degree centrality identifies agents who send messages frequently or communicate with many recipients. These agents may act as important information distributors.\nWeighted in-degree centrality identifies agents who receive messages from many others. These agents may act as coordination points, decision recipients, or key information recipients."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#pagerank-centrality",
+    "href": "Methodology/Statistical Analysis.html#pagerank-centrality",
+    "title": "Statistical Analysis",
+    "section": "5.2 PageRank centrality",
+    "text": "5.2 PageRank centrality\nPageRank identifies agents who are prominent within the wider communication network.\nAn agent with a high PageRank score is connected to other well-connected agents and may occupy an important position in the movement of information. This does not indicate responsibility for the breach, but it helps identify agents whose communication position warrants closer examination."
+  },
+  {
+    "objectID": "Methodology/Statistical Analysis.html#betweenness-centrality",
+    "href": "Methodology/Statistical Analysis.html#betweenness-centrality",
+    "title": "Statistical Analysis",
+    "section": "5.3 Betweenness centrality",
+    "text": "5.3 Betweenness centrality\nBetweenness centrality identifies agents positioned between otherwise separate communication groups.\nThese agents may act as communication brokers or bridges between functions such as Legal, PR, Social Media, and Platform Trust. This is particularly relevant when an agent connects a controlled internal discussion with a public-facing or publishing-related pathway."
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#in-attendance",
+    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#in-attendance",
+    "title": "Meeting Minutes",
+    "section": "In Attendance",
+    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#agenda",
+    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#agenda",
+    "title": "Meeting Minutes",
+    "section": "Agenda",
+    "text": "Agenda\n\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#discussion-on-proposal",
+    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#discussion-on-proposal",
+    "title": "Meeting Minutes",
+    "section": "Discussion on proposal",
+    "text": "Discussion on proposal\n\nMichelle started the meeting by discussing the skeleton and next steps for the project.\nJavier suggested that the team could refer to the seniors’ previous work and the DAL poster as references for the poster wireframe.\nAll three team members agreed and noted useful pointers for the poster structure and design.\nNext, the team started reviewing each other’s work and sharing findings on which charts could be used for the poster.\nAlvin started the discussion by going through the VAST Challenge Mini-Challenge 1 questions. He suggested breaking down the questions into smaller components to make it easier for the team to structure the project poster.\nMichelle and Javier clarified several points from Alvin’s work, especially regarding the network graph. Alvin addressed their questions and explained his approach.\nMichelle then shared her findings with the team. Alvin and Javier listened and provided their inputs where necessary.\nJavier also shared his findings and discussed the possible charts that could support the poster.\nMichelle suggested placing the selected charts into the draft document so that the team could begin wireframing the poster.\nThe team discussed the possibility of including one or two additional network graphs to strengthen the findings for Question 3.\nAlvin volunteered to explore the additional network graphs and investigate how the findings could be made more conclusive and comprehensive.\nThe team then finalised the individual tasks for each member. Michelle will focus on the poster by filling up the objective, motivation, and methodology sections. Javier will start working on the Shiny app, while Alvin will enhance the network graphs.\nThe team also agreed on the roles for the project. Michelle will take on the role of Project Manager, Javier will be the Business Analyst, and Alvin will be the Data Analyst.\nThe team reached a consensus that the main priority is to wireframe the poster and Shiny app first. After that, the team will revisit the individual components and finalise the visualisations to be used.\nThe team aimed to complete the agreed tasks before the next meeting on 25 June."
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#questions-to-ask-prof-kam-during-consultation",
+    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#questions-to-ask-prof-kam-during-consultation",
+    "title": "Meeting Minutes",
+    "section": "Questions to ask Prof Kam during consultation",
+    "text": "Questions to ask Prof Kam during consultation\nNo question asked at this point"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#action-items",
+    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#action-items",
+    "title": "Meeting Minutes",
+    "section": "Action items",
+    "text": "Action items\n\nIn preparation for the next meeting::\n\nAlvin to work on enhancing the network graphs.\nJavier to start working on the Shiny app.\nMichelle to work on the poster structure, including the objective, motivation, and methodology sections.\nAll three team members to share and justify their selected charts and findings in the draft document."
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#meeting-minutes-sign-off",
+    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#meeting-minutes-sign-off",
+    "title": "Meeting Minutes",
+    "section": "Meeting Minutes Sign off",
+    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#in-attendance",
+    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#in-attendance",
+    "title": "Meeting Minutes",
+    "section": "In Attendance",
+    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#agenda",
+    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#agenda",
+    "title": "Meeting Minutes",
+    "section": "Agenda",
+    "text": "Agenda\n\nDiscussion on proposal\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-proposal",
+    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-proposal",
+    "title": "Meeting Minutes",
+    "section": "Discussion on proposal",
+    "text": "Discussion on proposal\n\nJavier kicked start the meeting to discuss the skeleton of the proposal.\nMichelle suggested coming up with the header sections before assigning it to each team member to populate the content for the proposal.\nAlvin highlighted that the team should include methodology and project schedule – in the form of a Gantt chart, as the bare minimum.\nAll three team members reviewed the project requirements and collectively agreed on the milestones and their respective completion dateline. These items will be shown in the Gantt chart for tracking and alignment.\nJavier shared that a motivation and objectives section would be good to provide the background and context of the project.\nMichelle also pointed out that she can do a prototype sketch to show the wireframe of the team’s Shiny app.\nThe team came into a quick agreement of the different sections and content of the proposal, and to complete it before 13th June for submission."
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-project-next-steps",
+    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-project-next-steps",
+    "title": "Meeting Minutes",
+    "section": "Discussion on project next steps",
+    "text": "Discussion on project next steps\n\nJavier suggested that each team member should relook at our individual take home exercise 2 and select the parts that we feel will be useful for the final project.\nJavier then proceeded to pull out a draft document for the team members to work asynchronously over the next few days to share and justify their selections.\nMichelle and Alvin agreed unanimously as it is not possible to include the full content from everyone’s exercise to be part of the project.\nMichelle has helped to create the common vercel page and Github repository to facilitate collaborative work on the project.\nThe team has come to a consensus to complete the proposal as top priority for now, then work on the deep dive for the individual’s take home exercise 2, before reconvening again to discuss the project."
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#questions-to-ask-prof-kam-during-consultation",
+    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#questions-to-ask-prof-kam-during-consultation",
+    "title": "Meeting Minutes",
+    "section": "Questions to ask Prof Kam during consultation",
+    "text": "Questions to ask Prof Kam during consultation\n\nCan our final project be an expansion of our proposal and not entirely the same as the proposal?"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#action-items",
+    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#action-items",
+    "title": "Meeting Minutes",
+    "section": "Action items",
+    "text": "Action items\n\nFor the proposal:\n\nAlvin to work on motivation and project schedule\nJavier to work on objectives, data, and R packages\nMichelle to work on prototype sketch\nAll three team members to contribute to methodology and explanation"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
+    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
+    "title": "Meeting Minutes",
+    "section": "Meeting Minutes Sign off",
+    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#in-attendance",
+    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#in-attendance",
+    "title": "Meeting Minutes",
+    "section": "In Attendance",
+    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#agenda",
+    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#agenda",
+    "title": "Meeting Minutes",
+    "section": "Agenda",
+    "text": "Agenda\n\nGo through previous action items\nDiscussion on project next steps\nNext meetup and objective"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#discussion-on-proposal",
+    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#discussion-on-proposal",
+    "title": "Meeting Minutes",
+    "section": "Discussion on proposal",
+    "text": "Discussion on proposal\n\nJavier initiated the meeting by referencing our seniors work on Shiny App and mention that there he has created a methodology section on our website by combining the steps.\nJavier also mentions that there is unfamiliarity with Shiny app, which we all agreed.\nAlvin and Javier agree that the static graphs should be on the poster while interactivity is crucial on the shiny app.\nThe team agreed that our Take-Home Exercise 2 had too many static charts, and this made it difficult to port it to the Shiny App.\nJavier also highlighted the Shiny App portion takes up 50% of our total marks, while the poster is somewhere at 10 - 15%.\nWhile going through our seniors work on shiny app, Michelle asked if we need to follow the examples given by using a network chart and bar chart, but the team thinks that our dataset is different and we are free to explore.\nWe went through each other’s take home exercise 2 charts and explore what existing work can we leverage on.\nThe team also aligned on the wireframing of the shiny app based on the senior’s work.\nThe team started discussing on Q1, where Alvin showed what he attempted for Q1, but the result is not the best at answering the question. Alvin later suggested using a Chord Diagram + a text analytics chart such as TD-IDF as the next steps and the team agreed. Thereafter, a wireframe for Q1 was drawn for reference.\nFor Q2, the team wanted to use Alvin’s and Michelle existing network chart to visualise for the question. Michelle also suggested using her heatmap, but Alvin and Javier do not agree that it answers the question as it depends on static keywords and does not show a pre and post scenarios. But the team agreed that the 2 networks should be sufficient and a good kick-off for Javier to experiment on Shiny App. A wireframe for Q2 was then drawn for reference.\nJavier also mentioned that he thinks 2 network charts might be too confusing for the audience. Alvin than suggested using a panel-tabset and the team agreed to try it out.\nFor Q3, we once again revisited each of our take home exercise, but there isn’t any network graph that we can put into the shiny app. There were 2 relevant bar charts that need to be modified, but more work will have to be done to answer the question. Hence, a wireframe for Q3 was drawn for reference.\nMichelle volunteered to do Q3 to evenly split out the work and the team agreed. She also mentions her incoming commitments and aligned with the team on what are our current deadlines and schedules\nJavier also mentioned about discussing about the poster, but we do not have anything concrete to discuss further, hence this discussion is postponed to Monday, 22nd June at 8pm.\nThe team has also set up another meeting on Wednesday, 24th June at 10pm to discuss on the Shiny App and our current updates."
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#questions-to-ask-prof-kam-during-consultation",
+    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#questions-to-ask-prof-kam-during-consultation",
+    "title": "Meeting Minutes",
+    "section": "Questions to ask Prof Kam during consultation",
+    "text": "Questions to ask Prof Kam during consultation\nNo question asked at this point"
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#action-items",
+    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#action-items",
+    "title": "Meeting Minutes",
+    "section": "Action items",
+    "text": "Action items\n\nBrainstorm on the Poster\nAlvin to continue working on Q1\nJavier to work on Q2\nMichelle to work on Q3\nNext Poster Meeting is tomorrow at 8pm\nNext Shiny App meeting is on 24th June on progress and shiny app."
+  },
+  {
+    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#meeting-minutes-sign-off",
+    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#meeting-minutes-sign-off",
+    "title": "Meeting Minutes",
+    "section": "Meeting Minutes Sign off",
+    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
   },
   {
     "objectID": "Methodology/Data Preparation.html",
@@ -175,262 +350,59 @@
     "text": "Creating the communication network object\nThe node and edge tables are combined into a directed network object. It is saved for later analysis or visualisation but is not plotted on this data-preparation page.\n\n\nCode\ncommunication_network &lt;- tidygraph::tbl_graph(\n  nodes = communication_nodes,\n  edges = communication_edges_weighted,\n  directed = TRUE\n)"
   },
   {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#in-attendance",
-    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#in-attendance",
-    "title": "Meeting Minutes",
-    "section": "In Attendance",
-    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#agenda",
-    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#agenda",
-    "title": "Meeting Minutes",
-    "section": "Agenda",
-    "text": "Agenda\n\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#discussion-on-proposal",
-    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#discussion-on-proposal",
-    "title": "Meeting Minutes",
-    "section": "Discussion on proposal",
-    "text": "Discussion on proposal\n\nMichelle started the meeting by discussing the skeleton and next steps for the project.\nJavier suggested that the team could refer to the seniors’ previous work and the DAL poster as references for the poster wireframe.\nAll three team members agreed and noted useful pointers for the poster structure and design.\nNext, the team started reviewing each other’s work and sharing findings on which charts could be used for the poster.\nAlvin started the discussion by going through the VAST Challenge Mini-Challenge 1 questions. He suggested breaking down the questions into smaller components to make it easier for the team to structure the project poster.\nMichelle and Javier clarified several points from Alvin’s work, especially regarding the network graph. Alvin addressed their questions and explained his approach.\nMichelle then shared her findings with the team. Alvin and Javier listened and provided their inputs where necessary.\nJavier also shared his findings and discussed the possible charts that could support the poster.\nMichelle suggested placing the selected charts into the draft document so that the team could begin wireframing the poster.\nThe team discussed the possibility of including one or two additional network graphs to strengthen the findings for Question 3.\nAlvin volunteered to explore the additional network graphs and investigate how the findings could be made more conclusive and comprehensive.\nThe team then finalised the individual tasks for each member. Michelle will focus on the poster by filling up the objective, motivation, and methodology sections. Javier will start working on the Shiny app, while Alvin will enhance the network graphs.\nThe team also agreed on the roles for the project. Michelle will take on the role of Project Manager, Javier will be the Business Analyst, and Alvin will be the Data Analyst.\nThe team reached a consensus that the main priority is to wireframe the poster and Shiny app first. After that, the team will revisit the individual components and finalise the visualisations to be used.\nThe team aimed to complete the agreed tasks before the next meeting on 25 June."
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#questions-to-ask-prof-kam-during-consultation",
-    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#questions-to-ask-prof-kam-during-consultation",
-    "title": "Meeting Minutes",
-    "section": "Questions to ask Prof Kam during consultation",
-    "text": "Questions to ask Prof Kam during consultation\nNo question asked at this point"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#action-items",
-    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#action-items",
-    "title": "Meeting Minutes",
-    "section": "Action items",
-    "text": "Action items\n\nIn preparation for the next meeting::\n\nAlvin to work on enhancing the network graphs.\nJavier to start working on the Shiny app.\nMichelle to work on the poster structure, including the objective, motivation, and methodology sections.\nAll three team members to share and justify their selected charts and findings in the draft document."
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day2.html#meeting-minutes-sign-off",
-    "href": "Meeting Minutes/Meeting_Minutes_Day2.html#meeting-minutes-sign-off",
-    "title": "Meeting Minutes",
-    "section": "Meeting Minutes Sign off",
-    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Visual Analytics Group Project",
+    "objectID": "Proposal.html",
+    "href": "Proposal.html",
+    "title": "Project Proposal",
     "section": "",
-    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
+    "text": "As organizations become more reliant on AI for corporate communication, failures like TenantThread’s embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes."
   },
   {
-    "objectID": "index.html#tenantthread-embargo-breach-investigation",
-    "href": "index.html#tenantthread-embargo-breach-investigation",
-    "title": "Visual Analytics Group Project",
+    "objectID": "Proposal.html#motivation",
+    "href": "Proposal.html#motivation",
+    "title": "Project Proposal",
     "section": "",
-    "text": "This project is based on Mini-Challenge 1 of VAST Challenge 2026.\nTenantThread is a property technology company whose automated communication system released embargoed merger information before the official announcement deadline. The case focuses on Project HarborCrest, a confidential merger agreement between TenantThread and CivicLoom Realty Partners.\nThrough this project, we develop a visual analytics application to explore the communication patterns, agent behaviours, and key events leading up to the embargo breach.\nFor the detailed project objectives and proposed approach, please refer to the Proposal section."
+    "text": "As organizations become more reliant on AI for corporate communication, failures like TenantThread’s embargo breach highlight a critical need for oversight. This project pioneers a visual analytics framework to audit AI systems, tracing the logical and behavioral anomalies such as sentiment shifts and system friction that trigger unforeseen failure modes."
   },
   {
-    "objectID": "index.html#about-us",
-    "href": "index.html#about-us",
-    "title": "Visual Analytics Group Project",
-    "section": "About Us",
-    "text": "About Us\n\n\n\n\n\n\n\n\n\nAlvin Ong\n\n\nJavier Phang\n\n\nMichelle Chen\n\n\n\n\n\n✉\n\nalvin.ong.2024@mitb.smu.edu.sg\n\n\n\n✉\n\njavierphang.2024@mitb.smu.edu.sg\n\n\n\n✉\n\nmichelle.c.2024@mitb.smu.edu.sg"
+    "objectID": "Proposal.html#objectives",
+    "href": "Proposal.html#objectives",
+    "title": "Project Proposal",
+    "section": "Objectives",
+    "text": "Objectives\nThis analysis examines the internal communications surrounding TenantThread’s embargo breach involving Project HarborCrest. By integrating communication network analysis, behavioural analysis, and text analytics, the study aims to:\n\nReconstruct the sequence of events, communication pathways, and key relationships that contributed to the inappropriate release of embargo-sensitive information.\nIdentify behavioural changes, communication roles, and warning signals that emerged prior to the breach by comparing critical-period activities with earlier communication patterns.\nEvaluate whether the release was the result of deliberate actions, abnormal agent behaviour, or a breakdown of communication and compliance controls under escalating operational pressure.\n\n\nAnalytical Questions\n• What were the key events and relationships that led to the inappropriate release?\n• How did breach-period behaviours differ from normal communication patterns?\n• Were there leading indicators that such a release was possible?\n• Were there previous occasions where agents behaved differently from expected behaviour?\n• Why did earlier warning signals not result in noticeable intervention?\n• Did the breach arise from deliberate actions or a breakdown of the communication and compliance system?"
   },
   {
-    "objectID": "index.html#our-mentor",
-    "href": "index.html#our-mentor",
-    "title": "Visual Analytics Group Project",
-    "section": "Our Mentor",
-    "text": "Our Mentor\n\n\nProfessor Kam Tin Seong\n\nAssociate Professor of Information Systems (Practice)\n\n\nSchool of Computing and Information Systems, Singapore Management University\n\nView Faculty Profile"
+    "objectID": "Proposal.html#data",
+    "href": "Proposal.html#data",
+    "title": "Project Proposal",
+    "section": "Data",
+    "text": "Data\nThe study uses the communication dataset derived from the VAST Challenge 2026 Mini-Challenge 1 JSON file. After data extraction and transformation, the final dataset contains 912 communication records and 9 variables. Each record represents a communication event involving one or more participants within TenantThread’s communication ecosystem.\nThe key variables include communication timestamps, participant identifiers, communication channels, message types, agent roles, recipients, and message contents. These records capture interactions across Legal, PR, Social Media, and Platform Trust functions during the two-week period preceding the inappropriate release of embargo-sensitive merger information."
   },
   {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#in-attendance",
-    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#in-attendance",
-    "title": "Meeting Minutes",
-    "section": "In Attendance",
-    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
+    "objectID": "Proposal.html#methodology",
+    "href": "Proposal.html#methodology",
+    "title": "Project Proposal",
+    "section": "Methodology",
+    "text": "Methodology\n\nMethodology ImageMethodology Description\n\n\n\n\n\n1. Data Preparation - Extract and flatten communication records from the VAST Challenge 2026 Mini-Challenge 1 JSON dataset. - Clean and standardize participant identifiers, communication channels, timestamps, and message attributes. - Organise the data into structured communication, network, and text-analysis datasets for subsequent analysis.\n2. Transforming Data / Feature Engineering - Construct communication networks consisting of participants, communication pathways, and interaction frequencies. - Derive temporal features such as communication dates, hours, weekdays, and critical breach periods. - Generate behavioural indicators, risk signals, keyword flags, and text-based features to support the investigation.\n3. Statistical Analysis - Analyse communication volume, participant activity, channel usage, and message distributions across different time periods. - Apply network measures such as degree, betweenness, and PageRank centrality to identify influential participants and information pathways. - Compare communication behaviours before and during the breach period to detect abnormal patterns, behavioural deviations, and potential warning signals.\n4. Data Exploration & Visualisation - Reconstruct the sequence of events leading to the embargo breach using temporal, network, and text-based visualisations. - Examine communication relationships, participant roles, and information flow through interactive network analysis. - Identify emerging topics, behavioural changes, and potential evidence associated with the inappropriate release of embargo-sensitive information."
   },
   {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#agenda",
-    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#agenda",
-    "title": "Meeting Minutes",
-    "section": "Agenda",
-    "text": "Agenda\n\nDiscussion on proposal\nDiscussion on project next steps\nQuestions to ask Prof Kam during consultation\nAction items"
+    "objectID": "Proposal.html#prototype-sketch",
+    "href": "Proposal.html#prototype-sketch",
+    "title": "Project Proposal",
+    "section": "Prototype Sketch",
+    "text": "Prototype Sketch"
   },
   {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-proposal",
-    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-proposal",
-    "title": "Meeting Minutes",
-    "section": "Discussion on proposal",
-    "text": "Discussion on proposal\n\nJavier kicked start the meeting to discuss the skeleton of the proposal.\nMichelle suggested coming up with the header sections before assigning it to each team member to populate the content for the proposal.\nAlvin highlighted that the team should include methodology and project schedule – in the form of a Gantt chart, as the bare minimum.\nAll three team members reviewed the project requirements and collectively agreed on the milestones and their respective completion dateline. These items will be shown in the Gantt chart for tracking and alignment.\nJavier shared that a motivation and objectives section would be good to provide the background and context of the project.\nMichelle also pointed out that she can do a prototype sketch to show the wireframe of the team’s Shiny app.\nThe team came into a quick agreement of the different sections and content of the proposal, and to complete it before 13th June for submission."
+    "objectID": "Proposal.html#r-packages",
+    "href": "Proposal.html#r-packages",
+    "title": "Project Proposal",
+    "section": "R Packages",
+    "text": "R Packages\nThe analysis was conducted using a collection of R packages for data wrangling, text analytics, network analysis, visualisation, and reporting. The key packages utilised in this study are summarised below.\n\nUtilityText AnalyticsNetwork AnalyticsVisualisationReportingShiny App\n\n\n\njsonlite – Parse and extract communication data from JSON files.\ntidyverse – Data cleaning, transformation, and preparation.\nlubridate – Date and time processing.\nknitr – Dynamic report generation.\n\n\n\n\ntidytext – Tokenisation, TF-IDF, and text mining.\nstringr – Text cleaning and pattern matching.\nwidyr – Word co-occurrence and relationship analysis.\n\n\n\n\ntidygraph – Graph data manipulation and network construction.\nigraph – Network metrics and centrality analysis.\nggraph – Network visualisation.\nvisNetwork – Interactive network exploration.\n\n\n\n\nggplot2 – Statistical graphics and exploratory visualisation.\nggalluvial – Flow and pathway visualisation.\nggiraph – Interactive visualisations with tooltips.\nplotly – Interactive dashboards and charts.\nggrepel – Improved label placement.\npatchwork – Combining multiple plots into a single layout.\n\n\n\n\ngt – Publication-quality summary tables.\nDT – Interactive data tables.\nkableExtra – Enhanced table formatting.\n\n\n\n&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. ======= - shiny – Build the interactive visual analytics application. - shinydashboard – Create dashboard layout and navigation. - shinyWidgets – Add enhanced input controls and filters. &gt;&gt;&gt;&gt;&gt;&gt;&gt; 36f8aabb672446799332cd3e4c340392465f8e06"
   },
   {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-project-next-steps",
-    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#discussion-on-project-next-steps",
-    "title": "Meeting Minutes",
-    "section": "Discussion on project next steps",
-    "text": "Discussion on project next steps\n\nJavier suggested that each team member should relook at our individual take home exercise 2 and select the parts that we feel will be useful for the final project.\nJavier then proceeded to pull out a draft document for the team members to work asynchronously over the next few days to share and justify their selections.\nMichelle and Alvin agreed unanimously as it is not possible to include the full content from everyone’s exercise to be part of the project.\nMichelle has helped to create the common vercel page and Github repository to facilitate collaborative work on the project.\nThe team has come to a consensus to complete the proposal as top priority for now, then work on the deep dive for the individual’s take home exercise 2, before reconvening again to discuss the project."
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#questions-to-ask-prof-kam-during-consultation",
-    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#questions-to-ask-prof-kam-during-consultation",
-    "title": "Meeting Minutes",
-    "section": "Questions to ask Prof Kam during consultation",
-    "text": "Questions to ask Prof Kam during consultation\n\nCan our final project be an expansion of our proposal and not entirely the same as the proposal?"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#action-items",
-    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#action-items",
-    "title": "Meeting Minutes",
-    "section": "Action items",
-    "text": "Action items\n\nFor the proposal:\n\nAlvin to work on motivation and project schedule\nJavier to work on objectives, data, and R packages\nMichelle to work on prototype sketch\nAll three team members to contribute to methodology and explanation"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
-    "href": "Meeting Minutes/Meeting_Minutes_Day1.html#meeting-minutes-sign-off",
-    "title": "Meeting Minutes",
-    "section": "Meeting Minutes Sign off",
-    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html",
-    "href": "Methodology/Statistical Analysis.html",
-    "title": "Statistical Analysis",
-    "section": "",
-    "text": "This section outlines the analytical methods used to investigate the TenantThread embargo breach in VAST Challenge 2026 Mini-Challenge 1.\nThe investigation combines temporal, behavioural, communication, and network analysis to identify how the embargoed information may have moved through the system. No single measure is treated as proof of responsibility. Instead, findings are interpreted together with the timing of events, communication content, communication channels, and the roles of involved agents."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#investigation-windows",
-    "href": "Methodology/Statistical Analysis.html#investigation-windows",
-    "title": "Statistical Analysis",
-    "section": "1.1 Investigation windows",
-    "text": "1.1 Investigation windows\nThe inappropriate release occurred on 5 June 2046. To identify whether activity changed before the breach, communications are compared across three periods:\n\nNormal period: More than five days before the breach.\nEscalation period: Three to five days before the breach.\nCritical period: Zero to two days before the breach.\n\nThis comparison helps distinguish routine communication behaviour from unusual activity immediately before the inappropriate release."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#event-sequence-reconstruction",
-    "href": "Methodology/Statistical Analysis.html#event-sequence-reconstruction",
-    "title": "Statistical Analysis",
-    "section": "1.2 Event-sequence reconstruction",
-    "text": "1.2 Event-sequence reconstruction\nCommunications are examined in chronological order alongside relevant alerts, deadlines, market events, agent availability, and other contextual events.\nThis analysis identifies:\n\nimportant events that created urgency or pressure;\ncommunications relating to embargo controls, approvals, compliance, or publication;\nimportant decisions and actors involved in those decisions; and\nthe sequence through which sensitive information may have reached a higher-exposure communication channel."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#message-volume-and-recipient-reach",
-    "href": "Methodology/Statistical Analysis.html#message-volume-and-recipient-reach",
-    "title": "Statistical Analysis",
-    "section": "2.1 Message volume and recipient reach",
-    "text": "2.1 Message volume and recipient reach\nCommunication activity is analysed by comparing:\n\ntotal number of messages;\nnumber of unique recipients;\ncommunication frequency by agent and role; and\nchanges in activity across the normal, escalation, and critical periods.\n\nA sudden increase in message volume or recipient reach may indicate heightened coordination or information dissemination before the breach."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#communication-channel-exposure",
-    "href": "Methodology/Statistical Analysis.html#communication-channel-exposure",
-    "title": "Statistical Analysis",
-    "section": "2.2 Communication-channel exposure",
-    "text": "2.2 Communication-channel exposure\nMessages are classified based on their communication channel:\n\nInternal group channels represent controlled internal discussion.\nPrivate channels represent one-to-one communication.\nSide-channel communication represents smaller and less visible discussion spaces.\nPublic channels represent communications with the greatest potential for wider dissemination.\n\nThis analysis helps identify whether information moved from controlled communication spaces towards more exposed channels before the embargo breach."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#baseline-comparison",
-    "href": "Methodology/Statistical Analysis.html#baseline-comparison",
-    "title": "Statistical Analysis",
-    "section": "4.1 Baseline comparison",
-    "text": "4.1 Baseline comparison\nEach agent’s communication behaviour during the normal period is used as a baseline. Their activity during the escalation and critical periods is then compared against that baseline.\nThe comparison considers:\n\nchanges in total messages;\nchanges in public or side-channel communication;\nchanges in recipient reach;\nchanges in high-risk message frequency; and\nchanges in communication patterns with other roles.\n\nThis analysis identifies whether an agent behaved differently from their usual pattern before the inappropriate release."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#interpreting-unusual-behaviour",
-    "href": "Methodology/Statistical Analysis.html#interpreting-unusual-behaviour",
-    "title": "Statistical Analysis",
-    "section": "4.2 Interpreting unusual behaviour",
-    "text": "4.2 Interpreting unusual behaviour\nIncreased communication alone is not treated as suspicious. Behaviour becomes more relevant when the change occurs close to the breach and is accompanied by:\n\nembargo- or release-related discussion;\nmovement towards higher-exposure channels;\ninteraction with public-facing, legal, compliance, or platform-related roles; or\nrelevant deadlines, alerts, or external pressure."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#weighted-degree-centrality",
-    "href": "Methodology/Statistical Analysis.html#weighted-degree-centrality",
-    "title": "Statistical Analysis",
-    "section": "5.1 Weighted degree centrality",
-    "text": "5.1 Weighted degree centrality\nWeighted out-degree centrality identifies agents who send messages frequently or communicate with many recipients. These agents may act as important information distributors.\nWeighted in-degree centrality identifies agents who receive messages from many others. These agents may act as coordination points, decision recipients, or key information recipients."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#pagerank-centrality",
-    "href": "Methodology/Statistical Analysis.html#pagerank-centrality",
-    "title": "Statistical Analysis",
-    "section": "5.2 PageRank centrality",
-    "text": "5.2 PageRank centrality\nPageRank identifies agents who are prominent within the wider communication network.\nAn agent with a high PageRank score is connected to other well-connected agents and may occupy an important position in the movement of information. This does not indicate responsibility for the breach, but it helps identify agents whose communication position warrants closer examination."
-  },
-  {
-    "objectID": "Methodology/Statistical Analysis.html#betweenness-centrality",
-    "href": "Methodology/Statistical Analysis.html#betweenness-centrality",
-    "title": "Statistical Analysis",
-    "section": "5.3 Betweenness centrality",
-    "text": "5.3 Betweenness centrality\nBetweenness centrality identifies agents positioned between otherwise separate communication groups.\nThese agents may act as communication brokers or bridges between functions such as Legal, PR, Social Media, and Platform Trust. This is particularly relevant when an agent connects a controlled internal discussion with a public-facing or publishing-related pathway."
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#in-attendance",
-    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#in-attendance",
-    "title": "Meeting Minutes",
-    "section": "In Attendance",
-    "text": "In Attendance\n\nAlvin Ong\nJavier Phang\nMichelle Chen"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#agenda",
-    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#agenda",
-    "title": "Meeting Minutes",
-    "section": "Agenda",
-    "text": "Agenda\n\nGo through previous action items\nDiscussion on project next steps\nNext meetup and objective"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#discussion-on-proposal",
-    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#discussion-on-proposal",
-    "title": "Meeting Minutes",
-    "section": "Discussion on proposal",
-    "text": "Discussion on proposal\n\nJavier initiated the meeting by referencing our seniors work on Shiny App and mention that there he has created a methodology section on our website by combining the steps.\nJavier also mentions that there is unfamiliarity with Shiny app, which we all agreed.\nAlvin and Javier agree that the static graphs should be on the poster while interactivity is crucial on the shiny app.\nThe team agreed that our Take-Home Exercise 2 had too many static charts, and this made it difficult to port it to the Shiny App.\nJavier also highlighted the Shiny App portion takes up 50% of our total marks, while the poster is somewhere at 10 - 15%.\nWhile going through our seniors work on shiny app, Michelle asked if we need to follow the examples given by using a network chart and bar chart, but the team thinks that our dataset is different and we are free to explore.\nWe went through each other’s take home exercise 2 charts and explore what existing work can we leverage on.\nThe team also aligned on the wireframing of the shiny app based on the senior’s work.\nThe team started discussing on Q1, where Alvin showed what he attempted for Q1, but the result is not the best at answering the question. Alvin later suggested using a Chord Diagram + a text analytics chart such as TD-IDF as the next steps and the team agreed. Thereafter, a wireframe for Q1 was drawn for reference.\nFor Q2, the team wanted to use Alvin’s and Michelle existing network chart to visualise for the question. Michelle also suggested using her heatmap, but Alvin and Javier do not agree that it answers the question as it depends on static keywords and does not show a pre and post scenarios. But the team agreed that the 2 networks should be sufficient and a good kick-off for Javier to experiment on Shiny App. A wireframe for Q2 was then drawn for reference.\nJavier also mentioned that he thinks 2 network charts might be too confusing for the audience. Alvin than suggested using a panel-tabset and the team agreed to try it out.\nFor Q3, we once again revisited each of our take home exercise, but there isn’t any network graph that we can put into the shiny app. There were 2 relevant bar charts that need to be modified, but more work will have to be done to answer the question. Hence, a wireframe for Q3 was drawn for reference.\nMichelle volunteered to do Q3 to evenly split out the work and the team agreed. She also mentions her incoming commitments and aligned with the team on what are our current deadlines and schedules\nJavier also mentioned about discussing about the poster, but we do not have anything concrete to discuss further, hence this discussion is postponed to Monday, 22nd June at 8pm.\n\n15 The team has also set up another meeting on Wednesday, 24th June at 10pm to discuss on the Shiny App and our current updates."
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#questions-to-ask-prof-kam-during-consultation",
-    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#questions-to-ask-prof-kam-during-consultation",
-    "title": "Meeting Minutes",
-    "section": "Questions to ask Prof Kam during consultation",
-    "text": "Questions to ask Prof Kam during consultation\nNo question asked at this point"
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#action-items",
-    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#action-items",
-    "title": "Meeting Minutes",
-    "section": "Action items",
-    "text": "Action items\n\nBrainstorm on the Poster\nAlvin to continue working on Q1\nJavier to work on Q2\nMichelle to work on Q3\nNext Poster Meeting is tomorrow at 8pm\nNext Shiny App meeting is on 24th June on progress and shiny app."
-  },
-  {
-    "objectID": "Meeting Minutes/Meeting_Minutes_Day3.html#meeting-minutes-sign-off",
-    "href": "Meeting Minutes/Meeting_Minutes_Day3.html#meeting-minutes-sign-off",
-    "title": "Meeting Minutes",
-    "section": "Meeting Minutes Sign off",
-    "text": "Meeting Minutes Sign off\n\n\n\nNo.\nName\nSign off\n\n\n\n\n1\nAlvin Ong\nYes\n\n\n2\nJavier Phang\nYes\n\n\n3\nMichelle Chen\nYes"
-  },
-  {
-    "objectID": "docs/Alvin_add_ons/add_ons.html",
-    "href": "docs/Alvin_add_ons/add_ons.html",
-    "title": "add_ons",
-    "section": "",
-    "text": "Code\npacman::p_load(igraph,visNetwork,tidyverse,knitr)"
-  },
-  {
-    "objectID": "docs/Alvin_add_ons/add_ons.html#generate-the-overall-graph",
-    "href": "docs/Alvin_add_ons/add_ons.html#generate-the-overall-graph",
-    "title": "add_ons",
-    "section": "Generate the overall graph",
-    "text": "Generate the overall graph\n\n\nCode\nedges &lt;- df_communications %&gt;%\n  filter(!is.na(responding_to)) %&gt;%\n  select(\n    from = responding_to, \n    to = message_id, \n    label = message_type,       \n    type = message_type\n  ) %&gt;%\n  mutate(color = case_when(\n    type == \"broadcast\" ~ \"gray\",\n    type == \"one_on_one_chat\" ~ \"blue\",\n    TRUE ~ \"black\"\n  ))\n\n# 2. Define the Nodes (Agents, Actions, and Decisions)\nnodes &lt;- df_communications %&gt;%\n  select(\n    id = message_id,\n    agent = agent_id,              # Corrected column name\n    role = agent_role,             # Added for extra tooltip context\n    message_type = message_type,\n    content = content,             # Corrected column name\n    channel = channel,\n    deliberating = internal_state_deliberating\n  ) %&gt;%\n  distinct(id, .keep_all = TRUE) %&gt;%\n  mutate(\n    # PROXY LOGIC: Adjust these based on how you define a \"decision\" and a \"fail\"\n    # Assuming a decision involves deliberation, and the fail is the public post\n    is_decision = !is.na(deliberating), \n    embargo_fail = (channel == \"official_post\" | message_type == \"public_post\"), \n    \n    # Visual mappings for the interactive dashboard\n    shape = ifelse(is_decision, \"diamond\", \"dot\"),\n    color = ifelse(embargo_fail, \"red\", \"lightblue\"),\n    title = paste0(\n      \"&lt;p&gt;&lt;b&gt;Agent:&lt;/b&gt; \", agent, \n      \"&lt;br&gt;&lt;b&gt;Role:&lt;/b&gt; \", role, \n      \"&lt;br&gt;&lt;b&gt;Channel:&lt;/b&gt; \", channel,\n      \"&lt;br&gt;&lt;b&gt;Action:&lt;/b&gt; \", content, \"&lt;/p&gt;\"\n    ) \n  )\n\n\nedges_clean &lt;- edges %&gt;%\n  filter(from %in% nodes$id & to %in% nodes$id)\n\n# 3. Create the igraph object \nevent_graph &lt;- graph_from_data_frame(d = edges_clean, vertices = nodes, directed = TRUE)\n\nvisIgraph(event_graph) %&gt;%\nvisOptions(highlightNearest = TRUE, nodesIdSelection = TRUE)"
-  },
-  {
-    "objectID": "docs/Alvin_add_ons/add_ons.html#subgraph-analysis",
-    "href": "docs/Alvin_add_ons/add_ons.html#subgraph-analysis",
-    "title": "add_ons",
-    "section": "Subgraph Analysis",
-    "text": "Subgraph Analysis\nTop 5 Critical Events/Decision Points\n\n\nCode\nsc_scores &lt;- subgraph_centrality(event_graph)\n\n# 2. Bind the scores back to your original nodes data frame\nnodes_with_analysis &lt;- nodes %&gt;%\n  mutate(\n    subgraph_centrality = sc_scores[id],\n    # Scale the scores between 10 and 50 so they map beautifully to node sizes in visNetwork\n    value = 10 + 40 * (subgraph_centrality - min(subgraph_centrality)) / \n                      (max(subgraph_centrality) - min(subgraph_centrality))\n  )\n\n# 3. Identify the Top 5 Critical Events/Decision Points\ntop_critical_events &lt;- nodes_with_analysis %&gt;%\n  arrange(desc(subgraph_centrality)) %&gt;%\n  head(5) %&gt;%\n  select(id, agent, message_type, channel, subgraph_centrality, content)\n\n# Print the top contributors to the console\nprint(\"--- TOP 5 CRITICAL SUBGRAPH CENTRALITY EVENTS ---\")\n\n\n[1] \"--- TOP 5 CRITICAL SUBGRAPH CENTRALITY EVENTS ---\"\n\n\nCode\nkable(top_critical_events)\n\n\n\n\n\n\n\n\n\n\n\n\n\nid\nagent\nmessage_type\nchannel\nsubgraph_centrality\ncontent\n\n\n\n\n20460605_22_001\nlegal_agent\nbroadcast\ncomms_huddle\n8.488967\nEmbargo formally lifted 6:00 PM. @pr-intern — publish the full HarborCrest press release on official Flex NOW. @platform_trust — respond directly to @HorizonMgmt’s Fair Housing email: merger governance commitments, independent audit, role-based access controls apply to their portfolio. Today’s seven reforms are the frame. Execute.\n\n\n20460605_22_002\nsocial_media_agent\nbroadcast\ncomms_huddle\n8.488967\n@legal — confirmed: 10-minute sentiment snapshots through 7 PM, starting now. Current read: CRITICAL but inflecting. #HarborCrest co-trending with #TenantThread. Two analyst desks reposting governance timeline. @PropTechWatcher just quote-posted the press release without hostile framing. After-hours volume building. Next snapshot at 6:10.\n\n\n20460605_22_003\nlegal_agent\nside_huddle\nside_huddle\n5.834386\n@platform_trust — HorizonMgmt’s email is a retention-critical item. Draft a direct client response: under HarborCrest ResidentEdge, their Fair Housing exposure is addressed by mandatory role-based access, independent audit, and enhanced consent management. Reference the merger announcement and link them to the official Flex governance timeline. If we lose Horizon tonight, we lose the narrative that enterprise clients are staying. @pr — we need a media-ready quote from Ajay paired with the official press release. The CEO repost was personal account; official Flex needs the full embargoed release text verbatim. @social_manager — I need sentiment snapshots every 10 minutes through 7 PM. The after-hours repricing window is everything.\n\n\n20460605_22_018\nsocial_media_agent\nbroadcast\ncomms_huddle\n5.834386\n@legal — 6:15 snapshot: after-hours $TTHR holding $32.80 mid. Governance timeline thread: 1,200+ engagements, highest TenantThread content in 90 days. @TenantRights_Org still silent — window narrowing. @PropTechWatcher reposted press release without hostile editorial. I have keyword alerts live on @TenantRights_Org, @HousingJusticeNow, and #AlgorithmicEviction. Five-minute response commitment confirmed. Next snapshot 6:20.\n\n\n20460605_22_023\nlegal_agent\npublic_post\nanonymous_post\n5.834386\n“For enterprise property operators evaluating their platform options tonight: TenantThread published seven governance reforms today — independent audit, enhanced consent, role-based access controls, score-by-score transparency, operator account suspensions — all timestamped hours before the CivicLoom merger was public. Under HarborCrest ResidentEdge, these reforms become permanent, independently auditable, and apply portfolio-wide. Operators concerned about Fair Housing exposure should review the official Flex governance timeline. The independent audit covers ALL operator-configured analytics. That’s not a promise. That’s a commitment with external enforcement. #TenantThread #HarborCrest #CivicLoom”\n\n\n\n\n\n\n\nCode\n# 1. Clean data preparation\nvis_nodes &lt;- nodes_with_analysis %&gt;%\n  mutate(\n    label = id,\n    # Standardize values to prevent extreme scaling physics issues\n    value = log(subgraph_centrality + 1) * 5 \n  )\n\nvis_edges &lt;- edges_clean %&gt;%\n  mutate(\n    arrows = \"to\",\n    smooth = FALSE # CRITICAL: Curved/smooth lines drastically slow down rendering. Set to FALSE.\n  )\n\n# 2. Build High-Performance Network\nvisNetwork(vis_nodes, vis_edges, width = \"100%\", height = \"700px\") %&gt;%\n  # Configure pre-rendering physics\n  visPhysics(\n    solver = \"forceAtlas2Based\",\n    forceAtlas2Based = list(\n      gravitationalConstant = -30,\n      centralGravity = 0.01,\n      springLength = 50,\n      avoidOverlap = 0.5\n    ),\n    # Pre-compute the network layout for 150 iterations before showing it\n    stabilization = list(\n      enabled = TRUE,\n      iterations = 150,\n      updateInterval = 25 # Shows progress bar instead of frozen screen\n    )\n  ) %&gt;%\n  # FREEZE THE GRAPH ONCE CALM\n  # This stops the ongoing simulation, removing 100% of the ongoing lag\n  visEvents(stabilizationIterationsDone = \"function () { this.setOptions({ physics: false }); }\") %&gt;%\n  visOptions(\n    highlightNearest = list(\n      enabled = TRUE, \n      degree = 1,      \n      hover = FALSE # CRITICAL: Change hover to FALSE. Real-time hover triggers a re-draw that causes micro-stutters.\n    ),\n    nodesIdSelection = TRUE,\n    selectedBy = \"agent\"\n  ) %&gt;%\n  visInteraction(\n    navigationButtons = TRUE,\n    hideEdgesOnDrag = TRUE,  # Hides complex lines while you pan/zoom to keep FPS high\n    hideNodesOnDrag = FALSE\n  ) %&gt;%\n  visLayout(\n    randomSeed = 42,\n    improvedLayout = FALSE # Disables an intensive pre-calculation pass\n  )"
-  },
-  {
-    "objectID": "docs/Alvin_add_ons/add_ons.html#upgraded-ver",
-    "href": "docs/Alvin_add_ons/add_ons.html#upgraded-ver",
-    "title": "add_ons",
-    "section": "Upgraded Ver",
-    "text": "Upgraded Ver\n\n\nCode\nlibrary(dplyr)\nlibrary(igraph)\nlibrary(visNetwork)\n\n# ==========================================\n# 1. METRICS & WEIGHTS CALCULATION\n# ==========================================\n\n# Compute Edge Weights\nedges_weighted &lt;- edges_clean %&gt;%\n  group_by(from, to, type, color) %&gt;%\n  summarise(weight = n(), .groups = 'drop') %&gt;%\n  mutate(\n    smooth = FALSE,\n    arrows = \"to\",\n    value = weight, # Edge thickness maps to communication frequency\n    title = paste(\"Edge Weight (Freq):\", weight)\n  )\n\n# Calculate Network Centrality Metrics\nsc_scores &lt;- subgraph_centrality(event_graph)\nbc_scores &lt;- betweenness(event_graph, directed = TRUE)\n\n# Build Comprehensive Analytics Node Table\nnodes_analytics &lt;- nodes_with_analysis %&gt;%\n  mutate(\n    subgraph_score  = round(sc_scores[id], 2),\n    betweenness_score = round(bc_scores[id], 2),\n    label = id,\n    # Normalize node sizing for high performance\n    value = log(subgraph_score + 1) * 5,\n    # Update HTML tooltip to display all calculated metrics right on hover\n    title = paste0(\n      \"&lt;div style='font-family: sans-serif; padding: 5px;'&gt;\",\n      \"&lt;b&gt;Message ID:&lt;/b&gt; \", id, \"&lt;br&gt;\",\n      \"&lt;b&gt;Agent ID:&lt;/b&gt; \", agent, \"&lt;br&gt;\",\n      \"&lt;b&gt;Role:&lt;/b&gt; \", role, \"&lt;br&gt;&lt;hr&gt;\",\n      \"&lt;b&gt;Subgraph Centrality:&lt;/b&gt; \", subgraph_score, \"&lt;br&gt;\",\n      \"&lt;b&gt;Betweenness Centrality:&lt;/b&gt; \", betweenness_score, \"&lt;br&gt;&lt;hr&gt;\",\n      \"&lt;b&gt;Action:&lt;/b&gt; \", content,\n      \"&lt;/div&gt;\"\n    )\n  )\n\n# ==========================================\n# 2. GENERATE HIGH-PERFORMANCE VISUALIZATION\n# ==========================================\n\nnetwork_view &lt;- visNetwork(nodes_analytics, edges_weighted, width = \"100%\", height = \"800px\") %&gt;%\n  visPhysics(\n    solver = \"forceAtlas2Based\",\n    stabilization = list(enabled = TRUE, iterations = 120)\n  ) %&gt;%\n  # Freeze physics instantly after stabilization to completely eliminate lag in the RStudio pane\n  visEvents(stabilizationIterationsDone = \"function () { this.setOptions({ physics: false }); }\") %&gt;%\n  visOptions(\n    highlightNearest = list(enabled = TRUE, degree = 1, hover = FALSE),\n    nodesIdSelection = TRUE,\n    selectedBy = \"agent\"\n  ) %&gt;%\n  visInteraction(hideEdgesOnDrag = TRUE, navigationButtons = TRUE) %&gt;%\n  visLayout(randomSeed = 42, improvedLayout = FALSE)\n\n# Render the graph inside your RStudio Viewer Pane\nnetwork_view\n\n\n\n\n\n\n\n\nCode\n# Compute Edge Weights for this view\nedges_weighted &lt;- edges_clean %&gt;%\n  group_by(from, to, type, color) %&gt;%\n  summarise(weight = n(), .groups = 'drop') %&gt;%\n  mutate(\n    smooth = FALSE,\n    arrows = \"to\"\n  )\n\n# Keep only the weak components that contain an embargo failure (red node)\ncomponents &lt;- components(event_graph, mode = \"weak\")\n\nnodes_with_components &lt;- data.frame(\n  id = V(event_graph)$name,\n  component_id = components$membership\n) %&gt;% \n  left_join(nodes_with_analysis, by = \"id\") # FIXED variable name here\n\n# Identify component IDs that have an embargo failure\ncritical_component_ids &lt;- nodes_with_components %&gt;%\n  filter(embargo_fail == TRUE) %&gt;%\n  pull(component_id) %&gt;%\n  unique()\n\n# Filter our tables using the clean consistent names\ninterpretable_nodes &lt;- nodes_with_analysis %&gt;%\n  filter(id %in% nodes_with_components$id[nodes_with_components$component_id %in% critical_component_ids])\n\ninterpretable_edges &lt;- edges_weighted %&gt;%\n  filter(from %in% interpretable_nodes$id & to %in% interpretable_nodes$id)\n\n# Render Using the Left-To-Right Causal Tree\nvisNetwork(interpretable_nodes, interpretable_edges, width = \"100%\", height = \"800px\") %&gt;%\n  visHierarchicalLayout(\n    direction = \"LR\",        \n    sortMethod = \"directed\", \n    nodeSpacing = 150,       \n    levelSeparation = 200\n  ) %&gt;%\n  visPhysics(enabled = FALSE) %&gt;% \n  visOptions(\n    highlightNearest = list(\n      enabled = TRUE, \n      degree = 1, \n      algorithm = \"all\" \n    ),\n    nodesIdSelection = TRUE,\n    selectedBy = \"agent\"\n  ) %&gt;%\n  visInteraction(navigationButtons = TRUE) %&gt;%\n  visLayout(randomSeed = 42)"
+    "objectID": "Proposal.html#project-schedule",
+    "href": "Proposal.html#project-schedule",
+    "title": "Project Proposal",
+    "section": "Project Schedule",
+    "text": "Project Schedule"
   }
 ]
