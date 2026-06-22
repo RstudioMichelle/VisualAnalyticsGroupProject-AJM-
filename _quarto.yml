@@ -37,6 +37,8 @@ website:
             href: "Meeting Minutes/Meeting_Minutes_Day1.qmd"
           - text: "Meeting Minutes 2"
             href: "Meeting Minutes/Meeting_Minutes_Day2.qmd"
+          - text: "Meeting Minutes 3"
+            href: "Meeting Minutes/Meeting_Minutes_Day3.qmd"
 
     right:
       - icon: people-fill
