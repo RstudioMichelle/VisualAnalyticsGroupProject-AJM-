@@ -29,16 +29,19 @@ communications_raw <- df_communications$communications
 
 ## Multiple write outs
 ```{r}
+#| eval: false
 write_csv(communications_raw,'communications_raw.csv')
 ```
 
 
 ```{r}
+#| eval: false
 write_csv(edge_weighted, "edge_weighted.csv")
 
 ```
 
 ```{r}
+#| eval: false
 write_csv(node, "node.csv")
 ```
 
@@ -477,14 +480,14 @@ end_time   <- network_peak_bin + minutes(30)
 focused_logs <- df %>%
   filter(
     # Keep only rows that fall strictly within this forensic time slice
-    timestamp >= start_time & timestamp <= end_time
+    timestamp >= network_peak_bin
   ) %>%
   # Ensure it reads sequentially for your dashboard user
   arrange(timestamp)
 ```
 
 
-### Extract the words[still too many words]
+### Extract the words
 
 ```{r}
 # we have dropped it to 25 rows
