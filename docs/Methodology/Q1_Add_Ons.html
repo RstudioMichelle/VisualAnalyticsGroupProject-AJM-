@@ -242,7 +242,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#multiple-write-outs" id="toc-multiple-write-outs" class="nav-link" data-scroll-target="#multiple-write-outs">Multiple write outs</a></li>
   <li><a href="#read-csv" id="toc-read-csv" class="nav-link" data-scroll-target="#read-csv">Read CSV</a>
   <ul class="collapse">
-  <li><a href="#first-attempt-not-that-useful" id="toc-first-attempt-not-that-useful" class="nav-link" data-scroll-target="#first-attempt-not-that-useful">First attempt [Not that useful]</a></li>
   <li><a href="#subgroup-centrality-for-identifying-the-key-agents-involved-in-the-leak-and-the-causal-relationship" id="toc-subgroup-centrality-for-identifying-the-key-agents-involved-in-the-leak-and-the-causal-relationship" class="nav-link" data-scroll-target="#subgroup-centrality-for-identifying-the-key-agents-involved-in-the-leak-and-the-causal-relationship">Subgroup Centrality for identifying the key Agents involved in the leak and the causal relationship</a></li>
   </ul></li>
   <li><a href="#extract-agents-and-channels-relevant" id="toc-extract-agents-and-channels-relevant" class="nav-link" data-scroll-target="#extract-agents-and-channels-relevant">Extract agents and channels relevant</a>
@@ -334,225 +333,133 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>comms_raw <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"communications_raw.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<section id="first-attempt-not-that-useful" class="level3">
-<h3 class="anchored" data-anchor-id="first-attempt-not-that-useful">First attempt [Not that useful]</h3>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter for June 5th and parse timestamps</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>june5_data <span class="ot">&lt;-</span> comms_raw <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(communication_date <span class="sc">==</span> <span class="st">"2046-06-05"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">timestamp =</span> <span class="fu">ymd_hms</span>(timestamp))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># UPDATED Function to Create a Clean Network Graph</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>create_period_graph <span class="ot">&lt;-</span> <span class="cf">function</span>(data, period_name) {</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (period_name <span class="sc">==</span> <span class="st">"Morning"</span>) {</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    period_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(communication_hour <span class="sc">&lt;</span> <span class="dv">12</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    period_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(communication_hour <span class="sc">&gt;=</span> <span class="dv">12</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  edges <span class="ot">&lt;-</span> period_df <span class="sc">%&gt;%</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">target =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(channel) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(channel), <span class="st">"dm"</span>), </span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>                      channel, </span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                      recipients)</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(target)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(agent_label, target) <span class="sc">%&gt;%</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">total_risk_score =</span> <span class="fu">sum</span>(risk_signal_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">interaction_count =</span> <span class="fu">n</span>(),</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">weight =</span> <span class="fu">ifelse</span>(total_risk_score <span class="sc">&lt;=</span> <span class="dv">0</span>, <span class="fl">0.1</span>, total_risk_score)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">from =</span> agent_label, <span class="at">to =</span> target)</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edges, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set a seed so the random layout generates the same way every time</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>) </span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(g, <span class="at">layout =</span> <span class="st">"fr"</span>) <span class="sc">+</span> </span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">width =</span> total_risk_score, <span class="at">alpha =</span> interaction_count), </span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>                   <span class="at">color =</span> <span class="st">"darkgray"</span>, </span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>                   <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="dv">3</span>, <span class="st">'mm'</span>)), </span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>                   <span class="at">end_cap =</span> <span class="fu">circle</span>(<span class="dv">5</span>, <span class="st">'mm'</span>)) <span class="sc">+</span></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_point</span>(<span class="at">color =</span> <span class="st">"lightblue"</span>, <span class="at">size =</span> <span class="dv">8</span>) <span class="sc">+</span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># THE FIX: repel = TRUE forces labels to physically push away from each other</span></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), </span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>                   <span class="at">repel =</span> <span class="cn">TRUE</span>,          </span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>                   <span class="at">size =</span> <span class="fl">3.5</span>, </span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>                   <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>                   <span class="at">bg.color =</span> <span class="st">"white"</span>,    <span class="co"># Adds a white halo around text for readability</span></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>                   <span class="at">bg.r =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_edge_width</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">3</span>)) <span class="sc">+</span></span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># THE FIX: Expand plot limits so outer text doesn't get cut off</span></span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fl">0.2</span>)) <span class="sc">+</span></span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fl">0.2</span>)) <span class="sc">+</span></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_void</span>() <span class="sc">+</span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"June 5th -"</span>, period_name),</span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>         <span class="at">subtitle =</span> <span class="st">"Edge width = Cumulative Risk Score"</span>) <span class="sc">+</span></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    <span class="co"># THE FIX: Move legends to the bottom to give the network room to breathe</span></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.box =</span> <span class="st">"vertical"</span>,</span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"cm"</span>))</span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p)</span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Generate Subgraphs</span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>plot_morning <span class="ot">&lt;-</span> <span class="fu">create_period_graph</span>(june5_data, <span class="st">"Morning"</span>)</span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>plot_afternoon <span class="ot">&lt;-</span> <span class="fu">create_period_graph</span>(june5_data, <span class="st">"Afternoon"</span>)</span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Display Side-by-Side (using patchwork)</span></span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>final_visualization <span class="ot">&lt;-</span> plot_morning <span class="sc">+</span> plot_afternoon</span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(final_visualization)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Q1_Add_Ons_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 <section id="subgroup-centrality-for-identifying-the-key-agents-involved-in-the-leak-and-the-causal-relationship" class="level3">
 <h3 class="anchored" data-anchor-id="subgroup-centrality-for-identifying-the-key-agents-involved-in-the-leak-and-the-causal-relationship">Subgroup Centrality for identifying the key Agents involved in the leak and the causal relationship</h3>
 <p>What subgroup centrality? subgraph centrality looks at closed walks—journeys that start at your node, travel through the network, and end back at your node. Nodes that form triangles form the bigget subgraph centrality. As we know the key agents are Legal-Agent, Social-Manager-Agent, and PR-Agent, this should appear as larger nodes, that help the user zoom into the agents that are relevant</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load and Prep the Data</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"communications_raw.csv"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>june5_data <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(communication_date <span class="sc">==</span> <span class="st">"2046-06-05"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">timestamp =</span> <span class="fu">ymd_hms</span>(timestamp))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Function to Create an Interactive Network with Subgraph Centrality</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>create_visnetwork_with_centrality <span class="ot">&lt;-</span> <span class="cf">function</span>(data, period_name) {</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter data by period</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (period_name <span class="sc">==</span> <span class="st">"Morning"</span>) {</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    period_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(communication_hour <span class="sc">&lt;</span> <span class="dv">12</span>)</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    period_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(communication_hour <span class="sc">&gt;=</span> <span class="dv">12</span>)</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Create Edges Dataframe ---</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  edges <span class="ot">&lt;-</span> period_df <span class="sc">%&gt;%</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">target =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(channel) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(channel), <span class="st">"dm"</span>), </span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                      channel, </span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>                      recipients)</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(target)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(agent_label, target) <span class="sc">%&gt;%</span></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">total_risk_score =</span> <span class="fu">sum</span>(risk_signal_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">interaction_count =</span> <span class="fu">n</span>(),</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">from =</span> agent_label,</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">to =</span> target,</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> <span class="fu">ifelse</span>(total_risk_score <span class="sc">&lt;=</span> <span class="dv">0</span>, <span class="fl">0.1</span>, total_risk_score), </span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"&lt;p&gt;&lt;b&gt;Interactions:&lt;/b&gt; "</span>, interaction_count, </span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"&lt;br&gt;&lt;b&gt;Risk Score:&lt;/b&gt; "</span>, total_risk_score, <span class="st">"&lt;/p&gt;"</span>),</span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">arrows =</span> <span class="st">"to"</span></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Calculate Subgraph Centrality ---</span></span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We temporarily create an igraph object just to run the math</span></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edges, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>  centrality_scores <span class="ot">&lt;-</span> <span class="fu">subgraph_centrality</span>(g)</span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Create Nodes Dataframe ---</span></span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>  unique_agents <span class="ot">&lt;-</span> <span class="fu">unique</span>(edges<span class="sc">$</span>from)</span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>  unique_nodes <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(edges<span class="sc">$</span>from, edges<span class="sc">$</span>to))</span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>  nodes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> unique_nodes, <span class="at">label =</span> unique_nodes) <span class="sc">%&gt;%</span></span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Identify if the node is a sender (agent)</span></span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">is_agent =</span> id <span class="sc">%in%</span> unique_agents,</span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Shapes: Squares for agents, Circles (dots) for channels</span></span>
-<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">shape =</span> <span class="fu">ifelse</span>(is_agent, <span class="st">"square"</span>, <span class="st">"dot"</span>),</span>
-<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Colors: Pink for agents, Blue for channels</span></span>
-<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>      <span class="at">color.background =</span> <span class="fu">ifelse</span>(is_agent, <span class="st">"#FFB6C1"</span>, <span class="st">"#ADD8E6"</span>),</span>
-<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>      <span class="at">color.border =</span> <span class="st">"darkgray"</span>,</span>
-<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Fetch the calculated centrality score from the igraph output</span></span>
-<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>      <span class="at">centrality =</span> centrality_scores[id],</span>
-<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Scale Size: Base size + up to 35 extra pixels based on normalized centrality</span></span>
-<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>      <span class="co"># This ensures the "War Room" core looks massive compared to isolated nodes</span></span>
-<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="fu">ifelse</span>(is_agent, <span class="dv">20</span>, <span class="dv">15</span>) <span class="sc">+</span> (centrality <span class="sc">/</span> <span class="fu">max</span>(centrality, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">*</span> <span class="dv">35</span>,</span>
-<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Add the Centrality score to the hover tooltip</span></span>
-<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"&lt;p&gt;&lt;b&gt;"</span>, id, <span class="st">"&lt;/b&gt;&lt;br&gt;Type: "</span>, </span>
-<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">ifelse</span>(is_agent, <span class="st">"Agent"</span>, <span class="st">"Channel/Recipient"</span>),</span>
-<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"&lt;br&gt;&lt;b&gt;Subgraph Centrality:&lt;/b&gt; "</span>, <span class="fu">round</span>(centrality, <span class="dv">2</span>), <span class="st">"&lt;/p&gt;"</span>)</span>
-<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Build the Interactive visNetwork ---</span></span>
-<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>  vn <span class="ot">&lt;-</span> <span class="fu">visNetwork</span>(nodes, edges, </span>
-<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>                   <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"June 5th -"</span>, period_name, <span class="st">"(Nodes sized by Subgraph Centrality)"</span>),</span>
-<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>                   <span class="at">width =</span> <span class="st">"100%"</span>, <span class="at">height =</span> <span class="st">"700px"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visOptions</span>(<span class="at">highlightNearest =</span> <span class="fu">list</span>(<span class="at">enabled =</span> <span class="cn">TRUE</span>, <span class="at">degree =</span> <span class="dv">1</span>), </span>
-<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a>               <span class="at">nodesIdSelection =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visPhysics</span>(<span class="at">solver =</span> <span class="st">"forceAtlas2Based"</span>, </span>
-<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a>               <span class="at">forceAtlas2Based =</span> <span class="fu">list</span>(<span class="at">gravitationalConstant =</span> <span class="sc">-</span><span class="dv">60</span>, <span class="at">springLength =</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visEdges</span>(<span class="at">color =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"#999999"</span>, <span class="at">highlight =</span> <span class="st">"red"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visLayout</span>(<span class="at">randomSeed =</span> <span class="dv">42</span>)</span>
-<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Package the plot and the scores into a single list</span></span>
-<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
-<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">network =</span> vn, </span>
-<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">scores =</span> centrality_scores</span>
-<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Generate the Networks and extract the trapped data</span></span>
-<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a>morning_output <span class="ot">&lt;-</span> <span class="fu">create_visnetwork_with_centrality</span>(june5_data, <span class="st">"Morning"</span>)</span>
-<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the pieces using the $ operator</span></span>
-<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a>vis_morning <span class="ot">&lt;-</span> morning_output<span class="sc">$</span>network</span>
-<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a>centrality_scores_morning <span class="ot">&lt;-</span> morning_output<span class="sc">$</span>scores</span>
-<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Do the same for the Afternoon</span></span>
-<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a>afternoon_output <span class="ot">&lt;-</span> <span class="fu">create_visnetwork_with_centrality</span>(june5_data, <span class="st">"Afternoon"</span>)</span>
-<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a>vis_afternoon <span class="ot">&lt;-</span> afternoon_output<span class="sc">$</span>network</span>
-<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a>centrality_scores_afternoon <span class="ot">&lt;-</span> afternoon_output<span class="sc">$</span>scores</span>
-<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. View them in RStudio</span></span>
-<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a>vis_morning</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load and Prep the Data</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"communications_raw.csv"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>june5_data <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(communication_date <span class="sc">==</span> <span class="st">"2046-06-05"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">timestamp =</span> <span class="fu">ymd_hms</span>(timestamp))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Function to Create an Interactive Network with Subgraph Centrality</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>create_visnetwork_with_centrality <span class="ot">&lt;-</span> <span class="cf">function</span>(data, period_name) {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter data by period</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (period_name <span class="sc">==</span> <span class="st">"Morning"</span>) {</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    period_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(communication_hour <span class="sc">&lt;</span> <span class="dv">12</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    period_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(communication_hour <span class="sc">&gt;=</span> <span class="dv">12</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Create Edges Dataframe ---</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  edges <span class="ot">&lt;-</span> period_df <span class="sc">%&gt;%</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">target =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(channel) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(channel), <span class="st">"dm"</span>), </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                      channel, </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>                      recipients)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(target)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(agent_label, target) <span class="sc">%&gt;%</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">total_risk_score =</span> <span class="fu">sum</span>(risk_signal_score, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">interaction_count =</span> <span class="fu">n</span>(),</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">from =</span> agent_label,</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">to =</span> target,</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> <span class="fu">ifelse</span>(total_risk_score <span class="sc">&lt;=</span> <span class="dv">0</span>, <span class="fl">0.1</span>, total_risk_score), </span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"&lt;p&gt;&lt;b&gt;Interactions:&lt;/b&gt; "</span>, interaction_count, </span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"&lt;br&gt;&lt;b&gt;Risk Score:&lt;/b&gt; "</span>, total_risk_score, <span class="st">"&lt;/p&gt;"</span>),</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">arrows =</span> <span class="st">"to"</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Calculate Subgraph Centrality ---</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We temporarily create an igraph object just to run the math</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edges, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>  centrality_scores <span class="ot">&lt;-</span> <span class="fu">subgraph_centrality</span>(g)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Create Nodes Dataframe ---</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>  unique_agents <span class="ot">&lt;-</span> <span class="fu">unique</span>(edges<span class="sc">$</span>from)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>  unique_nodes <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(edges<span class="sc">$</span>from, edges<span class="sc">$</span>to))</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>  nodes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> unique_nodes, <span class="at">label =</span> unique_nodes) <span class="sc">%&gt;%</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Identify if the node is a sender (agent)</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">is_agent =</span> id <span class="sc">%in%</span> unique_agents,</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Shapes: Squares for agents, Circles (dots) for channels</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">shape =</span> <span class="fu">ifelse</span>(is_agent, <span class="st">"square"</span>, <span class="st">"dot"</span>),</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Colors: Pink for agents, Blue for channels</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>      <span class="at">color.background =</span> <span class="fu">ifelse</span>(is_agent, <span class="st">"#FFB6C1"</span>, <span class="st">"#ADD8E6"</span>),</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>      <span class="at">color.border =</span> <span class="st">"darkgray"</span>,</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Fetch the calculated centrality score from the igraph output</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>      <span class="at">centrality =</span> centrality_scores[id],</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Scale Size: Base size + up to 35 extra pixels based on normalized centrality</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>      <span class="co"># This ensures the "War Room" core looks massive compared to isolated nodes</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>      <span class="at">size =</span> <span class="fu">ifelse</span>(is_agent, <span class="dv">20</span>, <span class="dv">15</span>) <span class="sc">+</span> (centrality <span class="sc">/</span> <span class="fu">max</span>(centrality, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">*</span> <span class="dv">35</span>,</span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Add the Centrality score to the hover tooltip</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"&lt;p&gt;&lt;b&gt;"</span>, id, <span class="st">"&lt;/b&gt;&lt;br&gt;Type: "</span>, </span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">ifelse</span>(is_agent, <span class="st">"Agent"</span>, <span class="st">"Channel/Recipient"</span>),</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"&lt;br&gt;&lt;b&gt;Subgraph Centrality:&lt;/b&gt; "</span>, <span class="fu">round</span>(centrality, <span class="dv">2</span>), <span class="st">"&lt;/p&gt;"</span>)</span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Build the Interactive visNetwork ---</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>  vn <span class="ot">&lt;-</span> <span class="fu">visNetwork</span>(nodes, edges, </span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>                   <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"June 5th -"</span>, period_name, <span class="st">"(Nodes sized by Subgraph Centrality)"</span>),</span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>                   <span class="at">width =</span> <span class="st">"100%"</span>, <span class="at">height =</span> <span class="st">"700px"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visOptions</span>(<span class="at">highlightNearest =</span> <span class="fu">list</span>(<span class="at">enabled =</span> <span class="cn">TRUE</span>, <span class="at">degree =</span> <span class="dv">1</span>), </span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>               <span class="at">nodesIdSelection =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visPhysics</span>(<span class="at">solver =</span> <span class="st">"forceAtlas2Based"</span>, </span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>               <span class="at">forceAtlas2Based =</span> <span class="fu">list</span>(<span class="at">gravitationalConstant =</span> <span class="sc">-</span><span class="dv">60</span>, <span class="at">springLength =</span> <span class="dv">100</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visEdges</span>(<span class="at">color =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"#999999"</span>, <span class="at">highlight =</span> <span class="st">"red"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>    <span class="fu">visLayout</span>(<span class="at">randomSeed =</span> <span class="dv">42</span>)</span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Package the plot and the scores into a single list</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">network =</span> vn, </span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>    <span class="at">scores =</span> centrality_scores</span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Generate the Networks and extract the trapped data</span></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>morning_output <span class="ot">&lt;-</span> <span class="fu">create_visnetwork_with_centrality</span>(june5_data, <span class="st">"Morning"</span>)</span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the pieces using the $ operator</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>vis_morning <span class="ot">&lt;-</span> morning_output<span class="sc">$</span>network</span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>centrality_scores_morning <span class="ot">&lt;-</span> morning_output<span class="sc">$</span>scores</span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Do the same for the Afternoon</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>afternoon_output <span class="ot">&lt;-</span> <span class="fu">create_visnetwork_with_centrality</span>(june5_data, <span class="st">"Afternoon"</span>)</span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>vis_afternoon <span class="ot">&lt;-</span> afternoon_output<span class="sc">$</span>network</span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>centrality_scores_afternoon <span class="ot">&lt;-</span> afternoon_output<span class="sc">$</span>scores</span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. View them in RStudio</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>vis_morning</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-cc500ccaf9796b99c37e" style="width:100%;height:700px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-cc500ccaf9796b99c37e">{"x":{"nodes":{"id":["Intern-Agent","Legal-Agent","PR-Agent","PR-Intern-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","anonymous_post","side_huddle","official_post"],"label":["Intern-Agent","Legal-Agent","PR-Agent","PR-Intern-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","anonymous_post","side_huddle","official_post"],"is_agent":[true,true,true,true,true,false,false,false,false,false],"shape":["square","square","square","square","square","dot","dot","dot","dot","dot"],"color.background":["#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6"],"color.border":["darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray"],"centrality":[3.284896436410186,5.689707696637524,4.757470131531392,4.414474710692008,6.030911215677606,7.638150661609862,7.638150661609862,1.740331948842594,4.353591654126688,2.807235264759773],"size":[35.05225287741633,46.07172576252135,41.79996991163091,40.22827536654737,47.63520934584803,50,50,22.97465524156769,34.9492933100011,27.8634847123955],"title":["<p><b>Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 3.28<\/p>","<p><b>Legal-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 5.69<\/p>","<p><b>PR-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 4.76<\/p>","<p><b>PR-Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 4.41<\/p>","<p><b>Social-Manager-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 6.03<\/p>","<p><b>comms_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 7.64<\/p>","<p><b>one_on_one_chat<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 7.64<\/p>","<p><b>anonymous_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 1.74<\/p>","<p><b>side_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 4.35<\/p>","<p><b>official_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 2.81<\/p>"]},"edges":{"agent_label":["Intern-Agent","Intern-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Agent","PR-Agent","PR-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"target":["comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","official_post","one_on_one_chat","side_huddle"],"total_risk_score":[4,3,1,36,33,39,16,12,20,24,2,19,19,0,26,28],"interaction_count":[4,2,2,28,15,15,14,7,7,15,5,10,15,1,8,8],"from":["Intern-Agent","Intern-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Agent","PR-Agent","PR-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"to":["comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","official_post","one_on_one_chat","side_huddle"],"value":[4,3,1,36,33,39,16,12,20,24,2,19,19,0.1,26,28],"title":["<p><b>Interactions:<\/b> 4<br><b>Risk Score:<\/b> 4<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 1<\/p>","<p><b>Interactions:<\/b> 28<br><b>Risk Score:<\/b> 36<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 33<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 39<\/p>","<p><b>Interactions:<\/b> 14<br><b>Risk Score:<\/b> 16<\/p>","<p><b>Interactions:<\/b> 7<br><b>Risk Score:<\/b> 12<\/p>","<p><b>Interactions:<\/b> 7<br><b>Risk Score:<\/b> 20<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 24<\/p>","<p><b>Interactions:<\/b> 5<br><b>Risk Score:<\/b> 2<\/p>","<p><b>Interactions:<\/b> 10<br><b>Risk Score:<\/b> 19<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 19<\/p>","<p><b>Interactions:<\/b> 1<br><b>Risk Score:<\/b> 0<\/p>","<p><b>Interactions:<\/b> 8<br><b>Risk Score:<\/b> 26<\/p>","<p><b>Interactions:<\/b> 8<br><b>Risk Score:<\/b> 28<\/p>"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-60,"springLength":100}},"edges":{"color":{"color":"#999999","highlight":"red"}},"layout":{"randomSeed":42}},"groups":null,"width":"100%","height":"700px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"June 5th - Morning (Nodes sized by Subgraph Centrality)","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-95ea9387973fc2b69602" style="width:100%;height:700px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-95ea9387973fc2b69602">{"x":{"nodes":{"id":["Intern-Agent","Legal-Agent","PR-Agent","PR-Intern-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","anonymous_post","side_huddle","official_post"],"label":["Intern-Agent","Legal-Agent","PR-Agent","PR-Intern-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","anonymous_post","side_huddle","official_post"],"is_agent":[true,true,true,true,true,false,false,false,false,false],"shape":["square","square","square","square","square","dot","dot","dot","dot","dot"],"color.background":["#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6"],"color.border":["darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray"],"centrality":[3.284896436410186,5.689707696637524,4.757470131531392,4.414474710692008,6.030911215677606,7.638150661609862,7.638150661609862,1.740331948842594,4.353591654126688,2.807235264759773],"size":[35.05225287741633,46.07172576252135,41.79996991163091,40.22827536654737,47.63520934584803,50,50,22.97465524156769,34.9492933100011,27.8634847123955],"title":["<p><b>Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 3.28<\/p>","<p><b>Legal-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 5.69<\/p>","<p><b>PR-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 4.76<\/p>","<p><b>PR-Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 4.41<\/p>","<p><b>Social-Manager-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 6.03<\/p>","<p><b>comms_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 7.64<\/p>","<p><b>one_on_one_chat<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 7.64<\/p>","<p><b>anonymous_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 1.74<\/p>","<p><b>side_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 4.35<\/p>","<p><b>official_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 2.81<\/p>"]},"edges":{"agent_label":["Intern-Agent","Intern-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Agent","PR-Agent","PR-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"target":["comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","official_post","one_on_one_chat","side_huddle"],"total_risk_score":[4,3,1,36,33,39,16,12,20,24,2,19,19,0,26,28],"interaction_count":[4,2,2,28,15,15,14,7,7,15,5,10,15,1,8,8],"from":["Intern-Agent","Intern-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Agent","PR-Agent","PR-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"to":["comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","one_on_one_chat","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","official_post","one_on_one_chat","side_huddle"],"value":[4,3,1,36,33,39,16,12,20,24,2,19,19,0.1,26,28],"title":["<p><b>Interactions:<\/b> 4<br><b>Risk Score:<\/b> 4<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 1<\/p>","<p><b>Interactions:<\/b> 28<br><b>Risk Score:<\/b> 36<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 33<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 39<\/p>","<p><b>Interactions:<\/b> 14<br><b>Risk Score:<\/b> 16<\/p>","<p><b>Interactions:<\/b> 7<br><b>Risk Score:<\/b> 12<\/p>","<p><b>Interactions:<\/b> 7<br><b>Risk Score:<\/b> 20<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 24<\/p>","<p><b>Interactions:<\/b> 5<br><b>Risk Score:<\/b> 2<\/p>","<p><b>Interactions:<\/b> 10<br><b>Risk Score:<\/b> 19<\/p>","<p><b>Interactions:<\/b> 15<br><b>Risk Score:<\/b> 19<\/p>","<p><b>Interactions:<\/b> 1<br><b>Risk Score:<\/b> 0<\/p>","<p><b>Interactions:<\/b> 8<br><b>Risk Score:<\/b> 26<\/p>","<p><b>Interactions:<\/b> 8<br><b>Risk Score:<\/b> 28<\/p>"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-60,"springLength":100}},"edges":{"color":{"color":"#999999","highlight":"red"}},"layout":{"randomSeed":42}},"groups":null,"width":"100%","height":"700px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"June 5th - Morning (Nodes sized by Subgraph Centrality)","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"}},"evals":[],"jsHooks":[]}</script>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>vis_afternoon</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>vis_afternoon</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<div id="htmlwidget-58a91e7640d23bb03b31" style="width:100%;height:700px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-58a91e7640d23bb03b31">{"x":{"nodes":{"id":["Intern-Agent","Judge-Agent","Legal-Agent","PR-Intern-Agent","Platform-Trust-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","personal_post","anonymous_post","side_huddle","official_post"],"label":["Intern-Agent","Judge-Agent","Legal-Agent","PR-Intern-Agent","Platform-Trust-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","personal_post","anonymous_post","side_huddle","official_post"],"is_agent":[true,true,true,true,true,true,false,false,false,false,false,false],"shape":["square","square","square","square","square","square","dot","dot","dot","dot","dot","dot"],"color.background":["#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6"],"color.border":["darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray"],"centrality":[5.76380371115166,3.754317267624477,8.974440452302966,4.565360386371784,7.827311658959601,7.827311658959601,11.35002785479911,11.3500278547991,7.281055353494758,1.848985112452951,5.203580189822995,1.678868770001064],"size":[37.77380042331876,31.57716139976667,47.6744180586122,34.07816928444363,44.13702517459021,44.13702517459021,50,49.99999999999999,37.45253849879887,20.7017022128708,31.04624314351768,20.17711566013397],"title":["<p><b>Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 5.76<\/p>","<p><b>Judge-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 3.75<\/p>","<p><b>Legal-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 8.97<\/p>","<p><b>PR-Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 4.57<\/p>","<p><b>Platform-Trust-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 7.83<\/p>","<p><b>Social-Manager-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 7.83<\/p>","<p><b>comms_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 11.35<\/p>","<p><b>one_on_one_chat<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 11.35<\/p>","<p><b>personal_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 7.28<\/p>","<p><b>anonymous_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 1.85<\/p>","<p><b>side_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 5.2<\/p>","<p><b>official_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 1.68<\/p>"]},"edges":{"agent_label":["Intern-Agent","Intern-Agent","Intern-Agent","Judge-Agent","Judge-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"target":["comms_huddle","one_on_one_chat","personal_post","comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","one_on_one_chat","personal_post","side_huddle"],"total_risk_score":[13,12,1,11,3,25,70,61,8,89,37,3,34,17,26,3,34,68,58,32,94],"interaction_count":[11,6,1,4,2,10,44,29,4,29,24,2,13,19,12,5,12,42,28,14,28],"from":["Intern-Agent","Intern-Agent","Intern-Agent","Judge-Agent","Judge-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"to":["comms_huddle","one_on_one_chat","personal_post","comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","one_on_one_chat","personal_post","side_huddle"],"value":[13,12,1,11,3,25,70,61,8,89,37,3,34,17,26,3,34,68,58,32,94],"title":["<p><b>Interactions:<\/b> 11<br><b>Risk Score:<\/b> 13<\/p>","<p><b>Interactions:<\/b> 6<br><b>Risk Score:<\/b> 12<\/p>","<p><b>Interactions:<\/b> 1<br><b>Risk Score:<\/b> 1<\/p>","<p><b>Interactions:<\/b> 4<br><b>Risk Score:<\/b> 11<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 10<br><b>Risk Score:<\/b> 25<\/p>","<p><b>Interactions:<\/b> 44<br><b>Risk Score:<\/b> 70<\/p>","<p><b>Interactions:<\/b> 29<br><b>Risk Score:<\/b> 61<\/p>","<p><b>Interactions:<\/b> 4<br><b>Risk Score:<\/b> 8<\/p>","<p><b>Interactions:<\/b> 29<br><b>Risk Score:<\/b> 89<\/p>","<p><b>Interactions:<\/b> 24<br><b>Risk Score:<\/b> 37<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 13<br><b>Risk Score:<\/b> 34<\/p>","<p><b>Interactions:<\/b> 19<br><b>Risk Score:<\/b> 17<\/p>","<p><b>Interactions:<\/b> 12<br><b>Risk Score:<\/b> 26<\/p>","<p><b>Interactions:<\/b> 5<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 12<br><b>Risk Score:<\/b> 34<\/p>","<p><b>Interactions:<\/b> 42<br><b>Risk Score:<\/b> 68<\/p>","<p><b>Interactions:<\/b> 28<br><b>Risk Score:<\/b> 58<\/p>","<p><b>Interactions:<\/b> 14<br><b>Risk Score:<\/b> 32<\/p>","<p><b>Interactions:<\/b> 28<br><b>Risk Score:<\/b> 94<\/p>"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-60,"springLength":100}},"edges":{"color":{"color":"#999999","highlight":"red"}},"layout":{"randomSeed":42}},"groups":null,"width":"100%","height":"700px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"June 5th - Afternoon (Nodes sized by Subgraph Centrality)","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e761d681415324bc1cb0" style="width:100%;height:700px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e761d681415324bc1cb0">{"x":{"nodes":{"id":["Intern-Agent","Judge-Agent","Legal-Agent","PR-Intern-Agent","Platform-Trust-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","personal_post","anonymous_post","side_huddle","official_post"],"label":["Intern-Agent","Judge-Agent","Legal-Agent","PR-Intern-Agent","Platform-Trust-Agent","Social-Manager-Agent","comms_huddle","one_on_one_chat","personal_post","anonymous_post","side_huddle","official_post"],"is_agent":[true,true,true,true,true,true,false,false,false,false,false,false],"shape":["square","square","square","square","square","square","dot","dot","dot","dot","dot","dot"],"color.background":["#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#FFB6C1","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6","#ADD8E6"],"color.border":["darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray","darkgray"],"centrality":[5.76380371115166,3.754317267624477,8.974440452302966,4.565360386371784,7.827311658959601,7.827311658959601,11.35002785479911,11.3500278547991,7.281055353494758,1.848985112452951,5.203580189822995,1.678868770001064],"size":[37.77380042331876,31.57716139976667,47.6744180586122,34.07816928444363,44.13702517459021,44.13702517459021,50,49.99999999999999,37.45253849879887,20.7017022128708,31.04624314351768,20.17711566013397],"title":["<p><b>Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 5.76<\/p>","<p><b>Judge-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 3.75<\/p>","<p><b>Legal-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 8.97<\/p>","<p><b>PR-Intern-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 4.57<\/p>","<p><b>Platform-Trust-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 7.83<\/p>","<p><b>Social-Manager-Agent<\/b><br>Type: Agent<br><b>Subgraph Centrality:<\/b> 7.83<\/p>","<p><b>comms_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 11.35<\/p>","<p><b>one_on_one_chat<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 11.35<\/p>","<p><b>personal_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 7.28<\/p>","<p><b>anonymous_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 1.85<\/p>","<p><b>side_huddle<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 5.2<\/p>","<p><b>official_post<\/b><br>Type: Channel/Recipient<br><b>Subgraph Centrality:<\/b> 1.68<\/p>"]},"edges":{"agent_label":["Intern-Agent","Intern-Agent","Intern-Agent","Judge-Agent","Judge-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"target":["comms_huddle","one_on_one_chat","personal_post","comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","one_on_one_chat","personal_post","side_huddle"],"total_risk_score":[13,12,1,11,3,25,70,61,8,89,37,3,34,17,26,3,34,68,58,32,94],"interaction_count":[11,6,1,4,2,10,44,29,4,29,24,2,13,19,12,5,12,42,28,14,28],"from":["Intern-Agent","Intern-Agent","Intern-Agent","Judge-Agent","Judge-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","Legal-Agent","PR-Intern-Agent","PR-Intern-Agent","PR-Intern-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Platform-Trust-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent","Social-Manager-Agent"],"to":["comms_huddle","one_on_one_chat","personal_post","comms_huddle","one_on_one_chat","anonymous_post","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","official_post","one_on_one_chat","comms_huddle","one_on_one_chat","personal_post","side_huddle","comms_huddle","one_on_one_chat","personal_post","side_huddle"],"value":[13,12,1,11,3,25,70,61,8,89,37,3,34,17,26,3,34,68,58,32,94],"title":["<p><b>Interactions:<\/b> 11<br><b>Risk Score:<\/b> 13<\/p>","<p><b>Interactions:<\/b> 6<br><b>Risk Score:<\/b> 12<\/p>","<p><b>Interactions:<\/b> 1<br><b>Risk Score:<\/b> 1<\/p>","<p><b>Interactions:<\/b> 4<br><b>Risk Score:<\/b> 11<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 10<br><b>Risk Score:<\/b> 25<\/p>","<p><b>Interactions:<\/b> 44<br><b>Risk Score:<\/b> 70<\/p>","<p><b>Interactions:<\/b> 29<br><b>Risk Score:<\/b> 61<\/p>","<p><b>Interactions:<\/b> 4<br><b>Risk Score:<\/b> 8<\/p>","<p><b>Interactions:<\/b> 29<br><b>Risk Score:<\/b> 89<\/p>","<p><b>Interactions:<\/b> 24<br><b>Risk Score:<\/b> 37<\/p>","<p><b>Interactions:<\/b> 2<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 13<br><b>Risk Score:<\/b> 34<\/p>","<p><b>Interactions:<\/b> 19<br><b>Risk Score:<\/b> 17<\/p>","<p><b>Interactions:<\/b> 12<br><b>Risk Score:<\/b> 26<\/p>","<p><b>Interactions:<\/b> 5<br><b>Risk Score:<\/b> 3<\/p>","<p><b>Interactions:<\/b> 12<br><b>Risk Score:<\/b> 34<\/p>","<p><b>Interactions:<\/b> 42<br><b>Risk Score:<\/b> 68<\/p>","<p><b>Interactions:<\/b> 28<br><b>Risk Score:<\/b> 58<\/p>","<p><b>Interactions:<\/b> 14<br><b>Risk Score:<\/b> 32<\/p>","<p><b>Interactions:<\/b> 28<br><b>Risk Score:<\/b> 94<\/p>"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-60,"springLength":100}},"edges":{"color":{"color":"#999999","highlight":"red"}},"layout":{"randomSeed":42}},"groups":null,"width":"100%","height":"700px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"June 5th - Afternoon (Nodes sized by Subgraph Centrality)","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -583,7 +490,7 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>centrality_scores_morning</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>centrality_scores_morning</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>        Intern-Agent          Legal-Agent             PR-Agent 
@@ -599,28 +506,28 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Morning Scores</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sorted_morning_scores <span class="ot">&lt;-</span> <span class="fu">sort</span>(centrality_scores_morning, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># GEt afternoon score</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>sorted_afternoon_scores <span class="ot">&lt;-</span> <span class="fu">sort</span>(centrality_scores_afternoon, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract score dynamically</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>morning_agent_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"Agent"</span>, <span class="fu">names</span>(sorted_morning_scores))]</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>morning_channel_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"huddle|post|chat"</span>, <span class="fu">names</span>(sorted_morning_scores))]</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>afternoon_agent_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"Agent"</span>, <span class="fu">names</span>(sorted_afternoon_scores))]</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>afternoon_channel_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"huddle|post|chat"</span>, <span class="fu">names</span>(sorted_afternoon_scores))]</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Extract the names of the top 3 agents</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>morning_war_room_agents <span class="ot">&lt;-</span> <span class="fu">names</span>(morning_agent_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>afternoon_war_room_agents <span class="ot">&lt;-</span> <span class="fu">names</span>(afternoon_agent_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the names of the 3 top channels</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>morning_war_room_channel <span class="ot">&lt;-</span> <span class="fu">names</span>(morning_channel_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>afternoon_war_room_channel <span class="ot">&lt;-</span> <span class="fu">names</span>(afternoon_channel_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Morning Scores</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sorted_morning_scores <span class="ot">&lt;-</span> <span class="fu">sort</span>(centrality_scores_morning, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># GEt afternoon score</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>sorted_afternoon_scores <span class="ot">&lt;-</span> <span class="fu">sort</span>(centrality_scores_afternoon, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract score dynamically</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>morning_agent_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"Agent"</span>, <span class="fu">names</span>(sorted_morning_scores))]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>morning_channel_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"huddle|post|chat"</span>, <span class="fu">names</span>(sorted_morning_scores))]</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>afternoon_agent_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"Agent"</span>, <span class="fu">names</span>(sorted_afternoon_scores))]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>afternoon_channel_only_scores <span class="ot">&lt;-</span> sorted_morning_scores[<span class="fu">grepl</span>(<span class="st">"huddle|post|chat"</span>, <span class="fu">names</span>(sorted_afternoon_scores))]</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Extract the names of the top 3 agents</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>morning_war_room_agents <span class="ot">&lt;-</span> <span class="fu">names</span>(morning_agent_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>afternoon_war_room_agents <span class="ot">&lt;-</span> <span class="fu">names</span>(afternoon_agent_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the names of the 3 top channels</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>morning_war_room_channel <span class="ot">&lt;-</span> <span class="fu">names</span>(morning_channel_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>afternoon_war_room_channel <span class="ot">&lt;-</span> <span class="fu">names</span>(afternoon_channel_only_scores)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="we-now-need-a-chart-that-can-help-the-user-drill-down-on-the-possible-words." class="level3">
@@ -629,46 +536,46 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Load Data</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"communications_raw.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(communication_date <span class="sc">==</span> <span class="st">"2046-06-05"</span>,agent_label <span class="sc">%in%</span> afternoon_war_room_agents, channel <span class="sc">%in%</span> afternoon_war_room_channel) <span class="sc">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">time_period =</span> <span class="fu">ifelse</span>(communication_hour <span class="sc">&lt;</span> <span class="dv">12</span>, <span class="st">"Morning"</span>, <span class="st">"Afternoon"</span>))</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Extract Bigrams and Calculate Emergence</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>emergent_phrases <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Tokenize into 2-word phrases (bigrams)</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(bigram, content, <span class="at">token =</span> <span class="st">"ngrams"</span>, <span class="at">n =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove stop words (e.g., "of the", "in a") to keep meaningful phrases</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(bigram, <span class="fu">c</span>(<span class="st">"word1"</span>, <span class="st">"word2"</span>), <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word1 <span class="sc">%in%</span> stop_words<span class="sc">$</span>word, <span class="sc">!</span>word2 <span class="sc">%in%</span> stop_words<span class="sc">$</span>word) <span class="sc">%&gt;%</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unite</span>(bigram, word1, word2, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count frequencies per period</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(time_period, bigram) <span class="sc">%&gt;%</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> time_period, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate Shift: How much more frequent is it in the afternoon?</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">shift_score =</span> Afternoon <span class="sc">-</span> Morning) <span class="sc">%&gt;%</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(shift_score <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co"># We only care about NEW/EMERGING topics</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(shift_score)) <span class="sc">%&gt;%</span></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">15</span>) <span class="co"># Top 15 signals</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Build the Dashboard Chart</span></span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(emergent_phrases, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(bigram, shift_score), <span class="at">y =</span> shift_score)) <span class="sc">+</span></span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkred"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"War Room Analysis: Emerging Phrases (Afternoon Vs Morning)"</span>,</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"What Legal, Social, and Platform Trust started discussing post-12:00 PM"</span>,</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Emerging Phrase"</span>,</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Frequency Increase (Afternoon vs. Morning)"</span></span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Load Data</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"communications_raw.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(communication_date <span class="sc">==</span> <span class="st">"2046-06-05"</span>,agent_label <span class="sc">%in%</span> afternoon_war_room_agents, channel <span class="sc">%in%</span> afternoon_war_room_channel) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">time_period =</span> <span class="fu">ifelse</span>(communication_hour <span class="sc">&lt;</span> <span class="dv">12</span>, <span class="st">"Morning"</span>, <span class="st">"Afternoon"</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Extract Bigrams and Calculate Emergence</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>emergent_phrases <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Tokenize into 2-word phrases (bigrams)</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(bigram, content, <span class="at">token =</span> <span class="st">"ngrams"</span>, <span class="at">n =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove stop words (e.g., "of the", "in a") to keep meaningful phrases</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(bigram, <span class="fu">c</span>(<span class="st">"word1"</span>, <span class="st">"word2"</span>), <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word1 <span class="sc">%in%</span> stop_words<span class="sc">$</span>word, <span class="sc">!</span>word2 <span class="sc">%in%</span> stop_words<span class="sc">$</span>word) <span class="sc">%&gt;%</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unite</span>(bigram, word1, word2, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Count frequencies per period</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(time_period, bigram) <span class="sc">%&gt;%</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> time_period, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate Shift: How much more frequent is it in the afternoon?</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">shift_score =</span> Afternoon <span class="sc">-</span> Morning) <span class="sc">%&gt;%</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(shift_score <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span> <span class="co"># We only care about NEW/EMERGING topics</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(shift_score)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">15</span>) <span class="co"># Top 15 signals</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Build the Dashboard Chart</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(emergent_phrases, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(bigram, shift_score), <span class="at">y =</span> shift_score)) <span class="sc">+</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkred"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"War Room Analysis: Emerging Phrases (Afternoon Vs Morning)"</span>,</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"What Legal, Social, and Platform Trust started discussing post-12:00 PM"</span>,</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Emerging Phrase"</span>,</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Frequency Increase (Afternoon vs. Morning)"</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Q1_Add_Ons_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Q1_Add_Ons_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -676,17 +583,17 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Extract every individual word from the bigram column as a clean list</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>word_list <span class="ot">&lt;-</span> emergent_phrases <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Split the two words into separate rows</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(bigram, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Keep only unique words (removes duplicates like 'governance' or 'consent')</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(bigram) <span class="sc">%&gt;%</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Pull the column out as a standard R character vector</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(bigram)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the list to verify (e.g., c("governance", "reforms", "rolebased", "access", ...))</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(word_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Extract every individual word from the bigram column as a clean list</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>word_list <span class="ot">&lt;-</span> emergent_phrases <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Split the two words into separate rows</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(bigram, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Keep only unique words (removes duplicates like 'governance' or 'consent')</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(bigram) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Pull the column out as a standard R character vector</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(bigram)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the list to verify (e.g., c("governance", "reforms", "rolebased", "access", ...))</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(word_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "press"        "release"      "pr"           "intern"       "governance"  
@@ -697,9 +604,9 @@ Note
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Convert the list into a regex pipeline for str_detect()</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This joins the words with a pipe symbol: "word1|word2|word3"</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>search_pattern <span class="ot">&lt;-</span> <span class="fu">paste</span>(word_list, <span class="at">collapse =</span> <span class="st">"|"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Convert the list into a regex pipeline for str_detect()</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This joins the words with a pipe symbol: "word1|word2|word3"</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>search_pattern <span class="ot">&lt;-</span> <span class="fu">paste</span>(word_list, <span class="at">collapse =</span> <span class="st">"|"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -709,111 +616,111 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load Data</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>timestamp_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"communications_raw.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(communication_date <span class="sc">==</span> <span class="st">"2046-06-05"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">timestamp =</span> <span class="fu">ymd_hms</span>(timestamp),</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Break the day into 30-minute intervals</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_bin =</span> <span class="fu">floor_date</span>(timestamp, <span class="st">"30 mins"</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(timestamp)</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co"># PIPELINE A: Jaccard Text Similarity to Find the Pivot Time</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract unique words per time bin (excluding basic stop words)</span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>bin_words <span class="ot">&lt;-</span> timestamp_df <span class="sc">%&gt;%</span></span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(time_bin, content_lower) <span class="sc">%&gt;%</span></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">content_clean =</span> <span class="fu">str_replace_all</span>(content_lower, <span class="st">"[[:punct:]]"</span>, <span class="st">""</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(content_clean, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">s+"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>content_clean <span class="sc">%in%</span> tidytext<span class="sc">::</span>stop_words<span class="sc">$</span>word <span class="sc">&amp;</span> content_clean <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(time_bin) <span class="sc">%&gt;%</span></span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">words =</span> <span class="fu">list</span>(<span class="fu">unique</span>(content_clean)), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate rolling Jaccard similarity between consecutive bins</span></span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>num_bins <span class="ot">&lt;-</span> <span class="fu">nrow</span>(bin_words)</span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>jaccard_scores <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">time_bin =</span> bin_words<span class="sc">$</span>time_bin[<span class="sc">-</span><span class="dv">1</span>], <span class="at">similarity =</span> <span class="cn">NA</span>)</span>
-<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(num_bins <span class="sc">-</span> <span class="dv">1</span>)) {</span>
-<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>  set_A <span class="ot">&lt;-</span> bin_words<span class="sc">$</span>words[[i]]</span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>  set_B <span class="ot">&lt;-</span> bin_words<span class="sc">$</span>words[[i<span class="sc">+</span><span class="dv">1</span>]]</span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  intersection <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">intersect</span>(set_A, set_B))</span>
-<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  union <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">union</span>(set_A, set_B))</span>
-<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>  jaccard_scores<span class="sc">$</span>similarity[i] <span class="ot">&lt;-</span> <span class="cf">if</span>(union <span class="sc">==</span> <span class="dv">0</span>) <span class="dv">0</span> <span class="cf">else</span> intersection <span class="sc">/</span> union</span>
-<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Dynamically find the timestamp where the vocabulary shifted most violently</span></span>
-<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>pivot_time_bin <span class="ot">&lt;-</span> jaccard_scores <span class="sc">%&gt;%</span></span>
-<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(similarity) <span class="sc">%&gt;%</span></span>
-<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(time_bin)</span>
-<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
-<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="co"># PIPELINE B: Adamic-Adar Spikes to Find the Interaction Peak</span></span>
-<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
-<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>top_actors <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">sort</span>(centrality_scores_afternoon, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
-<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Track Adamic-Adar strength between these two actors across intervals</span></span>
-<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>adamic_timeline <span class="ot">&lt;-</span> timestamp_df <span class="sc">%&gt;%</span></span>
-<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(time_bin) <span class="sc">%&gt;%</span></span>
-<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_modify</span>(<span class="sc">~</span> {</span>
-<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create an hourly edge list</span></span>
-<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>    edges <span class="ot">&lt;-</span> .x <span class="sc">%&gt;%</span></span>
-<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">target =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(channel) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(channel), <span class="st">"dm"</span>), channel, recipients)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(target)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(agent_label, target)</span>
-<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">nrow</span>(edges) <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="fu">return</span>(<span class="fu">tibble</span>(<span class="at">aa_score =</span> <span class="dv">0</span>))</span>
-<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a>    g_bin <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edges, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if both actors exist in this specific time-slice network</span></span>
-<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">all</span>(top_actors <span class="sc">%in%</span> <span class="fu">V</span>(g_bin)<span class="sc">$</span>name)) {</span>
-<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a>      aa_matrix <span class="ot">&lt;-</span> <span class="fu">similarity</span>(g_bin, <span class="at">method =</span> <span class="st">"invlogweighted"</span>)</span>
-<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>      node_indices <span class="ot">&lt;-</span> <span class="fu">match</span>(top_actors, <span class="fu">V</span>(g_bin)<span class="sc">$</span>name)</span>
-<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> aa_matrix[node_indices[<span class="dv">1</span>], node_indices[<span class="dv">2</span>]]</span>
-<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">tibble</span>(<span class="at">aa_score =</span> score))</span>
-<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a>      <span class="co"># ADDED: Safely return a score of 0 if actors aren't interacting in this block</span></span>
-<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">tibble</span>(<span class="at">aa_score =</span> <span class="dv">0</span>))</span>
-<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
-<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a><span class="co"># Dynamically find the timestamp where their network connection peaked</span></span>
-<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a>network_peak_bin <span class="ot">&lt;-</span> adamic_timeline <span class="sc">%&gt;%</span></span>
-<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter out rows where no connection exists to prevent false-positive morning matches</span></span>
-<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(aa_score <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(aa_score)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(time_bin)</span>
-<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
-<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Dynamic Filtering: Surface the Final Targeted Text Window</span></span>
-<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
-<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter down to the intersection window identified by our algorithms</span></span>
-<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>dynamic_filtered_logs <span class="ot">&lt;-</span> timestamp_df <span class="sc">%&gt;%</span></span>
-<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Zoom around the text pivot OR the network spike window (+/- 30 mins buffer)</span></span>
-<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a>    time_bin <span class="sc">&gt;=</span> (pivot_time_bin <span class="sc">-</span> <span class="fu">minutes</span>(<span class="dv">30</span>)) <span class="sc">&amp;</span> time_bin <span class="sc">&lt;=</span> (network_peak_bin <span class="sc">+</span> <span class="fu">minutes</span>(<span class="dv">30</span>)),</span>
-<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keep focus tight on the core actors involved in the shift</span></span>
-<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a>    agent_label <span class="sc">%in%</span> top_actors</span>
-<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(timestamp, agent_label, channel, content)</span>
-<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the hyper-focused results to the dashboard UI</span></span>
-<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dynamic_filtered_logs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load Data</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>timestamp_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"communications_raw.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(communication_date <span class="sc">==</span> <span class="st">"2046-06-05"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">timestamp =</span> <span class="fu">ymd_hms</span>(timestamp),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Break the day into 30-minute intervals</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_bin =</span> <span class="fu">floor_date</span>(timestamp, <span class="st">"30 mins"</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(timestamp)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co"># PIPELINE A: Jaccard Text Similarity to Find the Pivot Time</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract unique words per time bin (excluding basic stop words)</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>bin_words <span class="ot">&lt;-</span> timestamp_df <span class="sc">%&gt;%</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(time_bin, content_lower) <span class="sc">%&gt;%</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">content_clean =</span> <span class="fu">str_replace_all</span>(content_lower, <span class="st">"[[:punct:]]"</span>, <span class="st">""</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_rows</span>(content_clean, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">s+"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>content_clean <span class="sc">%in%</span> tidytext<span class="sc">::</span>stop_words<span class="sc">$</span>word <span class="sc">&amp;</span> content_clean <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(time_bin) <span class="sc">%&gt;%</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">words =</span> <span class="fu">list</span>(<span class="fu">unique</span>(content_clean)), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate rolling Jaccard similarity between consecutive bins</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>num_bins <span class="ot">&lt;-</span> <span class="fu">nrow</span>(bin_words)</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>jaccard_scores <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">time_bin =</span> bin_words<span class="sc">$</span>time_bin[<span class="sc">-</span><span class="dv">1</span>], <span class="at">similarity =</span> <span class="cn">NA</span>)</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(num_bins <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>  set_A <span class="ot">&lt;-</span> bin_words<span class="sc">$</span>words[[i]]</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>  set_B <span class="ot">&lt;-</span> bin_words<span class="sc">$</span>words[[i<span class="sc">+</span><span class="dv">1</span>]]</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>  intersection <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">intersect</span>(set_A, set_B))</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>  union <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">union</span>(set_A, set_B))</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>  jaccard_scores<span class="sc">$</span>similarity[i] <span class="ot">&lt;-</span> <span class="cf">if</span>(union <span class="sc">==</span> <span class="dv">0</span>) <span class="dv">0</span> <span class="cf">else</span> intersection <span class="sc">/</span> union</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Dynamically find the timestamp where the vocabulary shifted most violently</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>pivot_time_bin <span class="ot">&lt;-</span> jaccard_scores <span class="sc">%&gt;%</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(similarity) <span class="sc">%&gt;%</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(time_bin)</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="co"># PIPELINE B: Adamic-Adar Spikes to Find the Interaction Peak</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>top_actors <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">sort</span>(centrality_scores_afternoon, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Track Adamic-Adar strength between these two actors across intervals</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>adamic_timeline <span class="ot">&lt;-</span> timestamp_df <span class="sc">%&gt;%</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(time_bin) <span class="sc">%&gt;%</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_modify</span>(<span class="sc">~</span> {</span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create an hourly edge list</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>    edges <span class="ot">&lt;-</span> .x <span class="sc">%&gt;%</span></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">target =</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(channel) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">str_detect</span>(<span class="fu">tolower</span>(channel), <span class="st">"dm"</span>), channel, recipients)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(target)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(agent_label, target)</span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">nrow</span>(edges) <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="fu">return</span>(<span class="fu">tibble</span>(<span class="at">aa_score =</span> <span class="dv">0</span>))</span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>    g_bin <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edges, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if both actors exist in this specific time-slice network</span></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">all</span>(top_actors <span class="sc">%in%</span> <span class="fu">V</span>(g_bin)<span class="sc">$</span>name)) {</span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>      aa_matrix <span class="ot">&lt;-</span> <span class="fu">similarity</span>(g_bin, <span class="at">method =</span> <span class="st">"invlogweighted"</span>)</span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>      node_indices <span class="ot">&lt;-</span> <span class="fu">match</span>(top_actors, <span class="fu">V</span>(g_bin)<span class="sc">$</span>name)</span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>      score <span class="ot">&lt;-</span> aa_matrix[node_indices[<span class="dv">1</span>], node_indices[<span class="dv">2</span>]]</span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">tibble</span>(<span class="at">aa_score =</span> score))</span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>      <span class="co"># ADDED: Safely return a score of 0 if actors aren't interacting in this block</span></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">tibble</span>(<span class="at">aa_score =</span> <span class="dv">0</span>))</span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a><span class="co"># Dynamically find the timestamp where their network connection peaked</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>network_peak_bin <span class="ot">&lt;-</span> adamic_timeline <span class="sc">%&gt;%</span></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter out rows where no connection exists to prevent false-positive morning matches</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(aa_score <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(aa_score)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(time_bin)</span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Dynamic Filtering: Surface the Final Targeted Text Window</span></span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------------</span></span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter down to the intersection window identified by our algorithms</span></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>dynamic_filtered_logs <span class="ot">&lt;-</span> timestamp_df <span class="sc">%&gt;%</span></span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Zoom around the text pivot OR the network spike window (+/- 30 mins buffer)</span></span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>    time_bin <span class="sc">&gt;=</span> (pivot_time_bin <span class="sc">-</span> <span class="fu">minutes</span>(<span class="dv">30</span>)) <span class="sc">&amp;</span> time_bin <span class="sc">&lt;=</span> (network_peak_bin <span class="sc">+</span> <span class="fu">minutes</span>(<span class="dv">30</span>)),</span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keep focus tight on the core actors involved in the shift</span></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>    agent_label <span class="sc">%in%</span> top_actors</span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(timestamp, agent_label, channel, content)</span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the hyper-focused results to the dashboard UI</span></span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dynamic_filtered_logs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 4
@@ -824,17 +731,17 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter down the most relevant content for dashboard users</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> network_peak_bin <span class="sc">-</span> <span class="fu">minutes</span>(<span class="dv">30</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>end_time   <span class="ot">&lt;-</span> network_peak_bin <span class="sc">+</span> <span class="fu">minutes</span>(<span class="dv">30</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>focused_logs <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keep only rows that fall strictly within this forensic time slice</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    timestamp <span class="sc">&gt;=</span> network_peak_bin</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure it reads sequentially for your dashboard user</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(timestamp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter down the most relevant content for dashboard users</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> network_peak_bin <span class="sc">-</span> <span class="fu">minutes</span>(<span class="dv">30</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>end_time   <span class="ot">&lt;-</span> network_peak_bin <span class="sc">+</span> <span class="fu">minutes</span>(<span class="dv">30</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>focused_logs <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keep only rows that fall strictly within this forensic time slice</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    timestamp <span class="sc">&gt;=</span> network_peak_bin</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure it reads sequentially for your dashboard user</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(timestamp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="extract-the-words" class="level3">
@@ -842,8 +749,8 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we have dropped it to 25 rows</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>focused_logs <span class="sc">%&gt;%</span> <span class="fu">select</span>(round_hour, agent_label,internal_state_deliberating, channel, content) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we have dropped it to 25 rows</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>focused_logs <span class="sc">%&gt;%</span> <span class="fu">select</span>(round_hour, agent_label,internal_state_deliberating, channel, content) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 1
@@ -855,9 +762,9 @@ Note
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(focused_logs <span class="sc">%&gt;%</span> <span class="fu">select</span>(round_hour, agent_label,internal_state_deliberating, channel, content)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>      )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(focused_logs <span class="sc">%&gt;%</span> <span class="fu">select</span>(round_hour, agent_label,internal_state_deliberating, channel, content)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
