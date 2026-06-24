@@ -1,0 +1,503 @@
+---
+title: "Q1_Add_Ons"
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: false
+---
+
+## Load Libraries
+
+```{r}
+pacman::p_load(igraph, visNetwork, tidyverse, knitr,tidygraph,patchwork,lubridate,ggraph,ggrepel,tidytext)
+```
+
+## Load Data
+
+```{r}
+df_communications <- readRDS("data/MC1/mc1_prepared_data.rds")
+
+
+edge <- df_communications$communication_edges
+edge_weighted <- df_communications$communication_edges_weighted
+node <- df_communications$communication_nodes
+
+communications_raw <- df_communications$communications
+```
+
+
+## Multiple write outs
+```{r}
+#| eval: false
+write_csv(communications_raw,'communications_raw.csv')
+```
+
+
+```{r}
+#| eval: false
+write_csv(edge_weighted, "edge_weighted.csv")
+
+```
+
+```{r}
+#| eval: false
+write_csv(node, "node.csv")
+```
+
+
+
+## Read CSV
+```{r}
+nodes_df = read_csv("node.csv")
+edges_df = read_csv("edge_weighted.csv")
+comms_raw = read_csv("communications_raw.csv")
+```
+### First attempt [Not that useful]
+```{r}
+# Filter for June 5th and parse timestamps
+june5_data <- comms_raw %>%
+  filter(communication_date == "2046-06-05") %>%
+  mutate(timestamp = ymd_hms(timestamp))
+
+# UPDATED Function to Create a Clean Network Graph
+create_period_graph <- function(data, period_name) {
+  
+  if (period_name == "Morning") {
+    period_df <- data %>% filter(communication_hour < 12)
+  } else {
+    period_df <- data %>% filter(communication_hour >= 12)
+  }
+  
+  edges <- period_df %>%
+    mutate(
+      target = ifelse(!is.na(channel) & !str_detect(tolower(channel), "dm"), 
+                      channel, 
+                      recipients)
+    ) %>%
+    filter(!is.na(target)) %>%
+    group_by(agent_label, target) %>%
+    summarise(
+      total_risk_score = sum(risk_signal_score, na.rm = TRUE),
+      interaction_count = n(),
+      .groups = "drop"
+    ) %>%
+    mutate(weight = ifelse(total_risk_score <= 0, 0.1, total_risk_score)) %>%
+    rename(from = agent_label, to = target)
+  
+  g <- graph_from_data_frame(edges, directed = TRUE)
+  
+  # Set a seed so the random layout generates the same way every time
+  set.seed(42) 
+  
+  p <- ggraph(g, layout = "fr") + 
+    geom_edge_link(aes(width = total_risk_score, alpha = interaction_count), 
+                   color = "darkgray", 
+                   arrow = arrow(length = unit(3, 'mm')), 
+                   end_cap = circle(5, 'mm')) +
+    geom_node_point(color = "lightblue", size = 8) +
+    
+    # THE FIX: repel = TRUE forces labels to physically push away from each other
+    geom_node_text(aes(label = name), 
+                   repel = TRUE,          
+                   size = 3.5, 
+                   fontface = "bold",
+                   bg.color = "white",    # Adds a white halo around text for readability
+                   bg.r = 0.15) +
+    
+    scale_edge_width(range = c(0.5, 3)) +
+    
+    # THE FIX: Expand plot limits so outer text doesn't get cut off
+    scale_x_continuous(expand = expansion(mult = 0.2)) +
+    scale_y_continuous(expand = expansion(mult = 0.2)) +
+    
+    theme_void() +
+    labs(title = paste("June 5th -", period_name),
+         subtitle = "Edge width = Cumulative Risk Score") +
+    
+    # THE FIX: Move legends to the bottom to give the network room to breathe
+    theme(plot.title = element_text(hjust = 0.5, face = "bold"),
+          plot.subtitle = element_text(hjust = 0.5),
+          legend.position = "bottom",
+          legend.box = "vertical",
+          legend.key.width = unit(1, "cm"))
+  
+  return(p)
+}
+
+# 3. Generate Subgraphs
+plot_morning <- create_period_graph(june5_data, "Morning")
+plot_afternoon <- create_period_graph(june5_data, "Afternoon")
+
+# 4. Display Side-by-Side (using patchwork)
+final_visualization <- plot_morning + plot_afternoon
+print(final_visualization)
+```
+
+
+### Subgroup Centrality for identifying the key Agents involved in the leak and the causal relationship
+What subgroup centrality?
+subgraph centrality looks at closed walks—journeys that start at your node, travel through the network, and end back at your node. Nodes that form triangles form the bigget subgraph centrality.
+As we know the key agents are Legal-Agent, Social-Manager-Agent, and PR-Agent, this should appear as larger nodes, that help the user zoom into the agents that are relevant
+
+```{r}
+
+# 1. Load and Prep the Data
+df <- read_csv("communications_raw.csv")
+
+june5_data <- df %>%
+  filter(communication_date == "2046-06-05") %>%
+  mutate(timestamp = ymd_hms(timestamp))
+
+# 2. Function to Create an Interactive Network with Subgraph Centrality
+create_visnetwork_with_centrality <- function(data, period_name) {
+  
+  # Filter data by period
+  if (period_name == "Morning") {
+    period_df <- data %>% filter(communication_hour < 12)
+  } else {
+    period_df <- data %>% filter(communication_hour >= 12)
+  }
+  
+  # --- Create Edges Dataframe ---
+  edges <- period_df %>%
+    mutate(
+      target = ifelse(!is.na(channel) & !str_detect(tolower(channel), "dm"), 
+                      channel, 
+                      recipients)
+    ) %>%
+    filter(!is.na(target)) %>%
+    group_by(agent_label, target) %>%
+    summarise(
+      total_risk_score = sum(risk_signal_score, na.rm = TRUE),
+      interaction_count = n(),
+      .groups = "drop"
+    ) %>%
+    mutate(
+      from = agent_label,
+      to = target,
+      value = ifelse(total_risk_score <= 0, 0.1, total_risk_score), 
+      title = paste0("<p><b>Interactions:</b> ", interaction_count, 
+                     "<br><b>Risk Score:</b> ", total_risk_score, "</p>"),
+      arrows = "to"
+    )
+  
+  # --- Calculate Subgraph Centrality ---
+  # We temporarily create an igraph object just to run the math
+  g <- graph_from_data_frame(edges, directed = TRUE)
+  centrality_scores <- subgraph_centrality(g)
+  
+  # --- Create Nodes Dataframe ---
+  unique_agents <- unique(edges$from)
+  unique_nodes <- unique(c(edges$from, edges$to))
+  
+  nodes <- data.frame(id = unique_nodes, label = unique_nodes) %>%
+    mutate(
+      # Identify if the node is a sender (agent)
+      is_agent = id %in% unique_agents,
+      
+      # Shapes: Squares for agents, Circles (dots) for channels
+      shape = ifelse(is_agent, "square", "dot"),
+      
+      # Colors: Pink for agents, Blue for channels
+      color.background = ifelse(is_agent, "#FFB6C1", "#ADD8E6"),
+      color.border = "darkgray",
+      
+      # Fetch the calculated centrality score from the igraph output
+      centrality = centrality_scores[id],
+      
+      # Scale Size: Base size + up to 35 extra pixels based on normalized centrality
+      # This ensures the "War Room" core looks massive compared to isolated nodes
+      size = ifelse(is_agent, 20, 15) + (centrality / max(centrality, na.rm = TRUE)) * 35,
+      
+      # Add the Centrality score to the hover tooltip
+      title = paste0("<p><b>", id, "</b><br>Type: ", 
+                     ifelse(is_agent, "Agent", "Channel/Recipient"),
+                     "<br><b>Subgraph Centrality:</b> ", round(centrality, 2), "</p>")
+    )
+  
+  # --- Build the Interactive visNetwork ---
+  vn <- visNetwork(nodes, edges, 
+                   main = paste("June 5th -", period_name, "(Nodes sized by Subgraph Centrality)"),
+                   width = "100%", height = "700px") %>%
+    
+    visOptions(highlightNearest = list(enabled = TRUE, degree = 1), 
+               nodesIdSelection = TRUE) %>%
+    
+    visPhysics(solver = "forceAtlas2Based", 
+               forceAtlas2Based = list(gravitationalConstant = -60, springLength = 100)) %>%
+    
+    visEdges(color = list(color = "#999999", highlight = "red")) %>%
+    visLayout(randomSeed = 42)
+  
+  # Package the plot and the scores into a single list
+  return(list(
+    network = vn, 
+    scores = centrality_scores
+  ))
+}
+
+# 3. Generate the Networks and extract the trapped data
+morning_output <- create_visnetwork_with_centrality(june5_data, "Morning")
+
+# Extract the pieces using the $ operator
+vis_morning <- morning_output$network
+centrality_scores_morning <- morning_output$scores
+
+# Do the same for the Afternoon
+afternoon_output <- create_visnetwork_with_centrality(june5_data, "Afternoon")
+vis_afternoon <- afternoon_output$network
+centrality_scores_afternoon <- afternoon_output$scores
+
+# 4. View them in RStudio
+vis_morning
+vis_afternoon
+```
+
+::: {.callout-note}
+The Shift: PR Agent vs. Platform Trust Agent
+Your Observation: The PR Agent becomes less important compared to the Platform Trust Agent in the afternoon.
+
+The Analytical 'Why': In the morning, the crisis is treated as a standard public relations problem (issuing holding statements and managing the SaltWind article). PR is naturally central. However, as the afternoon progresses, the crisis mutates into a massive data privacy and regulatory threat (the Fair Housing inquiry and the Horizon client breach).
+
+The Network Reality: The tight, high-frequency "War Room" loops shift away from PR spin and directly toward the Platform Trust Agent, who holds the actual audit summaries and permissible-use frameworks required to save the deal. The network structurally proves that the company stopped trying to spin the story and scrambled to deploy hard compliance data.
+
+2. The Rise of the "Personal Post"
+Your Observation: Personal posts became significantly more central/important in the afternoon network.
+
+The Analytical 'Why': This is the mathematical signature of an information perimeter collapse. When official corporate channels (like the main Flex account) are paralyzed by the legal embargo, the actors in the network intuitively route around the blockage.
+
+The Network Reality: The high centrality of personal posts (like the CEO's personal repost, the intern's morale post, and the Social Manager's personal data thread) shows that informal and personal amplification became the primary, tightly coordinated mechanism for executing the counter-narrative once the embargo failed.
+:::
+
+## Extract agents and channels relevant
+We want to extract the "war room" agents and agents dynamically.
+
+```{r}
+centrality_scores_morning
+```
+
+
+```{r}
+# Get Morning Scores
+sorted_morning_scores <- sort(centrality_scores_morning, decreasing = TRUE)
+
+# GEt afternoon score
+sorted_afternoon_scores <- sort(centrality_scores_afternoon, decreasing = TRUE)
+
+
+#Extract score dynamically
+morning_agent_only_scores <- sorted_morning_scores[grepl("Agent", names(sorted_morning_scores))]
+morning_channel_only_scores <- sorted_morning_scores[grepl("huddle|post|chat", names(sorted_morning_scores))]
+
+afternoon_agent_only_scores <- sorted_morning_scores[grepl("Agent", names(sorted_afternoon_scores))]
+afternoon_channel_only_scores <- sorted_morning_scores[grepl("huddle|post|chat", names(sorted_afternoon_scores))]
+
+# 3. Extract the names of the top 3 agents
+morning_war_room_agents <- names(morning_agent_only_scores)[1:3]
+afternoon_war_room_agents <- names(afternoon_agent_only_scores)[1:3]
+
+
+# Extract the names of the 3 top channels
+morning_war_room_channel <- names(morning_channel_only_scores)[1:3]
+afternoon_war_room_channel <- names(afternoon_channel_only_scores)[1:3]
+```
+
+
+### We now need a chart that can help the user drill down on the possible words.
+
+The reason why i switch the approach is because TF-IDF only show singular words that does not truely reflect the change in context
+```{r}
+
+# 2. Load Data
+df <- read_csv("communications_raw.csv") %>%
+  filter(communication_date == "2046-06-05",agent_label %in% afternoon_war_room_agents, channel %in% afternoon_war_room_channel) %>%
+  mutate(time_period = ifelse(communication_hour < 12, "Morning", "Afternoon"))
+
+
+
+# 4. Extract Bigrams and Calculate Emergence
+emergent_phrases <- df %>%
+  # Tokenize into 2-word phrases (bigrams)
+  unnest_tokens(bigram, content, token = "ngrams", n = 2) %>%
+  # Remove stop words (e.g., "of the", "in a") to keep meaningful phrases
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word, !word2 %in% stop_words$word) %>%
+  unite(bigram, word1, word2, sep = " ") %>%
+  # Count frequencies per period
+  count(time_period, bigram) %>%
+  pivot_wider(names_from = time_period, values_from = n, values_fill = 0) %>%
+  # Calculate Shift: How much more frequent is it in the afternoon?
+  mutate(shift_score = Afternoon - Morning) %>%
+  filter(shift_score > 0) %>% # We only care about NEW/EMERGING topics
+  arrange(desc(shift_score)) %>%
+  slice_head(n = 15) # Top 15 signals
+
+# 5. Build the Dashboard Chart
+ggplot(emergent_phrases, aes(x = reorder(bigram, shift_score), y = shift_score)) +
+  geom_col(fill = "darkred", alpha = 0.8) +
+  coord_flip() +
+  theme_minimal() +
+  labs(
+    title = "War Room Analysis: Emerging Phrases (Afternoon Vs Morning)",
+    subtitle = "What Legal, Social, and Platform Trust started discussing post-12:00 PM",
+    x = "Emerging Phrase",
+    y = "Frequency Increase (Afternoon vs. Morning)"
+  )
+```
+
+```{r}
+# 1. Extract every individual word from the bigram column as a clean list
+word_list <- emergent_phrases %>%
+  # Split the two words into separate rows
+  separate_rows(bigram, sep = " ") %>%
+  # Keep only unique words (removes duplicates like 'governance' or 'consent')
+  distinct(bigram) %>%
+  # Pull the column out as a standard R character vector
+  pull(bigram)
+
+# Print the list to verify (e.g., c("governance", "reforms", "rolebased", "access", ...))
+print(word_list)
+
+# 2. Convert the list into a regex pipeline for str_detect()
+# This joins the words with a pipe symbol: "word1|word2|word3"
+search_pattern <- paste(word_list, collapse = "|")
+```
+##
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(igraph)
+
+# 1. Load Data
+timestamp_df <- read_csv("communications_raw.csv") %>%
+  filter(communication_date == "2046-06-05") %>%
+  mutate(
+    timestamp = ymd_hms(timestamp),
+    # Break the day into 30-minute intervals
+    time_bin = floor_date(timestamp, "30 mins")
+  ) %>%
+  arrange(timestamp)
+
+# -------------------------------------------------------------
+# PIPELINE A: Jaccard Text Similarity to Find the Pivot Time
+# -------------------------------------------------------------
+
+# Extract unique words per time bin (excluding basic stop words)
+bin_words <- timestamp_df %>%
+  select(time_bin, content_lower) %>%
+  mutate(content_clean = str_replace_all(content_lower, "[[:punct:]]", "")) %>%
+  separate_rows(content_clean, sep = "\\s+") %>%
+  filter(!content_clean %in% tidytext::stop_words$word & content_clean != "") %>%
+  group_by(time_bin) %>%
+  summarise(words = list(unique(content_clean)), .groups = "drop")
+
+# Calculate rolling Jaccard similarity between consecutive bins
+num_bins <- nrow(bin_words)
+jaccard_scores <- tibble(time_bin = bin_words$time_bin[-1], similarity = NA)
+
+for(i in 1:(num_bins - 1)) {
+  set_A <- bin_words$words[[i]]
+  set_B <- bin_words$words[[i+1]]
+  
+  intersection <- length(intersect(set_A, set_B))
+  union <- length(union(set_A, set_B))
+  
+  jaccard_scores$similarity[i] <- if(union == 0) 0 else intersection / union
+}
+
+# Dynamically find the timestamp where the vocabulary shifted most violently
+pivot_time_bin <- jaccard_scores %>%
+  arrange(similarity) %>%
+  slice_head(n = 1) %>%
+  pull(time_bin)
+
+# -------------------------------------------------------------
+# PIPELINE B: Adamic-Adar Spikes to Find the Interaction Peak
+# -------------------------------------------------------------
+
+top_actors <- names(sort(centrality_scores_afternoon, decreasing = TRUE)[1:2])
+
+# Track Adamic-Adar strength between these two actors across intervals
+adamic_timeline <- timestamp_df %>%
+  group_by(time_bin) %>%
+  group_modify(~ {
+    # Create an hourly edge list
+    edges <- .x %>%
+      mutate(target = ifelse(!is.na(channel) & !str_detect(tolower(channel), "dm"), channel, recipients)) %>%
+      filter(!is.na(target)) %>%
+      select(agent_label, target)
+    
+    if(nrow(edges) < 2) return(tibble(aa_score = 0))
+    
+    g_bin <- graph_from_data_frame(edges, directed = FALSE)
+    
+    # Check if both actors exist in this specific time-slice network
+    if(all(top_actors %in% V(g_bin)$name)) {
+      aa_matrix <- similarity(g_bin, method = "invlogweighted")
+      
+      node_indices <- match(top_actors, V(g_bin)$name)
+      score <- aa_matrix[node_indices[1], node_indices[2]]
+      return(tibble(aa_score = score))
+    } else {
+      # ADDED: Safely return a score of 0 if actors aren't interacting in this block
+      return(tibble(aa_score = 0))
+    }
+  }) %>%
+  ungroup()
+
+# Dynamically find the timestamp where their network connection peaked
+network_peak_bin <- adamic_timeline %>%
+  # Filter out rows where no connection exists to prevent false-positive morning matches
+  filter(aa_score > 0) %>%
+  arrange(desc(aa_score)) %>%
+  slice_head(n = 1) %>%
+  pull(time_bin)
+
+# -------------------------------------------------------------
+# 3. Dynamic Filtering: Surface the Final Targeted Text Window
+# -------------------------------------------------------------
+
+# Filter down to the intersection window identified by our algorithms
+dynamic_filtered_logs <- timestamp_df %>%
+  filter(
+    # Zoom around the text pivot OR the network spike window (+/- 30 mins buffer)
+    time_bin >= (pivot_time_bin - minutes(30)) & time_bin <= (network_peak_bin + minutes(30)),
+    # Keep focus tight on the core actors involved in the shift
+    agent_label %in% top_actors
+  ) %>%
+  select(timestamp, agent_label, channel, content)
+
+# Print the hyper-focused results to the dashboard UI
+print(dynamic_filtered_logs)
+```
+```{r}
+## Filter down the most relevant content for dashboard users
+start_time <- network_peak_bin - minutes(30)
+end_time   <- network_peak_bin + minutes(30)
+
+focused_logs <- df %>%
+  filter(
+    # Keep only rows that fall strictly within this forensic time slice
+    timestamp >= network_peak_bin
+  ) %>%
+  # Ensure it reads sequentially for your dashboard user
+  arrange(timestamp)
+```
+
+
+### Extract the words
+
+```{r}
+# we have dropped it to 25 rows
+focused_logs %>% select(round_hour, agent_label,internal_state_deliberating, channel, content) %>% count()
+```
+
+
+```{r}
+kable(focused_logs %>% select(round_hour, agent_label,internal_state_deliberating, channel, content)
+      
+      )
+```
+
