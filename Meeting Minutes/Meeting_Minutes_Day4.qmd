@@ -1,0 +1,89 @@
+---
+title: "Meeting Minutes"
+date: "24 June, 2026"
+date-modified: "last-modified"
+format: html
+execute:
+  eval: true
+  echo: true
+  warning: false
+  freeze: false
+---
+
+## Time: 9:30pm
+
+## In Attendance:
+
+- Alvin Ong
+
+- Javier Phang
+
+- Michelle Chen
+
+## Agenda
+
+1.  Go through poster wireframe
+
+2.  Share individual updates for Shiny App
+
+3.  Action items
+
+## Go through poster wireframe
+
+1.  Michelle shared screen to kick off the discussion with the team on the section headers and content for our project poster.
+
+2.  Alvin suggested that the team should have investigation result at the beginning of insights and analysis, before drilling down into the individual graphs and diagrams.
+
+3.  Javier and Michelle both agreed that this is a good story telling approach for the audience.
+
+4.  Alvin pointed out that it is also important to have a timeline of events presented on the poster to have an overarching view of the TenantThread’s investigation scope.
+
+5.  Michelle shared that the team should have minimally three diagrams to answer each of the sub questions for the poster, and possible to add more if there is space allowance.
+
+6.  Javier highlighted the submission timeline is one week away, the priority is on delivering the poster on time with the right story telling flow and sufficient scope on the investigation.
+
+7.  Michelle will take lead on designing the poster wireframe before sharing with the team to populate the content.
+
+8.  Alvin and Javier will focus on working on the Shiny app in the meantime.
+
+## Share individual updates for Shiny App
+
+1.  Alvin started sharing his progress for answering Question 1 of MC1. He highlighted that Question 1 requires more time and capacity before completion.
+
+2.  Javier voiced out that he can give support to Alvin if required.
+
+3.  Javier and Michelle both agreed on Alvin’s thought process and proposed solution for Question 1, as it was clear, unique and able to deliver in-depth insights for the analysis.
+
+4.  Javier then took over to share his updates for Question 2 of MC1. He has almost completed with the task and would require some minor tweaks and adjustments.
+
+5.  Michelle pointed out that a particular graph used in Question 2 may be a duplicate of what is going to be used in Question1.
+
+6.  Javier and Alvin both agreed to remove it to prevent overlaps between the solution of the two questions.
+
+7.  Besides that, Michelle and Alvin concurred with Javier on the approach to address Question 2.
+
+8.  Finally, Michelle took over to share her updates for Question 3 of MC1. She is testing out different visualisation methods of presenting the solution and sought for the other team members’ feedback.
+
+9.  Javier and Alvin gave some advice on the clarity and aesthetics of the graph used in Question 3 which Michelle will be incorporating in her updates.
+
+10. Overall, the backbone of the Shiny app is up and the approach to address the different sub questions are on track for the team members.
+
+## Action items
+
+1.  Michelle to share the working link for the poster after setting the wireframe up.
+
+2.  Alvin to continue Question 1 for Shiny app.
+
+3.  Javier to clean up on Question 2 for Shiny app and explore other insights that can be shared beyond the scope of the 3 questions.
+
+4.  Michelle to improve the clarity and aesthetics for the solution of Question 3.
+
+5.  Next meeting is scheduled for Saturday, 27 June 2026.
+
+## Meeting Minutes Sign off
+
+| No. | Name          | Sign off |
+|-----|---------------|----------|
+| 1   | Alvin Ong     | Yes      |
+| 2   | Javier Phang  | Yes      |
+| 3   | Michelle Chen | Yes      |
