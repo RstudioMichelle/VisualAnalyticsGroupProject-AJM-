@@ -1,0 +1,405 @@
+/* ==========================================================
+   TenantThread Dashboard — Shiny app styling
+   Save this as: www/style.css
+   ========================================================== */
+
+/* ---------- General page ---------- */
+body {
+  background: #F7F9FC;
+  color: #24364B;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.container-fluid {
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+/* ---------- Navigation ---------- */
+.navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+  border: 0;
+  box-shadow: 0 1px 6px rgba(16, 42, 67, 0.12);
+}
+
+.navbar-default {
+  background: #FFFFFF;
+}
+
+.navbar-default .navbar-brand {
+  color: #102A43;
+  font-weight: 750;
+  font-size: 20px;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #52606D;
+  font-weight: 600;
+  padding-top: 17px;
+  padding-bottom: 17px;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: #3155E7;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: #3155E7;
+  background: #FFFFFF;
+  border-bottom: 3px solid #3155E7;
+}
+
+/* ---------- Overview hero ---------- */
+.ov-hero-card,
+.ov-side-card,
+.ov-kpi-card,
+.ov-roadmap-card,
+.ov-highlight-card,
+.ov-guide-card,
+.ov-footer-note {
+  background: #FFFFFF;
+  border: 1px solid #D9E2EC;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(16, 42, 67, 0.06);
+}
+
+.ov-hero-card {
+  min-height: 225px;
+  padding: 28px 30px;
+  border-color: #C7D7FF;
+  background:
+    radial-gradient(circle at 88% 25%, rgba(255,255,255,0.95) 0 6px, transparent 7px),
+    radial-gradient(circle at 76% 55%, rgba(255,255,255,0.80) 0 9px, transparent 10px),
+    linear-gradient(135deg, #F8FBFF 0%, #EAF3FF 100%);
+}
+
+.ov-hero-title {
+  margin-bottom: 10px;
+  color: #102A43;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.ov-hero-subtitle {
+  margin-bottom: 24px;
+  color: #486581;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.ov-period-card {
+  padding: 12px 14px;
+  border-left: 4px solid #3155E7;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.80);
+}
+
+.ov-period-label {
+  color: #627D98;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ov-period-value {
+  margin-top: 4px;
+  color: #243B53;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+/* ---------- Overview question card ---------- */
+.ov-side-card {
+  min-height: 225px;
+  padding: 24px 26px;
+}
+
+.ov-side-title {
+  margin-bottom: 16px;
+  color: #173A7A;
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.ov-side-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.ov-side-list li {
+  margin-bottom: 13px;
+  color: #486581;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.ov-side-list li i {
+  margin-right: 8px;
+  color: #3155E7;
+}
+
+/* ---------- KPI cards ---------- */
+.ov-kpi-card {
+  display: flex;
+  min-height: 125px;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+}
+
+.ov-kpi-icon {
+  display: flex;
+  width: 58px;
+  min-width: 58px;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 24px;
+}
+
+.ov-kpi-title {
+  color: #486581;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ov-kpi-value {
+  margin-top: 4px;
+  color: #102A43;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.ov-kpi-value .shiny-text-output {
+  display: inline;
+}
+
+.ov-kpi-sub {
+  margin-top: 4px;
+  color: #829AB1;
+  font-size: 12px;
+}
+
+.kpi-blue .ov-kpi-icon {
+  color: #1D4ED8;
+  background: #E8F0FF;
+}
+
+.kpi-green .ov-kpi-icon {
+  color: #059669;
+  background: #E8FBF1;
+}
+
+.kpi-purple .ov-kpi-icon {
+  color: #7C3AED;
+  background: #F1EAFE;
+}
+
+.kpi-red .ov-kpi-icon {
+  color: #DC2626;
+  background: #FEECEC;
+}
+
+/* ---------- Section headings ---------- */
+.ov-section-title {
+  color: #102A43;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.ov-section-title i {
+  margin-right: 8px;
+  color: #3155E7;
+}
+
+.ov-section-subtitle {
+  margin-top: 3px;
+  color: #627D98;
+  font-size: 14px;
+}
+
+/* ---------- Roadmap cards ---------- */
+.ov-roadmap-card {
+  position: relative;
+  min-height: 245px;
+  padding: 20px;
+}
+
+.ov-roadmap-number {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.blue-dot { background: #2563EB; }
+.green-dot { background: #059669; }
+.purple-dot { background: #7C3AED; }
+.orange-dot { background: #EA580C; }
+
+.ov-roadmap-title {
+  margin-bottom: 8px;
+  color: #102A43;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.ov-roadmap-text {
+  min-height: 79px;
+  color: #627D98;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.ov-roadmap-mini {
+  margin-top: 9px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #F8FAFC;
+  color: #486581;
+  font-size: 12px;
+}
+
+.ov-roadmap-link {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #E5EAF0;
+  color: #3155E7;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- Highlight cards ---------- */
+.ov-highlight-card {
+  min-height: 215px;
+  padding: 18px;
+}
+
+.ov-highlight-icon {
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.ov-highlight-title {
+  margin-bottom: 10px;
+  color: #102A43;
+  font-size: 18px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.ov-highlight-text {
+  min-height: 86px;
+  color: #627D98;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.ov-highlight-link {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.highlight-blue .ov-highlight-icon,
+.highlight-blue .ov-highlight-link {
+  color: #2563EB;
+}
+
+.highlight-red .ov-highlight-icon,
+.highlight-red .ov-highlight-link {
+  color: #DC2626;
+}
+
+.highlight-green .ov-highlight-icon,
+.highlight-green .ov-highlight-link {
+  color: #059669;
+}
+
+/* ---------- Guide and footer ---------- */
+.ov-guide-card {
+  min-height: 215px;
+  padding: 22px;
+}
+
+.ov-guide-title {
+  margin-bottom: 12px;
+  color: #102A43;
+  font-size: 21px;
+  font-weight: 750;
+}
+
+.ov-guide-list {
+  padding-left: 20px;
+  color: #486581;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.ov-guide-note {
+  color: #486581;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ov-footer-note {
+  padding: 14px 16px;
+  color: #829AB1;
+  font-size: 13px;
+}
+
+.ov-footer-note i {
+  margin-right: 8px;
+  color: #3155E7;
+}
+
+/* ---------- Responsive adjustments ---------- */
+@media (max-width: 991px) {
+  .ov-hero-card,
+  .ov-side-card {
+    min-height: auto;
+    margin-bottom: 15px;
+  }
+
+  .ov-kpi-card,
+  .ov-roadmap-card,
+  .ov-highlight-card {
+    margin-bottom: 15px;
+  }
+
+  .ov-hero-title {
+    font-size: 26px;
+  }
+}
+
+
+/* ---------- Question 2 comparison summary ---------- */
+#q2_summary {
+  width: 100%;
+  margin-top: 10px;
+  background: #FFFFFF;
+}
+
+#q2_summary th {
+  background: #EEF7FC;
+  color: #102A43;
+  font-weight: 750;
+}
+
+#q2_summary th,
+#q2_summary td {
+  padding: 11px 13px;
+  border-color: #D9E2EC;
+  vertical-align: middle;
+}

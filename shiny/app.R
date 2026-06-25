@@ -96,6 +96,67 @@ if (nrow(communications) == 0) {
   stop("No valid dates could be read from the hour/timestamp column.")
 }
 
+q1_parse_datetime <- function(x) {
+
+  if (inherits(x, "POSIXt")) {
+    return(as.POSIXct(x, tz = "UTC"))
+  }
+
+  x <- as.character(x)
+
+  parsed <- suppressWarnings(lubridate::ymd_hms(x, tz = "UTC", quiet = TRUE))
+
+  if (all(is.na(parsed))) {
+    parsed <- suppressWarnings(lubridate::ymd_hm(x, tz = "UTC", quiet = TRUE))
+  }
+
+  if (all(is.na(parsed))) {
+    parsed <- suppressWarnings(lubridate::ymd(x, tz = "UTC", quiet = TRUE))
+  }
+
+  parsed
+}
+
+q1_time_source <- if ("hour" %in% names(communications)) {
+  communications$hour
+} else if ("timestamp" %in% names(communications)) {
+  communications$timestamp
+} else {
+  communications$event_date
+}
+
+communications$q1_event_time <- q1_parse_datetime(q1_time_source)
+
+# Alvin's original code uses recipients when the analysis is
+# relationship-based. This makes the recipient field optional.
+q1_recipient_column <- intersect(
+  c("recipients", "recipient", "recipient_label", "to"),
+  names(communications)
+)
+
+communications$q1_recipient <- if (length(q1_recipient_column) > 0) {
+  as.character(communications[[q1_recipient_column[1]]])
+} else {
+  NA_character_
+}
+
+q1_default_date <- if (as.Date("2046-06-05") %in% communications$event_date) {
+  as.Date("2046-06-05")
+} else {
+  max(communications$event_date, na.rm = TRUE)
+}
+
+q1_target_choices <- c(
+  "Agent → Channel" = "Channel"
+)
+
+if (any(!is.na(communications$q1_recipient) & communications$q1_recipient != "")) {
+  q1_target_choices <- c(
+    q1_target_choices,
+    "Agent → Recipient" = "Recipient"
+  )
+}
+
 min_date <- min(communications$event_date)
 max_date <- max(communications$event_date)
 
@@ -357,230 +418,478 @@ draw_alvin_keyword_network <- function(network_data, height = "560px") {
     visLayout(randomSeed = 123)
 }
 
-# ============================================================
-# QUESTION 2 SUPPORTING VISUAL
-# Michelle's agent-channel network, built from communications.
-# ============================================================
+q1_scale_size <- function(x, lower = 0, upper = 30) {
 
-build_michelle_channel_network <- function(
-    data,
-    reference_node = "ALL",
-    search_text = "",
-    network_size = 8,
-    show_connected = TRUE
+  if (length(x) == 0) {
+    return(numeric())
+  }
+
+  x <- replace_na(as.numeric(x), 0)
+
+  if (max(x) == min(x)) {
+    return(rep((lower + upper) / 2, length(x)))
+  }
+
+  lower + (x - min(x)) / (max(x) - min(x)) * (upper - lower)
+}
+
+q1_prepare_day_data <- function(
+  data,
+  selected_date,
+  selected_agents,
+  selected_channels,
+  selected_risks,
+  target_view = "Channel"
 ) {
-  
-  edge_data <- data |>
-    filter(
-      !is.na(agent_label),
-      agent_label != "",
-      !is.na(channel),
-      channel != "",
-      channel != "Unknown"
+
+  selected_data <- filter_messages(
+    data,
+    as.Date(c(selected_date, selected_date)),
+    selected_agents,
+    selected_channels,
+    selected_risks
+  )
+
+  if (nrow(selected_data) == 0) {
+    return(selected_data)
+  }
+
+  selected_data |>
+    mutate(
+      q1_hour = lubridate::hour(q1_event_time),
+      q1_period = case_when(
+        q1_hour < 12 ~ "Morning",
+        q1_hour >= 12 ~ "Afternoon",
+        TRUE ~ "Unknown"
+      ),
+      q1_target = case_when(
+        target_view == "Recipient" &
+          !is.na(q1_recipient) &
+          q1_recipient != "" ~ q1_recipient,
+        TRUE ~ channel
+      ),
+      q1_risk_weight = case_when(
+        risk_signal_group == "High Signal" ~ 4,
+        risk_signal_group == "Moderate Signal" ~ 2,
+        risk_signal_group == "Low Signal" ~ 1,
+        TRUE ~ 0
+      )
     ) |>
-    count(agent_label, channel, name = "weight") |>
-    transmute(
-      agent = as.character(agent_label),
-      channel = as.character(channel),
-      weight = as.numeric(weight),
-      from = paste0("agent::", agent),
-      to = paste0("channel::", channel)
+    filter(
+      !is.na(q1_event_time),
+      !is.na(q1_target),
+      q1_target != "",
+      q1_target != "Unknown",
+      q1_period != "Unknown"
     )
-  
+}
+
+q1_build_centrality_network <- function(data, top_nodes = 8) {
+
   empty_result <- list(
     nodes = data.frame(),
     edges = data.frame(),
-    ranking = data.frame()
+    agent_ranking = data.frame(),
+    target_ranking = data.frame()
   )
-  
-  if (nrow(edge_data) == 0) {
+
+  if (nrow(data) == 0) {
     return(empty_result)
   }
-  
-  search_text <- str_trim(search_text)
-  
-  if (nchar(search_text) > 0) {
-    edge_data <- edge_data |>
-      filter(
-        str_detect(
-          str_to_lower(agent),
-          fixed(str_to_lower(search_text))
-        ) |
-          str_detect(
-            str_to_lower(channel),
-            fixed(str_to_lower(search_text))
-          )
-      )
-  }
-  
-  if (nrow(edge_data) == 0) {
+
+  edge_summary <- data |>
+    group_by(agent_label, q1_target) |>
+    summarise(
+      interactions = n(),
+      total_risk = sum(q1_risk_weight, na.rm = TRUE),
+      high_risk_messages = sum(
+        risk_signal_group == "High Signal",
+        na.rm = TRUE
+      ),
+      .groups = "drop"
+    ) |>
+    mutate(
+      from = paste0("agent::", agent_label),
+      to = paste0("target::", q1_target)
+    )
+
+  if (nrow(edge_summary) == 0) {
     return(empty_result)
   }
-  
-  if (!is.null(reference_node) && reference_node != "ALL") {
-    
-    direct_edges <- edge_data |>
-      filter(from == reference_node | to == reference_node)
-    
-    if (nrow(direct_edges) == 0) {
-      return(empty_result)
-    }
-    
-    if (isTRUE(show_connected)) {
-      linked_agents <- unique(direct_edges$agent)
-      linked_channels <- unique(direct_edges$channel)
-      
-      edge_data <- edge_data |>
-        filter(
-          agent %in% linked_agents |
-            channel %in% linked_channels
-        )
-    } else {
-      edge_data <- direct_edges
-    }
-    
-    # Keep the reference view readable.
-    edge_data <- edge_data |>
-      slice_max(weight, n = network_size * 4, with_ties = FALSE)
-    
-  } else {
-    
-    top_agents <- edge_data |>
-      group_by(agent) |>
-      summarise(messages = sum(weight), .groups = "drop") |>
-      slice_max(messages, n = network_size, with_ties = FALSE) |>
-      pull(agent)
-    
-    top_channels <- edge_data |>
-      group_by(channel) |>
-      summarise(messages = sum(weight), .groups = "drop") |>
-      slice_max(messages, n = network_size, with_ties = FALSE) |>
-      pull(channel)
-    
-    edge_data <- edge_data |>
-      filter(agent %in% top_agents, channel %in% top_channels)
+
+  # Keep the view readable while retaining the strongest relationships.
+  if (top_nodes < length(unique(edge_summary$agent_label))) {
+
+    top_agents <- edge_summary |>
+      group_by(agent_label) |>
+      summarise(total_interactions = sum(interactions), .groups = "drop") |>
+      slice_max(total_interactions, n = top_nodes, with_ties = FALSE) |>
+      pull(agent_label)
+
+    edge_summary <- edge_summary |>
+      filter(agent_label %in% top_agents)
   }
-  
-  if (nrow(edge_data) == 0) {
-    return(empty_result)
-  }
-  
-  graph_data <- igraph::graph_from_data_frame(
-    edge_data |>
-      select(from, to, weight),
-    directed = TRUE
-  )
-  
-  degree_scores <- igraph::degree(
-    graph_data,
-    mode = "all"
-  )
-  
-  raw_betweenness <- igraph::betweenness(
-    graph_data,
+
+  graph_object <- igraph::graph_from_data_frame(
+    edge_summary |>
+      select(from, to),
     directed = FALSE
   )
-  
-  number_of_nodes <- igraph::vcount(graph_data)
-  normalising_denominator <- max(
-    1,
-    (number_of_nodes - 1) * (number_of_nodes - 2) / 2
+
+  centrality_scores <- tryCatch(
+    igraph::subgraph_centrality(graph_object),
+    error = function(e) igraph::degree(graph_object, mode = "all")
   )
-  
-  node_ids <- names(degree_scores)
-  
-  vis_nodes <- tibble(
+
+  node_ids <- igraph::V(graph_object)$name
+
+  node_connections <- bind_rows(
+    edge_summary |>
+      group_by(agent_label) |>
+      summarise(
+        connections = n_distinct(q1_target),
+        interactions = sum(interactions),
+        .groups = "drop"
+      ) |>
+      transmute(
+        id = paste0("agent::", agent_label),
+        connections,
+        interactions
+      ),
+
+    edge_summary |>
+      group_by(q1_target) |>
+      summarise(
+        connections = n_distinct(agent_label),
+        interactions = sum(interactions),
+        .groups = "drop"
+      ) |>
+      transmute(
+        id = paste0("target::", q1_target),
+        connections,
+        interactions
+      )
+  )
+
+  nodes <- tibble(
     id = node_ids,
-    type = if_else(
-      str_detect(node_ids, "^agent::"),
-      "Agent",
-      "Channel"
-    ),
-    label = str_remove(node_ids, "^(agent|channel)::"),
-    degree_centrality = as.numeric(degree_scores[node_ids]),
-    betweenness_stat = as.numeric(
-      raw_betweenness[node_ids] / normalising_denominator
-    )
+    node_type = if_else(str_detect(node_ids, "^agent::"), "Agent", "Target"),
+    label = str_remove(node_ids, "^(agent|target)::"),
+    subgraph_centrality = as.numeric(centrality_scores[node_ids])
   ) |>
+    left_join(node_connections, by = "id") |>
     mutate(
-      color = case_when(
-        type == "Agent" ~ "#1abc9c",
-        type == "Channel" ~ "#34495e",
-        TRUE ~ "#7f8c8d"
+      subgraph_centrality = replace_na(subgraph_centrality, 0),
+      connections = replace_na(connections, 0L),
+      interactions = replace_na(interactions, 0L),
+      shape = if_else(node_type == "Agent", "square", "dot"),
+      color = if_else(node_type == "Agent", "#F472B6", "#8ECAE6"),
+      size = if_else(
+        node_type == "Agent",
+        22 + q1_scale_size(subgraph_centrality, 0, 30),
+        14 + q1_scale_size(subgraph_centrality, 0, 20)
       ),
-      shape = case_when(
-        type == "Agent" ~ "dot",
-        type == "Channel" ~ "square",
-        TRUE ~ "dot"
-      ),
-      size = pmax(18, log1p(degree_centrality) * 14),
       title = paste0(
         "<b>", label, "</b>",
-        "<br>Type: ", type,
-        "<br>Degree Centrality: ", round(degree_centrality, 2),
-        "<br>Betweenness: ", round(betweenness_stat, 3)
+        "<br>Type: ", if_else(node_type == "Agent", "Agent", "Channel / Recipient"),
+        "<br>Subgraph centrality: ", round(subgraph_centrality, 2),
+        "<br>Connections: ", connections,
+        "<br>Interactions: ", interactions
       )
     )
-  
-  vis_edges <- edge_data |>
+
+  edges <- edge_summary |>
     transmute(
-      from = from,
-      to = to,
-      value = weight,
-      width = pmax(1, log1p(weight) * 2),
-      color = "#bdc3c7",
+      from,
+      to,
+      value = interactions,
+      width = pmax(1, log1p(interactions) * 2),
       arrows = "to",
-      title = paste0("Messages exchanged: ", weight)
+      title = paste0(
+        "<b>Interactions:</b> ", interactions,
+        "<br><b>Total risk score:</b> ", total_risk,
+        "<br><b>High-risk messages:</b> ", high_risk_messages
+      )
     )
-  
-  ranking <- vis_nodes |>
+
+  agent_ranking <- nodes |>
+    filter(node_type == "Agent") |>
     transmute(
-      Node = label,
-      Type = type,
-      `Degree centrality` = round(degree_centrality, 2),
-      Betweenness = round(betweenness_stat, 3)
+      Agent = label,
+      `Subgraph centrality` = round(subgraph_centrality, 2),
+      Connections = connections,
+      Interactions = interactions
     ) |>
-    arrange(desc(`Degree centrality`), desc(Betweenness), Node)
-  
+    arrange(desc(`Subgraph centrality`), desc(Interactions))
+
+  target_ranking <- nodes |>
+    filter(node_type == "Target") |>
+    transmute(
+      `Channel / Recipient` = label,
+      `Subgraph centrality` = round(subgraph_centrality, 2),
+      Connections = connections,
+      Interactions = interactions
+    ) |>
+    arrange(desc(`Subgraph centrality`), desc(Interactions))
+
   list(
-    nodes = vis_nodes,
-    edges = vis_edges,
-    ranking = ranking
+    nodes = nodes,
+    edges = edges,
+    agent_ranking = agent_ranking,
+    target_ranking = target_ranking
   )
 }
 
-draw_michelle_channel_network <- function(network_data, height = "610px") {
-  
+q1_draw_centrality_network <- function(network_data, height = "600px") {
+
   if (nrow(network_data$nodes) == 0) {
     return(
       empty_network(
-        "No agent-channel relationships were found for the selected period and filters.",
+        "No interactions match the selected filters and time period.",
         height
       )
     )
   }
-  
+
   visNetwork(
-    nodes = network_data$nodes,
-    edges = network_data$edges,
+    network_data$nodes,
+    network_data$edges,
     width = "100%",
     height = height
   ) |>
+    visNodes(
+      borderWidth = 1,
+      color = list(
+        border = "#64748B"
+      )
+    ) |>
+    visEdges(
+      color = list(
+        color = "#94A3B8",
+        highlight = "#DC2626"
+      ),
+      smooth = FALSE
+    ) |>
     visOptions(
       highlightNearest = list(
         enabled = TRUE,
         degree = 1,
         hover = TRUE
       ),
-      nodesIdSelection = TRUE
+      nodesIdSelection = FALSE
     ) |>
     visPhysics(
       solver = "forceAtlas2Based",
       forceAtlas2Based = list(
-        gravitationalConstant = -50
-      )
+        gravitationalConstant = -65,
+        springLength = 115,
+        springConstant = 0.04
+      ),
+      stabilization = TRUE
     ) |>
     visLayout(randomSeed = 42)
+}
+
+q1_emerging_bigrams <- function(
+  data,
+  afternoon_network,
+  phrase_count = 12
+) {
+
+  empty_result <- tibble(
+    bigram = character(),
+    Morning = integer(),
+    Afternoon = integer(),
+    Shift = integer()
+  )
+
+  if (nrow(data) == 0) {
+    return(empty_result)
+  }
+
+  top_agents <- afternoon_network$agent_ranking |>
+    slice_head(n = 3) |>
+    pull(Agent)
+
+  top_targets <- afternoon_network$target_ranking |>
+    slice_head(n = 3) |>
+    pull(`Channel / Recipient`)
+
+  focused_data <- data |>
+    filter(
+      agent_label %in% top_agents,
+      q1_target %in% top_targets,
+      full_text != ""
+    )
+
+  if (nrow(focused_data) == 0) {
+    return(empty_result)
+  }
+
+  phrases <- focused_data |>
+    select(q1_period, full_text) |>
+    unnest_tokens(bigram, full_text, token = "ngrams", n = 2) |>
+    separate(bigram, into = c("word1", "word2"), sep = " ", remove = FALSE) |>
+    filter(
+      !is.na(word1),
+      !is.na(word2),
+      !word1 %in% tidytext::stop_words$word,
+      !word2 %in% tidytext::stop_words$word,
+      str_detect(word1, "^[a-zA-Z]+$"),
+      str_detect(word2, "^[a-zA-Z]+$")
+    ) |>
+    count(q1_period, bigram, name = "n") |>
+    pivot_wider(
+      names_from = q1_period,
+      values_from = n,
+      values_fill = 0
+    )
+
+  if (!"Morning" %in% names(phrases)) {
+    phrases$Morning <- 0
+  }
+
+  if (!"Afternoon" %in% names(phrases)) {
+    phrases$Afternoon <- 0
+  }
+
+  phrases |>
+    mutate(
+      Shift = Afternoon - Morning
+    ) |>
+    filter(Shift > 0) |>
+    arrange(desc(Shift), desc(Afternoon), bigram) |>
+    slice_head(n = phrase_count)
+}
+
+q1_vocabulary_similarity <- function(data) {
+
+  empty_result <- tibble(
+    time_bin = as.POSIXct(character()),
+    jaccard_similarity = numeric()
+  )
+
+  if (nrow(data) == 0) {
+    return(empty_result)
+  }
+
+  bin_words <- data |>
+    mutate(
+      time_bin = lubridate::floor_date(q1_event_time, "30 minutes")
+    ) |>
+    select(time_bin, full_text) |>
+    unnest_tokens(word, full_text) |>
+    anti_join(tidytext::stop_words, by = "word") |>
+    filter(str_detect(word, "^[a-zA-Z]+$")) |>
+    group_by(time_bin) |>
+    summarise(
+      words = list(unique(word)),
+      .groups = "drop"
+    ) |>
+    arrange(time_bin)
+
+  if (nrow(bin_words) < 2) {
+    return(empty_result)
+  }
+
+  purrr::map_dfr(
+    seq_len(nrow(bin_words) - 1),
+    function(i) {
+
+      words_a <- bin_words$words[[i]]
+      words_b <- bin_words$words[[i + 1]]
+
+      union_size <- length(union(words_a, words_b))
+      similarity <- if (union_size == 0) {
+        0
+      } else {
+        length(intersect(words_a, words_b)) / union_size
+      }
+
+      tibble(
+        time_bin = bin_words$time_bin[[i + 1]],
+        jaccard_similarity = similarity
+      )
+    }
+  )
+}
+
+q1_adamic_adar_timeline <- function(data, top_agents) {
+
+  empty_result <- tibble(
+    time_bin = as.POSIXct(character()),
+    adamic_adar = numeric()
+  )
+
+  if (nrow(data) == 0 || length(top_agents) < 2) {
+    return(empty_result)
+  }
+
+  selected_actors <- top_agents[1:2]
+
+  data |>
+    mutate(
+      time_bin = lubridate::floor_date(q1_event_time, "30 minutes")
+    ) |>
+    group_by(time_bin) |>
+    group_modify(
+      ~ {
+        edges <- .x |>
+          filter(agent_label %in% selected_actors) |>
+          distinct(agent_label, q1_target)
+
+        if (nrow(edges) == 0 ||
+            !all(selected_actors %in% edges$agent_label)) {
+          return(tibble(adamic_adar = 0))
+        }
+
+        targets_a <- edges |>
+          filter(agent_label == selected_actors[1]) |>
+          pull(q1_target)
+
+        targets_b <- edges |>
+          filter(agent_label == selected_actors[2]) |>
+          pull(q1_target)
+
+        shared_targets <- intersect(targets_a, targets_b)
+
+        if (length(shared_targets) == 0) {
+          return(tibble(adamic_adar = 0))
+        }
+
+        target_degrees <- .x |>
+          distinct(agent_label, q1_target) |>
+          count(q1_target, name = "target_degree")
+
+        score <- target_degrees |>
+          filter(q1_target %in% shared_targets) |>
+          summarise(
+            value = sum(1 / log(pmax(target_degree, 2)))
+          ) |>
+          pull(value)
+
+        tibble(adamic_adar = replace_na(score, 0))
+      }
+    ) |>
+    ungroup() |>
+    arrange(time_bin)
+}
+
+q1_empty_plot <- function(message) {
+  plot_ly() |>
+    layout(
+      xaxis = list(visible = FALSE),
+      yaxis = list(visible = FALSE),
+      annotations = list(
+        text = message,
+        x = 0.5,
+        y = 0.5,
+        showarrow = FALSE,
+        font = list(size = 15, color = "#627D98")
+      ),
+      paper_bgcolor = "#FFFFFF",
+      plot_bgcolor = "#FFFFFF"
+    )
 }
 
 # ============================================================
@@ -598,6 +907,11 @@ ui <- navbarPage(
   ),
   
   header = tags$head(
+    tags$link(
+      rel = "stylesheet",
+      type = "text/css",
+      href = "style.css"
+    ),
     tags$style(HTML("
       .filter-panel {
         background: #FFFFFF;
@@ -650,45 +964,639 @@ ui <- navbarPage(
   # ----------------------------------------------------------
   tabPanel(
     "Overview",
+
     br(),
-    card(
-      card_header("TenantThread: Embargo Breach Investigation"),
-      p("Use the tabs to reconstruct the breach path, compare behaviour before and during the critical period, examine leading indicators, and search the underlying evidence.")
+
+    fluidRow(
+      column(
+        width = 8,
+        div(
+          class = "ov-hero-card",
+
+          div(
+            class = "ov-hero-title",
+            "TenantThread: Embargo Breach Investigation"
+          ),
+
+          div(
+            class = "ov-hero-subtitle",
+            "Explore communication activity, behavioural changes, warning signals, and supporting evidence surrounding the embargo breach."
+          ),
+
+          fluidRow(
+            column(
+              6,
+              div(
+                class = "ov-period-card",
+                div(
+                  class = "ov-period-label",
+                  icon("calendar"), " Baseline Period"
+                ),
+                div(
+                  class = "ov-period-value",
+                  "17 May 2046 – 3 June 2046"
+                )
+              )
+            ),
+
+            column(
+              6,
+              div(
+                class = "ov-period-card",
+                div(
+                  class = "ov-period-label",
+                  icon("calendar"), " Critical Period"
+                ),
+                div(
+                  class = "ov-period-value",
+                  "4 June 2046 – 5 June 2046"
+                )
+              )
+            )
+          )
+        )
+      ),
+
+      column(
+        width = 4,
+        div(
+          class = "ov-side-card",
+
+          div(
+            class = "ov-side-title",
+            icon("bullseye"), " What this dashboard helps answer"
+          ),
+
+          tags$ul(
+            class = "ov-side-list",
+            tags$li(
+              icon("check-circle"),
+              " How did the breach unfold and who was involved?"
+            ),
+            tags$li(
+              icon("check-circle"),
+              " How did communication behaviour change?"
+            ),
+            tags$li(
+              icon("check-circle"),
+              " What were the leading warning signals?"
+            ),
+            tags$li(
+              icon("check-circle"),
+              " What evidence supports the findings?"
+            )
+          )
+        )
+      )
     ),
+
     br(),
-    layout_columns(
-      card(card_header("Total Messages"), h2(textOutput("total_messages"))),
-      card(card_header("Unique Agents"), h2(textOutput("total_agents"))),
-      card(card_header("Channels"), h2(textOutput("total_channels"))),
-      card(card_header("High-Risk Messages"), h2(textOutput("high_risk_messages"))),
-      col_widths = c(3, 3, 3, 3)
-    )
+
+    fluidRow(
+      column(
+        3,
+        div(
+          class = "ov-kpi-card kpi-blue",
+          div(class = "ov-kpi-icon", icon("comment-alt")),
+          div(
+            class = "ov-kpi-body",
+            div(class = "ov-kpi-title", "Total Messages"),
+            div(class = "ov-kpi-value", textOutput("total_messages")),
+            div(class = "ov-kpi-sub", "Communication records analysed")
+          )
+        )
+      ),
+
+      column(
+        3,
+        div(
+          class = "ov-kpi-card kpi-green",
+          div(class = "ov-kpi-icon", icon("users")),
+          div(
+            class = "ov-kpi-body",
+            div(class = "ov-kpi-title", "Unique Agents"),
+            div(class = "ov-kpi-value", textOutput("total_agents")),
+            div(class = "ov-kpi-sub", "Agents involved in communication")
+          )
+        )
+      ),
+
+      column(
+        3,
+        div(
+          class = "ov-kpi-card kpi-purple",
+          div(class = "ov-kpi-icon", icon("hashtag")),
+          div(
+            class = "ov-kpi-body",
+            div(class = "ov-kpi-title", "Channels"),
+            div(class = "ov-kpi-value", textOutput("total_channels")),
+            div(class = "ov-kpi-sub", "Communication channels monitored")
+          )
+        )
+      ),
+
+      column(
+        3,
+        div(
+          class = "ov-kpi-card kpi-red",
+          div(class = "ov-kpi-icon", icon("exclamation-triangle")),
+          div(
+            class = "ov-kpi-body",
+            div(class = "ov-kpi-title", "High-Risk Messages"),
+            div(class = "ov-kpi-value", textOutput("high_risk_messages")),
+            div(class = "ov-kpi-sub", "Messages requiring investigation")
+          )
+        )
+      )
+    ),
+
+    br(),
+
+    div(
+      class = "ov-section-title",
+      icon("map-marked-alt"), " Investigation Roadmap"
+    ),
+
+    div(
+      class = "ov-section-subtitle",
+      "Explore the analysis in four connected steps."
+    ),
+
+    br(),
+
+    fluidRow(
+      column(
+        3,
+        div(
+          class = "ov-roadmap-card",
+          div(class = "ov-roadmap-number blue-dot", "1"),
+          div(class = "ov-roadmap-title", "Path to Breach"),
+          div(
+            class = "ov-roadmap-text",
+            "Reconstruct the sequence of events and communication activity leading to the inappropriate release."
+          ),
+          div(
+            class = "ov-roadmap-mini",
+            "Early signals  •  Escalation  •  Breach"
+          ),
+          div(
+            class = "ov-roadmap-link",
+            "Explore Path to Breach ", icon("arrow-right")
+          )
+        )
+      ),
+
+      column(
+        3,
+        div(
+          class = "ov-roadmap-card",
+          div(class = "ov-roadmap-number green-dot", "2"),
+          div(class = "ov-roadmap-title", "Behaviour Change"),
+          div(
+            class = "ov-roadmap-text",
+            "Compare agent vocabulary, relationships, and channels before and during the critical period."
+          ),
+          div(
+            class = "ov-roadmap-mini",
+            "Baseline network  vs  Critical network"
+          ),
+          div(
+            class = "ov-roadmap-link",
+            "Explore Behaviour Change ", icon("arrow-right")
+          )
+        )
+      ),
+
+      column(
+        3,
+        div(
+          class = "ov-roadmap-card",
+          div(class = "ov-roadmap-number purple-dot", "3"),
+          div(class = "ov-roadmap-title", "Leading Indicators"),
+          div(
+            class = "ov-roadmap-text",
+            "Identify early warning signals, repeated patterns, and possible oversight gaps before the breach."
+          ),
+          div(
+            class = "ov-roadmap-mini",
+            "Risk signals  •  Similar episodes  •  Gaps"
+          ),
+          div(
+            class = "ov-roadmap-link",
+            "Explore Leading Indicators ", icon("arrow-right")
+          )
+        )
+      ),
+
+      column(
+        3,
+        div(
+          class = "ov-roadmap-card",
+          div(class = "ov-roadmap-number orange-dot", "4"),
+          div(class = "ov-roadmap-title", "Evidence Explorer"),
+          div(
+            class = "ov-roadmap-text",
+            "Search and inspect message-level evidence, risk signals, agents, and communication channels."
+          ),
+          div(
+            class = "ov-roadmap-mini",
+            "Search  •  Filter  •  Validate"
+          ),
+          div(
+            class = "ov-roadmap-link",
+            "Explore Evidence Explorer ", icon("arrow-right")
+          )
+        )
+      )
+    ),
+
+    br(),
+
+    fluidRow(
+      column(
+        7,
+
+        div(
+          class = "ov-section-title",
+          icon("star"), " Key Investigation Highlights"
+        ),
+
+        br(),
+
+        fluidRow(
+          column(
+            4,
+            div(
+              class = "ov-highlight-card highlight-blue",
+              div(class = "ov-highlight-icon", icon("users")),
+              div(
+                class = "ov-highlight-title",
+                "Concentration of Communication"
+              ),
+              div(
+                class = "ov-highlight-text",
+                "Identify agents and channels with elevated communication activity during the critical period."
+              ),
+              div(
+                class = "ov-highlight-link",
+                "Review agents ", icon("arrow-right")
+              )
+            )
+          ),
+
+          column(
+            4,
+            div(
+              class = "ov-highlight-card highlight-red",
+              div(
+                class = "ov-highlight-icon",
+                icon("exclamation-circle")
+              ),
+              div(
+                class = "ov-highlight-title",
+                "Elevated Risk Activity"
+              ),
+              div(
+                class = "ov-highlight-text",
+                "Compare high-risk messages and public or anonymous actions across the investigation windows."
+              ),
+              div(
+                class = "ov-highlight-link",
+                "Review high-risk messages ", icon("arrow-right")
+              )
+            )
+          ),
+
+          column(
+            4,
+            div(
+              class = "ov-highlight-card highlight-green",
+              div(class = "ov-highlight-icon", icon("chart-line")),
+              div(
+                class = "ov-highlight-title",
+                "Early Warning Detected"
+              ),
+              div(
+                class = "ov-highlight-text",
+                "Examine prior episodes, unusual behaviour, and potential oversight gaps before the breach."
+              ),
+              div(
+                class = "ov-highlight-link",
+                "Review leading indicators ", icon("arrow-right")
+              )
+            )
+          )
+        )
+      ),
+
+      column(
+        5,
+
+        div(
+          class = "ov-section-title",
+          icon("info-circle"), " Investigation Guide"
+        ),
+
+        br(),
+
+        div(
+          class = "ov-guide-card",
+          div(
+            class = "ov-guide-title",
+            "Suggested investigation flow"
+          ),
+
+          tags$ol(
+            class = "ov-guide-list",
+            tags$li(
+              tags$b("Start with Q1:"),
+              " reconstruct the breach timeline."
+            ),
+            tags$li(
+              tags$b("Move to Q2:"),
+              " compare baseline and critical-period behaviour."
+            ),
+            tags$li(
+              tags$b("Use Q3:"),
+              " identify earlier warning signals and similar occasions."
+            ),
+            tags$li(
+              tags$b("Confirm in Q4:"),
+              " inspect message-level evidence."
+            )
+          ),
+
+          tags$hr(),
+
+          div(
+            class = "ov-guide-note",
+            tags$b("Interpretation note: "),
+            "Visual patterns identify evidence for investigation. They should be considered together with message content, communication timing, channels, and agent roles."
+          )
+        )
+      )
+    ),
+
+    br(),
+
+    div(
+      class = "ov-footer-note",
+      icon("info-circle"),
+      " All dashboard findings should be interpreted as supporting evidence, not proof of individual responsibility."
+    ),
+
+    br()
   ),
-  
+
   # ----------------------------------------------------------
   # QUESTION 1
   # ----------------------------------------------------------
   tabPanel(
     tagList(icon("road"), "1. Path to Breach"),
+
     br(),
+
+    card(
+      card_header(
+        "Question 1: What events and relationships led to the inappropriate release?"
+      ),
+      p(
+        "This view reconstructs the breach day by comparing morning and afternoon interaction structures, ",
+        "identifying emerging discussion themes, and surfacing the narrow evidence window where communication changed most sharply."
+      )
+    ),
+
+    br(),
+
     sidebarLayout(
       sidebarPanel(
         width = 3,
+
         div(
           class = "filter-panel",
+
           h3("Investigation Filters"),
-          dateRangeInput("q1_dates", "Date range", min_date, max_date, min = min_date, max = max_date),
-          selectizeInput("q1_agents", "Agent / role", c("All", all_agents, all_roles), selected = "All", multiple = TRUE),
-          selectizeInput("q1_channels", "Channel", all_channels, selected = all_channels, multiple = TRUE),
-          checkboxGroupInput("q1_risks", "Risk level", all_risks, selected = all_risks)
+
+          dateInput(
+            "q1_focus_date",
+            "Breach-day focus",
+            value = q1_default_date,
+            min = min_date,
+            max = max_date
+          ),
+
+          selectizeInput(
+            "q1_agents",
+            "Agent / role",
+            choices = c("All", all_agents, all_roles),
+            selected = "All",
+            multiple = TRUE
+          ),
+
+          selectizeInput(
+            "q1_channels",
+            "Channel",
+            choices = all_channels,
+            selected = all_channels,
+            multiple = TRUE
+          ),
+
+          checkboxGroupInput(
+            "q1_risks",
+            "Risk level",
+            choices = all_risks,
+            selected = all_risks
+          ),
+
+          tags$hr(),
+
+          h4("Network Detail"),
+
+          radioButtons(
+            "q1_target_view",
+            "Relationship view",
+            choices = q1_target_choices,
+            selected = "Channel"
+          ),
+
+          sliderInput(
+            "q1_network_size",
+            "Maximum agents shown",
+            min = 3,
+            max = max(3, length(all_agents)),
+            value = min(7, max(3, length(all_agents)))
+          ),
+
+          sliderInput(
+            "q1_phrase_count",
+            "Emerging phrases shown",
+            min = 6,
+            max = 20,
+            value = 12
+          )
         )
       ),
+
       mainPanel(
         width = 9,
-        div(class = "guide-box", tags$b("Purpose: "), "Identify message activity and high-risk communications leading up to the inappropriate release."),
-        card(card_header("Communication Activity by Day"), plotlyOutput("q1_plot", height = "360px")),
-        br(),
-        card(card_header("Filtered Message Evidence"), DTOutput("q1_table"))
+
+        div(
+          class = "guide-box",
+          tags$b("How to read this: "),
+          "Squares are agents and circles are channels or recipients. ",
+          "Larger nodes have higher subgraph centrality, meaning they sit within more tightly connected interaction structures. ",
+          "Compare the morning and afternoon networks to identify the changing coordination pathway."
+        ),
+
+        tabsetPanel(
+
+          tabPanel(
+            "1. Interaction Shift",
+
+            br(),
+
+            fluidRow(
+              column(
+                6,
+                card(
+                  card_header("Morning Interaction Structure"),
+                  div(
+                    class = "small-note",
+                    "Before 12:00 PM. Nodes are sized by subgraph centrality."
+                  ),
+                  visNetworkOutput(
+                    "q1_morning_network",
+                    height = "570px"
+                  )
+                )
+              ),
+
+              column(
+                6,
+                card(
+                  card_header("Afternoon Interaction Structure"),
+                  div(
+                    class = "small-note",
+                    "From 12:00 PM onward. Compare node size and relationship concentration."
+                  ),
+                  visNetworkOutput(
+                    "q1_afternoon_network",
+                    height = "570px"
+                  )
+                )
+              )
+            ),
+
+            br(),
+
+            fluidRow(
+              column(
+                6,
+                card(
+                  card_header("Morning: Most Central Agents"),
+                  tableOutput("q1_morning_agents")
+                )
+              ),
+
+              column(
+                6,
+                card(
+                  card_header("Afternoon: Most Central Agents"),
+                  tableOutput("q1_afternoon_agents")
+                )
+              )
+            )
+          ),
+
+          tabPanel(
+            "2. Emerging Phrases",
+
+            br(),
+
+            card(
+              card_header("War-Room Analysis: Emerging Phrases"),
+              div(
+                class = "small-note",
+                "Phrases are calculated from the most central afternoon agents and channels/recipients. ",
+                "Only phrases that became more frequent in the afternoon are shown."
+              ),
+              plotlyOutput(
+                "q1_phrase_plot",
+                height = "480px"
+              )
+            ),
+
+            br(),
+
+            card(
+              card_header("Emerging Phrase Detail"),
+              DTOutput("q1_phrase_table")
+            )
+          ),
+
+          tabPanel(
+            "3. Forensic Pivot and Evidence",
+
+            br(),
+
+            div(
+              class = "guide-box",
+              tags$b("Forensic logic: "),
+              "A low Jaccard similarity marks a sharp vocabulary shift between consecutive 30-minute windows. ",
+              "The Adamic-Adar-style score identifies when the two most central afternoon agents shared the strongest interaction context."
+            ),
+
+            fluidRow(
+              column(
+                6,
+                card(
+                  card_header("Vocabulary Continuity"),
+                  div(
+                    class = "small-note",
+                    "Lower values indicate a sharper change in discussion vocabulary."
+                  ),
+                  plotlyOutput(
+                    "q1_similarity_plot",
+                    height = "310px"
+                  )
+                )
+              ),
+
+              column(
+                6,
+                card(
+                  card_header("Interaction Cohesion"),
+                  div(
+                    class = "small-note",
+                    "Higher values indicate a stronger shared connection pattern between the two most central afternoon agents."
+                  ),
+                  plotlyOutput(
+                    "q1_adamic_plot",
+                    height = "310px"
+                  )
+                )
+              )
+            ),
+
+            br(),
+
+            card(
+              card_header("Detected Pivot Window"),
+              uiOutput("q1_pivot_note")
+            ),
+
+            br(),
+
+            card(
+              card_header("Focused Message Evidence"),
+              div(
+                class = "small-note",
+                "Messages within ±30 minutes of the strongest detected pivot, limited to the two most central afternoon agents."
+              ),
+              DTOutput("q1_evidence_table")
+            )
+          )
+        )
       )
     )
   ),
@@ -698,19 +1606,30 @@ ui <- navbarPage(
   # ----------------------------------------------------------
   tabPanel(
     tagList(icon("exchange-alt"), "2. Behaviour Change"),
+
     br(),
+
     card(
-      card_header("Question 2: Was the embargo evasion a new behaviour?"),
-      p("The primary visual compares agent vocabulary before and during the critical period. The supporting visual examines agent-channel relationships within the selected period.")
+      card_header(
+        "Question 2: How did communication behaviour during the breach differ from prior behaviour?"
+      ),
+      p(
+        "Compare the distinctive terms used by agents before the breach with those used during the critical period. ",
+        "Terms that are new or more prominent in the critical period are candidate indicators of behavioural change."
+      )
     ),
+
     br(),
+
     sidebarLayout(
       sidebarPanel(
         width = 3,
+
         div(
           class = "filter-panel",
+
           h3("Investigation Filters"),
-          
+
           dateRangeInput(
             "baseline_dates",
             "Baseline period",
@@ -719,7 +1638,7 @@ ui <- navbarPage(
             min = min_date,
             max = max_date
           ),
-          
+
           dateRangeInput(
             "critical_dates",
             "Critical period",
@@ -728,7 +1647,7 @@ ui <- navbarPage(
             min = min_date,
             max = max_date
           ),
-          
+
           selectizeInput(
             "q2_agents",
             "Agent / role",
@@ -736,7 +1655,7 @@ ui <- navbarPage(
             selected = "All",
             multiple = TRUE
           ),
-          
+
           selectizeInput(
             "q2_channels",
             "Channel",
@@ -744,118 +1663,86 @@ ui <- navbarPage(
             selected = all_channels,
             multiple = TRUE
           ),
-          
+
           checkboxGroupInput(
             "q2_risks",
             "Risk level",
             choices = all_risks,
             selected = all_risks
           ),
-          
+
           sliderInput(
             "keywords_per_agent",
             "Keywords per agent",
             min = 3,
             max = 15,
             value = 10
-          ),
-          
-          tags$hr(),
-          h3("Supporting Explorer"),
-          
-          radioButtons(
-            "support_period",
-            "Period to inspect",
-            choices = c("Baseline" = "Baseline", "Critical period" = "Critical"),
-            selected = "Critical"
-          ),
-          
-          selectizeInput(
-            "support_reference",
-            "Reference node",
-            choices = c("All nodes" = "ALL"),
-            selected = "ALL"
-          ),
-          
-          textInput(
-            "support_search",
-            "Search agent or channel",
-            placeholder = "Type a name"
-          ),
-          
-          sliderInput(
-            "support_size",
-            "Network size",
-            min = 3,
-            max = 15,
-            value = 8
-          ),
-          
-          checkboxInput(
-            "support_expand",
-            "Show one-hop connected nodes",
-            value = TRUE
           )
         )
       ),
-      
+
       mainPanel(
         width = 9,
-        
+
         div(
           class = "guide-box",
           tags$b("How to read this: "),
-          "Terms linked to an agent in the critical-period network but not in the baseline network are candidate evidence of changed communication behaviour. This identifies patterns for investigation; it does not establish intent."
+          "Each large coloured node is an agent and each light-blue node is a distinctive term. ",
+          "Compare the two networks to identify terms that are absent, new, or more prominent during the critical period. ",
+          "This identifies patterns for investigation; it does not establish intent."
         ),
-        
-        div(class = "primary-tag", "Primary evidence: agent-keyword behaviour"),
-        
+
+        div(
+          class = "primary-tag",
+          "Primary evidence: agent-keyword behaviour comparison"
+        ),
+
         fluidRow(
           column(
             6,
             card(
               card_header("Baseline Network Structure"),
-              div(class = "small-note", "Typical agent vocabulary before 4 June 2046."),
-              visNetworkOutput("baseline_network", height = "560px")
+              div(
+                class = "small-note",
+                "Distinctive agent vocabulary before 4 June 2046."
+              ),
+              visNetworkOutput(
+                "baseline_network",
+                height = "560px"
+              )
             )
           ),
+
           column(
             6,
             card(
               card_header("Critical-Period Network Structure"),
-              div(class = "small-note", "Distinctive agent vocabulary from 4 June 2046 onward."),
-              visNetworkOutput("critical_network", height = "560px")
+              div(
+                class = "small-note",
+                "Distinctive agent vocabulary during 4–5 June 2046."
+              ),
+              visNetworkOutput(
+                "critical_network",
+                height = "560px"
+              )
             )
           )
         ),
-        
+
         br(),
-        
+
         card(
           card_header("Behaviour Comparison Summary"),
-          DTOutput("q2_summary")
-        ),
-        
-        br(),
-        
-        div(class = "support-tag", "Supporting evidence: agent-channel relationships"),
-        
-        card(
-          card_header("Agent-Channel Relationship Network"),
-          div(class = "small-note", "Agents are circles and channels are squares. Hover over a node to view degree centrality and betweenness."),
-          visNetworkOutput("support_network", height = "610px")
-        ),
-        
-        br(),
-        
-        card(
-          card_header("Node Centrality Summary"),
-          DTOutput("support_table")
+          div(
+            class = "small-note",
+            "A direct comparison of communication volume, active agents, channels, and high-risk messages across the two selected periods."
+          ),
+          tableOutput("q2_summary")
         )
       )
     )
   ),
-  
+
   # ----------------------------------------------------------
   # QUESTION 3
   # ----------------------------------------------------------
@@ -926,43 +1813,344 @@ server <- function(input, output, session) {
     scales::comma(sum(communications$risk_signal_group == "High Signal", na.rm = TRUE))
   )
   
-  # Question 1
-  q1_data <- reactive({
-    filter_messages(
-      communications,
-      input$q1_dates,
-      input$q1_agents,
-      input$q1_channels,
-      input$q1_risks
+  # ------------------------------------------------------------
+  # Question 1: Alvin's breach-day reconstruction
+  # ------------------------------------------------------------
+  
+  q1_day_data <- reactive({
+    q1_prepare_day_data(
+      data = communications,
+      selected_date = input$q1_focus_date,
+      selected_agents = input$q1_agents,
+      selected_channels = input$q1_channels,
+      selected_risks = input$q1_risks,
+      target_view = input$q1_target_view
     )
   })
   
-  output$q1_plot <- renderPlotly({
-    plot_data <- q1_data() |>
-      count(event_date, risk_signal_group)
-    
-    validate(need(nrow(plot_data) > 0, "No messages match the selected filters."))
-    
+  q1_morning_data <- reactive({
+    q1_day_data() |>
+      filter(q1_period == "Morning")
+  })
+  
+  q1_afternoon_data <- reactive({
+    q1_day_data() |>
+      filter(q1_period == "Afternoon")
+  })
+  
+  q1_morning_structure <- reactive({
+    q1_build_centrality_network(
+      q1_morning_data(),
+      top_nodes = input$q1_network_size
+    )
+  })
+  
+  q1_afternoon_structure <- reactive({
+    q1_build_centrality_network(
+      q1_afternoon_data(),
+      top_nodes = input$q1_network_size
+    )
+  })
+  
+  output$q1_morning_network <- renderVisNetwork({
+    q1_draw_centrality_network(q1_morning_structure())
+  })
+  
+  output$q1_afternoon_network <- renderVisNetwork({
+    q1_draw_centrality_network(q1_afternoon_structure())
+  })
+  
+  output$q1_morning_agents <- renderTable({
+    q1_morning_structure()$agent_ranking |>
+      slice_head(n = 5)
+  }, striped = TRUE, bordered = TRUE, hover = TRUE, spacing = "s", rownames = FALSE)
+  
+  output$q1_afternoon_agents <- renderTable({
+    q1_afternoon_structure()$agent_ranking |>
+      slice_head(n = 5)
+  }, striped = TRUE, bordered = TRUE, hover = TRUE, spacing = "s", rownames = FALSE)
+  
+  q1_phrases <- reactive({
+    q1_emerging_bigrams(
+      data = q1_day_data(),
+      afternoon_network = q1_afternoon_structure(),
+      phrase_count = input$q1_phrase_count
+    )
+  })
+  
+  output$q1_phrase_plot <- renderPlotly({
+  
+    phrase_data <- q1_phrases()
+  
+    if (nrow(phrase_data) == 0) {
+      return(
+        q1_empty_plot(
+          "No afternoon-emerging phrases match the current filters."
+        )
+      )
+    }
+  
+    plot_data <- phrase_data |>
+      arrange(Shift)
+  
     plot_ly(
       plot_data,
-      x = ~event_date,
-      y = ~n,
-      type = "scatter",
-      mode = "lines+markers",
-      color = ~risk_signal_group
+      x = ~Shift,
+      y = ~bigram,
+      type = "bar",
+      orientation = "h",
+      marker = list(color = "#991B1B"),
+      text = ~paste0(
+        "Phrase: ", bigram,
+        "<br>Morning: ", Morning,
+        "<br>Afternoon: ", Afternoon,
+        "<br>Increase: +", Shift
+      ),
+      hoverinfo = "text"
     ) |>
       layout(
-        xaxis = list(title = "Date"),
-        yaxis = list(title = "Number of messages")
+        xaxis = list(title = "Frequency increase: Afternoon minus Morning"),
+        yaxis = list(title = ""),
+        margin = list(l = 170, r = 30, b = 60, t = 25),
+        paper_bgcolor = "#FFFFFF",
+        plot_bgcolor = "#FFFFFF"
       )
   })
   
-  output$q1_table <- renderDT({
+  output$q1_phrase_table <- renderDT({
+  
+    phrase_data <- q1_phrases()
+  
+    if (nrow(phrase_data) == 0) {
+      return(
+        datatable(
+          data.frame(
+            Message = "No afternoon-emerging phrases match the current filters."
+          ),
+          rownames = FALSE,
+          options = list(dom = "t")
+        )
+      )
+    }
+  
     datatable(
-      message_table(q1_data()),
+      phrase_data,
+      rownames = FALSE,
+      options = list(
+        pageLength = 10,
+        lengthChange = FALSE,
+        scrollX = TRUE,
+        order = list(list(3, "desc"))
+      )
+    )
+  })
+  
+  q1_vocabulary_data <- reactive({
+    q1_vocabulary_similarity(q1_day_data())
+  })
+  
+  q1_top_afternoon_agents <- reactive({
+    q1_afternoon_structure()$agent_ranking |>
+      slice_head(n = 2) |>
+      pull(Agent)
+  })
+  
+  q1_adamic_data <- reactive({
+    q1_adamic_adar_timeline(
+      q1_day_data(),
+      q1_top_afternoon_agents()
+    )
+  })
+  
+  output$q1_similarity_plot <- renderPlotly({
+  
+    similarity_data <- q1_vocabulary_data()
+  
+    if (nrow(similarity_data) == 0) {
+      return(
+        q1_empty_plot(
+          "At least two 30-minute communication windows are required."
+        )
+      )
+    }
+  
+    plot_ly(
+      similarity_data,
+      x = ~time_bin,
+      y = ~jaccard_similarity,
+      type = "scatter",
+      mode = "lines+markers",
+      line = list(color = "#2563EB", width = 3),
+      marker = list(color = "#2563EB", size = 7),
+      text = ~paste0(
+        "Time: ", format(time_bin, "%H:%M"),
+        "<br>Jaccard similarity: ", round(jaccard_similarity, 3)
+      ),
+      hoverinfo = "text"
+    ) |>
+      layout(
+        xaxis = list(title = "Time"),
+        yaxis = list(
+          title = "Vocabulary similarity",
+          range = c(0, 1)
+        ),
+        paper_bgcolor = "#FFFFFF",
+        plot_bgcolor = "#FFFFFF"
+      )
+  })
+  
+  output$q1_adamic_plot <- renderPlotly({
+  
+    adamic_data <- q1_adamic_data()
+  
+    if (nrow(adamic_data) == 0) {
+      return(
+        q1_empty_plot(
+          "Two central afternoon agents are required to calculate this score."
+        )
+      )
+    }
+  
+    plot_ly(
+      adamic_data,
+      x = ~time_bin,
+      y = ~adamic_adar,
+      type = "scatter",
+      mode = "lines+markers",
+      line = list(color = "#DC2626", width = 3),
+      marker = list(color = "#DC2626", size = 7),
+      text = ~paste0(
+        "Time: ", format(time_bin, "%H:%M"),
+        "<br>Shared-connection score: ", round(adamic_adar, 3)
+      ),
+      hoverinfo = "text"
+    ) |>
+      layout(
+        xaxis = list(title = "Time"),
+        yaxis = list(title = "Adamic-Adar-style score"),
+        paper_bgcolor = "#FFFFFF",
+        plot_bgcolor = "#FFFFFF"
+      )
+  })
+  
+  q1_pivot_time <- reactive({
+  
+    vocabulary_data <- q1_vocabulary_data()
+    adamic_data <- q1_adamic_data()
+  
+    text_pivot <- if (nrow(vocabulary_data) > 0) {
+      vocabulary_data |>
+        slice_min(jaccard_similarity, n = 1, with_ties = FALSE) |>
+        pull(time_bin)
+    } else {
+      as.POSIXct(NA)
+    }
+  
+    connection_peak <- if (
+      nrow(adamic_data) > 0 &&
+      any(adamic_data$adamic_adar > 0)
+    ) {
+      adamic_data |>
+        slice_max(adamic_adar, n = 1, with_ties = FALSE) |>
+        pull(time_bin)
+    } else {
+      as.POSIXct(NA)
+    }
+  
+    list(
+      text_pivot = text_pivot,
+      connection_peak = connection_peak,
+      anchor = if (!is.na(connection_peak)) connection_peak else text_pivot
+    )
+  })
+  
+  output$q1_pivot_note <- renderUI({
+  
+    pivot <- q1_pivot_time()
+    actors <- q1_top_afternoon_agents()
+  
+    if (is.na(pivot$anchor)) {
+      return(
+        div(
+          class = "small-note",
+          "No pivot window can be identified with the current filters."
+        )
+      )
+    }
+  
+    tagList(
+      tags$p(
+        tags$b("Primary evidence window: "),
+        format(pivot$anchor, "%d %B %Y, %H:%M")
+      ),
+      tags$p(
+        tags$b("Most central afternoon agents: "),
+        paste(actors, collapse = " and ")
+      ),
+      tags$p(
+        "The message table below shows the surrounding 60-minute window for targeted review."
+      )
+    )
+  })
+  
+  q1_focused_evidence <- reactive({
+  
+    pivot <- q1_pivot_time()
+    actors <- q1_top_afternoon_agents()
+    data <- q1_day_data()
+  
+    if (is.na(pivot$anchor) || length(actors) == 0) {
+      return(data[0, ])
+    }
+  
+    data |>
+      filter(
+        q1_event_time >= pivot$anchor - lubridate::minutes(30),
+        q1_event_time <= pivot$anchor + lubridate::minutes(30),
+        agent_label %in% actors
+      ) |>
+      arrange(q1_event_time)
+  })
+  
+  output$q1_evidence_table <- renderDT({
+  
+    evidence <- q1_focused_evidence()
+  
+    if (nrow(evidence) == 0) {
+      return(
+        datatable(
+          data.frame(
+            Message = "No messages were found in the detected evidence window."
+          ),
+          rownames = FALSE,
+          options = list(dom = "t")
+        )
+      )
+    }
+  
+    evidence_table <- evidence |>
+      transmute(
+        Time = format(q1_event_time, "%Y-%m-%d %H:%M"),
+        Agent = agent_label,
+        Role = agent_role,
+        Channel = channel,
+        `Risk signal` = risk_signal_group,
+        `Internal state` = internal_state_deliberating,
+        `Message evidence` = if_else(
+          nchar(content) > 300,
+          paste0(str_sub(content, 1, 300), "…"),
+          content
+        )
+      )
+  
+    datatable(
+      evidence_table,
       rownames = FALSE,
       filter = "top",
-      options = list(pageLength = 10, scrollX = TRUE)
+      options = list(
+        pageLength = 10,
+        scrollX = TRUE
+      )
     )
   })
   
@@ -1005,142 +2193,72 @@ server <- function(input, output, session) {
     )
   })
   
-  output$q2_summary <- renderDT({
-    comparison <- bind_rows(
-      baseline_data() |>
-        summarise(
-          Period = "Baseline",
-          Messages = n(),
-          Agents = n_distinct(agent_id),
-          Channels = n_distinct(channel),
-          `High-risk messages` = sum(risk_signal_group == "High Signal", na.rm = TRUE)
+  output$q2_summary <- renderTable({
+
+    baseline_summary <- baseline_data() |>
+      summarise(
+        Messages = n(),
+        `Active agents` = n_distinct(agent_id),
+        `Active channels` = n_distinct(channel),
+        `High-risk messages` = sum(
+          risk_signal_group == "High Signal",
+          na.rm = TRUE
+        )
+      )
+
+    critical_summary <- critical_data() |>
+      summarise(
+        Messages = n(),
+        `Active agents` = n_distinct(agent_id),
+        `Active channels` = n_distinct(channel),
+        `High-risk messages` = sum(
+          risk_signal_group == "High Signal",
+          na.rm = TRUE
+        )
+      )
+
+    metric_names <- names(baseline_summary)
+    baseline_values <- as.numeric(baseline_summary[1, ])
+    critical_values <- as.numeric(critical_summary[1, ])
+
+    change_values <- critical_values - baseline_values
+
+    change_labels <- ifelse(
+      baseline_values == 0,
+      ifelse(
+        critical_values == 0,
+        "No change",
+        "New in critical period"
+      ),
+      paste0(
+        ifelse(change_values > 0, "+", ""),
+        change_values,
+        " (",
+        ifelse(
+          round(change_values / baseline_values * 100, 1) > 0,
+          "+",
+          ""
         ),
-      critical_data() |>
-        summarise(
-          Period = "Critical period",
-          Messages = n(),
-          Agents = n_distinct(agent_id),
-          Channels = n_distinct(channel),
-          `High-risk messages` = sum(risk_signal_group == "High Signal", na.rm = TRUE)
-        )
-    )
-    
-    datatable(
-      comparison,
-      rownames = FALSE,
-      options = list(dom = "t", scrollX = TRUE)
-    )
-  })
-  
-  # Question 2 - supporting
-  support_period_data <- reactive({
-    if (is.null(input$support_period) || input$support_period == "Baseline") {
-      baseline_data()
-    } else {
-      critical_data()
-    }
-  })
-  
-  observeEvent(
-    list(
-      input$support_period,
-      input$baseline_dates,
-      input$critical_dates,
-      input$q2_agents,
-      input$q2_channels,
-      input$q2_risks
-    ),
-    {
-      current_data <- support_period_data()
-      
-      agents <- sort(unique(current_data$agent_label))
-      channels <- sort(unique(current_data$channel[current_data$channel != "Unknown"]))
-      
-      choices <- c("All nodes" = "ALL")
-      
-      if (length(agents) > 0) {
-        choices <- c(
-          choices,
-          setNames(
-            paste0("agent::", agents),
-            paste0("Agent — ", agents)
-          )
-        )
-      }
-      
-      if (length(channels) > 0) {
-        choices <- c(
-          choices,
-          setNames(
-            paste0("channel::", channels),
-            paste0("Channel — ", channels)
-          )
-        )
-      }
-      
-      current_value <- isolate(input$support_reference)
-      
-      if (is.null(current_value) || !current_value %in% unname(choices)) {
-        current_value <- "ALL"
-      }
-      
-      updateSelectizeInput(
-        session,
-        "support_reference",
-        choices = choices,
-        selected = current_value,
-        server = TRUE
+        round(change_values / baseline_values * 100, 1),
+        "%)"
       )
-    },
-    ignoreInit = FALSE
+    )
+
+    tibble(
+      Metric = metric_names,
+      Baseline = baseline_values,
+      `Critical period` = critical_values,
+      Change = change_labels
+    )
+
+  },
+  striped = TRUE,
+  bordered = TRUE,
+  hover = TRUE,
+  spacing = "s",
+  rownames = FALSE
   )
-  
-  support_data <- reactive({
-    reference_value <- input$support_reference
-    
-    if (is.null(reference_value)) {
-      reference_value <- "ALL"
-    }
-    
-    build_michelle_channel_network(
-      data = support_period_data(),
-      reference_node = reference_value,
-      search_text = input$support_search,
-      network_size = input$support_size,
-      show_connected = input$support_expand
-    )
-  })
-  
-  output$support_network <- renderVisNetwork({
-    draw_michelle_channel_network(support_data())
-  })
-  
-  output$support_table <- renderDT({
-    ranking <- support_data()$ranking
-    
-    if (nrow(ranking) == 0) {
-      return(
-        datatable(
-          data.frame(
-            Message = "No supporting-network nodes match the selected filters."
-          ),
-          rownames = FALSE,
-          options = list(dom = "t")
-        )
-      )
-    }
-    
-    datatable(
-      ranking,
-      rownames = FALSE,
-      options = list(
-        pageLength = 10,
-        lengthChange = FALSE,
-        scrollX = TRUE
-      )
-    )
-  })
-  
+
   # Question 3
   q3_data <- reactive({
     filter_messages(

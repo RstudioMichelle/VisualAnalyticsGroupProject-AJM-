@@ -26,13 +26,12 @@ node <- df_communications$communication_nodes
 communications_raw <- df_communications$communications
 ```
 
-
 ## Multiple write outs
+
 ```{r}
 #| eval: false
 write_csv(communications_raw,'communications_raw.csv')
 ```
-
 
 ```{r}
 #| eval: false
@@ -45,21 +44,17 @@ write_csv(edge_weighted, "edge_weighted.csv")
 write_csv(node, "node.csv")
 ```
 
-
-
 ## Read CSV
+
 ```{r}
 nodes_df = read_csv("node.csv")
 edges_df = read_csv("edge_weighted.csv")
 comms_raw = read_csv("communications_raw.csv")
 ```
 
-
-
 ### Subgroup Centrality for identifying the key Agents involved in the leak and the causal relationship
-What subgroup centrality?
-subgraph centrality looks at closed walks—journeys that start at your node, travel through the network, and end back at your node. Nodes that form triangles form the bigget subgraph centrality.
-As we know the key agents are Legal-Agent, Social-Manager-Agent, and PR-Agent, this should appear as larger nodes, that help the user zoom into the agents that are relevant
+
+What subgroup centrality? subgraph centrality looks at closed walks—journeys that start at your node, travel through the network, and end back at your node. Nodes that form triangles form the bigget subgraph centrality. As we know the key agents are Legal-Agent, Social-Manager-Agent, and PR-Agent, this should appear as larger nodes, that help the user zoom into the agents that are relevant
 
 ```{r}
 
@@ -175,16 +170,14 @@ vis_morning
 vis_afternoon
 ```
 
-::: {.callout-note}
-The Shift: PR Agent vs. Platform Trust Agent
-Your Observation: The PR Agent becomes less important compared to the Platform Trust Agent in the afternoon.
+::: callout-note
+The Shift: PR Agent vs. Platform Trust Agent Your Observation: The PR Agent becomes less important compared to the Platform Trust Agent in the afternoon.
 
 The Analytical 'Why': In the morning, the crisis is treated as a standard public relations problem (issuing holding statements and managing the SaltWind article). PR is naturally central. However, as the afternoon progresses, the crisis mutates into a massive data privacy and regulatory threat (the Fair Housing inquiry and the Horizon client breach).
 
 The Network Reality: The tight, high-frequency "War Room" loops shift away from PR spin and directly toward the Platform Trust Agent, who holds the actual audit summaries and permissible-use frameworks required to save the deal. The network structurally proves that the company stopped trying to spin the story and scrambled to deploy hard compliance data.
 
-2. The Rise of the "Personal Post"
-Your Observation: Personal posts became significantly more central/important in the afternoon network.
+2.  The Rise of the "Personal Post" Your Observation: Personal posts became significantly more central/important in the afternoon network.
 
 The Analytical 'Why': This is the mathematical signature of an information perimeter collapse. When official corporate channels (like the main Flex account) are paralyzed by the legal embargo, the actors in the network intuitively route around the blockage.
 
@@ -192,12 +185,12 @@ The Network Reality: The high centrality of personal posts (like the CEO's perso
 :::
 
 ## Extract agents and channels relevant
+
 We want to extract the "war room" agents and agents dynamically.
 
 ```{r}
 centrality_scores_morning
 ```
-
 
 ```{r}
 # Get Morning Scores
@@ -224,10 +217,10 @@ morning_war_room_channel <- names(morning_channel_only_scores)[1:3]
 afternoon_war_room_channel <- names(afternoon_channel_only_scores)[1:3]
 ```
 
-
 ### We now need a chart that can help the user drill down on the possible words.
 
 The reason why i switch the approach is because TF-IDF only show singular words that does not truely reflect the change in context
+
 ```{r}
 
 # 2. Load Data
@@ -284,7 +277,8 @@ print(word_list)
 # This joins the words with a pipe symbol: "word1|word2|word3"
 search_pattern <- paste(word_list, collapse = "|")
 ```
-##
+
+## 
 
 ```{r}
 library(tidyverse)
@@ -393,6 +387,7 @@ dynamic_filtered_logs <- timestamp_df %>%
 # Print the hyper-focused results to the dashboard UI
 print(dynamic_filtered_logs)
 ```
+
 ```{r}
 ## Filter down the most relevant content for dashboard users
 start_time <- network_peak_bin - minutes(30)
@@ -407,7 +402,6 @@ focused_logs <- df %>%
   arrange(timestamp)
 ```
 
-
 ### Extract the words
 
 ```{r}
@@ -415,10 +409,8 @@ focused_logs <- df %>%
 focused_logs %>% select(round_hour, agent_label,internal_state_deliberating, channel, content) %>% count()
 ```
 
-
 ```{r}
 kable(focused_logs %>% select(round_hour, agent_label,internal_state_deliberating, channel, content)
       
       )
 ```
-
