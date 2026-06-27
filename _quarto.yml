@@ -55,7 +55,7 @@ website:
         text: "Shiny App"
         menu:
           - text: "Launch Shiny App"
-            href: "https://your-shiny-app-link-here"
+            href: "https://michellevisualanalytics.shinyapps.io/shiny/"
 
       - icon: github
         text: "Github"

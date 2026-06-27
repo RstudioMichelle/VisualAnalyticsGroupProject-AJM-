@@ -14,11 +14,11 @@ execute:
 
 ## In Attendance
 
--   Alvin Ong
+- Alvin Ong
 
--   Javier Phang
+- Javier Phang
 
--   Michelle Chen
+- Michelle Chen
 
 ## **Agenda**
 
@@ -51,10 +51,10 @@ No question asked at this point
 ## Action items
 
 1.  In preparation for the next meeting::
-    -   Alvin to work on enhancing the network graphs.
-    -   Javier to start working on the Shiny app.
-    -   Michelle to work on the poster structure, including the objective, motivation, and methodology sections.
-    -   All three team members to share and justify their selected charts and findings in the draft document.
+    - Alvin to work on enhancing the network graphs.
+    - Javier to start working on the Shiny app.
+    - Michelle to work on the poster structure, including the objective, motivation, and methodology sections.
+    - All three team members to share and justify their selected charts and findings in the draft document.
 
 ## Meeting Minutes Sign off
 

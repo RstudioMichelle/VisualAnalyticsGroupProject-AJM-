@@ -1,12 +1,10 @@
-name: shiny
+name: projectharbourcrest
 title:
 username: michellevisualanalytics
 account: michellevisualanalytics
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 17538425
-bundleId: 12186912
-url: https://michellevisualanalytics.shinyapps.io/shiny/
+appId: 17557809
+bundleId: 12186761
+url: https://michellevisualanalytics.shinyapps.io/projectharbourcrest/
 version: 1
-asMultiple: FALSE
-asStatic: FALSE
