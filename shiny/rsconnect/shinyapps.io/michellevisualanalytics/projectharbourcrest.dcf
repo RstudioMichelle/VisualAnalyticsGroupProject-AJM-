@@ -5,6 +5,8 @@ account: michellevisualanalytics
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 17557809
-bundleId: 12186865
+bundleId: 12186989
 url: https://michellevisualanalytics.shinyapps.io/projectharbourcrest/
 version: 1
+asMultiple: FALSE
+asStatic: FALSE
