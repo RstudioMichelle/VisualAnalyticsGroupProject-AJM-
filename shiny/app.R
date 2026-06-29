@@ -6,7 +6,8 @@ pacman::p_load(
   plotly,
   visNetwork,
   tidytext,
-  igraph
+  igraph,
+  stopwords
 )
 
 # ============================================================
@@ -297,7 +298,7 @@ build_alvin_keyword_network <- function(data, keywords_per_agent = 10) {
     filter(!is.na(agent_id), full_text != "") |>
     select(agent_id, full_text) |>
     unnest_tokens(word, full_text) |>
-    anti_join(get_stopwords(), by = "word") |>
+    anti_join(stop_words, by = "word") |>
     anti_join(custom_stop_words, by = "word") |>
     filter(str_detect(word, "^[a-zA-Z]+$")) |>
     count(agent_id, word, name = "n") |>
