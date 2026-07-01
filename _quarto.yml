@@ -31,7 +31,7 @@ website:
         text: "Findings"
 
       - icon: file-earmark-ppt
-        href: Poster.qmd
+        href: "Poster/Poster.qmd"
         text: "Poster"
 
       - icon: journal-text

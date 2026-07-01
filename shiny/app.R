@@ -6,7 +6,8 @@ pacman::p_load(
   plotly,
   visNetwork,
   tidytext,
-  igraph
+  igraph,
+  stop_words
 )
 
 # ============================================================
